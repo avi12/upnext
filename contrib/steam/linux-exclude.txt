@@ -1,0 +1,84 @@
+# Libraries the Linux depot leaves out, so they come from the computer it
+# runs on: one shell glob per line, matched against each library's soname.
+# bundle-linux.py bundles every other library the programs need and stops
+# there, so a library left out here never brings its own dependencies in.
+#
+# Steam runs a native Linux title either straight on the computer or inside
+# the Steam Linux Runtime 3.0 ("sniper") container. In the container,
+# pressure-vessel takes glibc, the C++ runtime and the graphics driver with
+# what it loads from whichever of the computer and the runtime has the newer
+# copy, so those are always there and at least as new as the computer's.
+# Everything else the runtime has is left in the depot anyway: the depot's
+# copies come first (each program's RPATH points into the depot), so the
+# runtime's older ones would never be used, and leaving them out would only
+# save space at the price of trusting versions this script can't check.
+
+# glibc. The depot needs the glibc its build machine had or newer; the
+# launcher checks and says so.
+ld-linux-x86-64.so.*
+libc.so.*
+libm.so.*
+libmvec.so.*
+libdl.so.*
+libpthread.so.*
+librt.so.*
+libresolv.so.*
+libutil.so.*
+libanl.so.*
+libnsl.so.*
+libBrokenLocale.so.*
+libthread_db.so.*
+libnss_*.so.*
+
+# The C++ and GCC runtime. An older copy in the depot would come before the
+# computer's newer one and stop its graphics driver from loading.
+libstdc++.so.*
+libgcc_s.so.*
+
+# The graphics stack: the driver's entry points, which must be the
+# computer's own for its GPU.
+libGL.so.*
+libGLX.so.*
+libGLX_*.so.*
+libGLdispatch.so.*
+libEGL.so.*
+libEGL_*.so.*
+libOpenGL.so.*
+libGLESv2.so.*
+libglapi.so.*
+libgbm.so.*
+libdrm.so.*
+libdrm_*.so.*
+libvulkan.so.*
+
+# What the driver loads itself, which must be as new as the driver expects:
+# X11 and its connection library, Wayland's client side, and the small
+# libraries Mesa links against. Wayland's server side, its EGL window
+# library and the X extensions cairo uses (render, shm) stay in the depot:
+# WebKitGTK, GTK and cairo need them, and a computer's Mesa may not
+# (Ubuntu 24.04's doesn't).
+libX11.so.*
+libX11-xcb.so.*
+libxcb.so.*
+libxcb-dri2.so.*
+libxcb-dri3.so.*
+libxcb-glx.so.*
+libxcb-present.so.*
+libxcb-randr.so.*
+libxcb-sync.so.*
+libxcb-xfixes.so.*
+libXau.so.*
+libXdmcp.so.*
+libxshmfence.so.*
+libwayland-client.so.*
+libexpat.so.*
+libz.so.*
+libzstd.so.*
+libelf.so.*
+libLLVM*.so*
+libsensors.so.*
+
+# Fonts. fontconfig reads the computer's own configuration in /etc/fonts,
+# which another version may not understand, and finds the computer's fonts.
+libfontconfig.so.*
+libfreetype.so.*

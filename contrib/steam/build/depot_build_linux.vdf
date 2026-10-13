@@ -1,0 +1,13 @@
+// The Linux depot: everything in the folder build-depots.sh made, with its
+// executable bits, which SteamPipe keeps when steamcmd runs on Linux.
+"DepotBuild"
+{
+	"DepotID" "@LINUX_DEPOT_ID@"
+	"ContentRoot" "@CONTENT_ROOT@/linux"
+	"FileMapping"
+	{
+		"LocalPath" "*"
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+}

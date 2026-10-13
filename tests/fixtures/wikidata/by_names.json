@@ -1,0 +1,47 @@
+{
+ "results": {
+  "bindings": [
+   {
+    "item": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q279446"
+    },
+    "name": {
+     "type": "literal",
+     "xml:lang": "en",
+     "value": "Portal 2"
+    },
+    "pcgw": {
+     "type": "literal",
+     "value": "Portal_2"
+    },
+    "hltb": {
+     "type": "literal",
+     "value": "7231"
+    }
+   },
+   {
+    "item": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q100"
+    },
+    "name": {
+     "type": "literal",
+     "xml:lang": "en",
+     "value": "Prey"
+    }
+   },
+   {
+    "item": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q200"
+    },
+    "name": {
+     "type": "literal",
+     "xml:lang": "en",
+     "value": "Prey"
+    }
+   }
+  ]
+ }
+}

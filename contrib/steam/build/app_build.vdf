@@ -1,0 +1,17 @@
+// SteamPipe's app build for UpNext's Steam copy.
+// upload.sh fills in the @...@ values and runs it with steamcmd; the app
+// and depot ids come from Steamworks (docs/dev/RELEASE.md, "The Steam
+// copy"). A build goes live on a beta branch only; the default branch is
+// set live by hand in Steamworks after the build has been checked.
+"AppBuild"
+{
+	"AppID" "@APP_ID@"
+	"Desc" "@DESC@"
+	"BuildOutput" "@BUILD_OUTPUT@"
+	"SetLive" "@BRANCH@"
+	"Depots"
+	{
+		"@LINUX_DEPOT_ID@" "depot_build_linux.vdf"
+		"@WINDOWS_DEPOT_ID@" "depot_build_windows.vdf"
+	}
+}

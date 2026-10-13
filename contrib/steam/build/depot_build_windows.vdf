@@ -1,0 +1,12 @@
+// The Windows depot: the two programs, the licences and the marker file.
+"DepotBuild"
+{
+	"DepotID" "@WINDOWS_DEPOT_ID@"
+	"ContentRoot" "@CONTENT_ROOT@/windows"
+	"FileMapping"
+	{
+		"LocalPath" "*"
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+}

@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Name=UpNext
+GenericName=Game Picker
+Comment=Pick what to play next from your Steam, Epic, GOG and Amazon games
+Exec=upnext-app
+Icon=io.github.zytocc.UpNext
+Terminal=false
+Categories=Game;
+Keywords=games;backlog;library;steam;heroic;gog;
+StartupWMClass=io.github.zytocc.UpNext
+Actions=big-screen;
+
+[Desktop Action big-screen]
+Name=Big screen
+Exec=upnext-app --big-screen

@@ -1,0 +1,29 @@
+/target
+/data/
+.env
+/web/node_modules
+/web/dist
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+# Local settings with keys; the example stays tracked.
+.env.*
+!.env.example
+# Sign-ins, keys and certificates that UpNext or a release keeps beside its data.
+gog_token.json
+epic_token.json
+*.pem
+*.key
+*.p12
+*.keystore
+*.jks
+# Release artefacts built by hand.
+*.apk
+*.aab
+*.msi
+.DS_Store
+__pycache__/
+*.pyc

@@ -1,0 +1,30 @@
+{
+ "count": 2,
+ "results": [
+  {
+   "id": 4200,
+   "slug": "portal-2",
+   "name": "Portal 2",
+   "rating": 4.61,
+   "ratings_count": 5000,
+   "metacritic": 95,
+   "genres": [
+    {
+     "name": "Puzzle"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Singleplayer",
+     "language": "eng",
+     "games_count": 200000
+    }
+   ]
+  },
+  {
+   "id": 4201,
+   "slug": "portal-2-sixense",
+   "name": "Portal 2 Sixense Perceptual Pack"
+  }
+ ]
+}

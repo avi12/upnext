@@ -1,0 +1,14 @@
+UpNext picks what to play next from the games you already own. It runs on your computer (Linux, Windows or Docker), gathers your Steam, Epic, GOG, Amazon, EA app and Ubisoft Connect libraries into one list, and suggests a few games from your backlog that fit what you're in the mood for, with the reasons.
+
+This app is how a phone, a tablet or an Android TV uses UpNext on your computer. UpNext itself must be running on the computer, with "Allow other devices" turned on in Settings › Devices and API.
+
+* Finds the computers on your home network that run UpNext.
+* Asks to be allowed: the computer shows a four-digit number, you check it matches and tap Allow there. Nothing to type.
+* Away from home, add a computer by its address, or scan the QR code from the computer's Settings.
+* Keeps each computer's access sealed with a key in Android's keystore, out of backups.
+* Several computers can be saved and switched between; forgetting one also removes the phone from that computer's devices.
+* On an Android TV, opens in big screen, driven with the remote or a gamepad.
+
+Games start on the computer, not on the phone. The app talks only to your own computers; it has no account, no ads and no tracking.
+
+UpNext is open source under the MIT or Apache 2.0 licence.

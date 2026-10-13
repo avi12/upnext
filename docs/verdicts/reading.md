@@ -1,0 +1,13 @@
+# Reading the snapshot
+
+[Backlog verdicts](../VERDICTS.md) · [The published snapshot](snapshot.md) · [Changing the contract](changing.md)
+
+UpNext reads every file strictly, as it reads its shared game data: a field the format doesn't list, a licence other than `CC0-1.0`, a format newer than its own, a wrong checksum or count, counts that don't add up, a month after the snapshot's date, a game twice, a game with fewer than 3 verdicts or a text that fails a text check refuses the whole file, and the snapshot it had stays in place. An answer from a newer vocabulary than the reader's is dropped rather than refused, so adding an answer doesn't need a new format. `upnext verdicts check <folder or file>` reads a snapshot from disk and says what it holds; with the full file beside the manifest it also checks that the summary is what the full file sums up to.
+
+`tests/fixtures/verdicts/` holds a snapshot written by UpNext's own writer (`verdicts.json` and both data files: 37 invented verdicts, of which four games show, three of them in the mock library and one known only by a GOG id, and one game has too few to show). The service's tests check that its summary of the same verdicts is the fixture's byte for byte before gzip, and `tests/fixtures/verdicts/service/` holds the snapshot the service writes for them, which `cargo test` reads with UpNext's reader.
+
+## What an install does with it
+
+An install with "Backlog verdicts from other players" on (`verdicts_receive`) runs the "Backlog verdicts" job once a day: it asks for the manifest with the `ETag` it last came with, and when the manifest names a newer day, downloads the summary, reads it as above and puts it in place of the one it kept, in one transaction; an older day never replaces a newer one. It sends no key and nothing else. The snapshot isn't signed: the summary's SHA-256 and size in the manifest catch a damaged download, and the HTTPS connection is what says it came from the service, so `verdicts_url` is `https://` (plain `http://` only to this computer). Games are matched to the library by Steam appid, then by the GOG id of a GOG copy, when the library is read. `upnext verdicts sync` runs the job, and `upnext verdicts apply <file, folder or address>` puts a downloaded snapshot in place, for an install that can't reach the service (one no newer than the kept one only with `--force`). [Backlog verdicts from others](../api/community-verdicts.md) has what the game page, the library and picks show of it.
+
+`tests/fixtures/verdicts/mock/` holds the mock library's snapshot (`src/mock/verdicts.rs`: made-up verdicts about 31 of its games, three of them too few to publish), which `upnext mock-library` applies and the end to end run's fake service serves.

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The arcade theme's colours, as the web UI and the app icon use them. -->
+<resources>
+    <color name="upnext_background">#0F1117</color>
+    <color name="upnext_surface">#1A1D26</color>
+    <color name="upnext_accent">#F5B942</color>
+    <color name="upnext_text">#F0F0F5</color>
+    <color name="upnext_text_muted">#A3A7B5</color>
+</resources>

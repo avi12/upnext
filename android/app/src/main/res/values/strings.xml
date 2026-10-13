@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UpNext</string>
+
+    <!-- The list of computers. -->
+    <string name="choose_computer">Choose the computer UpNext runs on.</string>
+    <string name="looking">Looking on this network. UpNext shows up here while it runs with Allow other devices on (Settings › Devices and API).</string>
+    <string name="found_hint">Tap a computer to ask it to allow this device.</string>
+    <string name="find_computer">Find a computer</string>
+    <string name="find_hint">Tap Find a computer to choose yours from the computers on this network that run UpNext with Allow other devices on (Settings › Devices and API). Ones chosen before show up here by themselves.</string>
+    <string name="local_network_hint">If it\'s on this network, find it again with Find a computer, or allow Nearby devices for UpNext in Android\'s settings.</string>
+    <string name="computer_version">UpNext %1$s</string>
+    <string name="computer_allowed">allowed before</string>
+    <string name="computer_not_seen">allowed before, not seen on this network now</string>
+    <string name="computer_new">new</string>
+    <string name="scan_qr">Scan the QR code</string>
+    <string name="scan_prompt">Scan the QR code in UpNext\'s Settings › Devices and API, Add a device.</string>
+    <string name="add_by_address">Add by address</string>
+    <string name="add_by_address_help">For a computer this network can\'t see, such as one on Tailscale.</string>
+    <string name="address_hint">den.lan, 192.168.0.42:8787 or https://…</string>
+    <string name="not_an_address">That isn\'t an address. Try den.lan, 192.168.0.42:8787 or a full https:// address.</string>
+    <string name="not_an_upnext_code">That isn\'t an UpNext QR code. Open Settings › Devices and API on the computer and choose Add a device.</string>
+    <string name="computers_help">Away from home, this network can\'t see the computer: use Add by address, or scan the QR code from Settings › Devices and API.</string>
+    <string name="licences">Open-source licences</string>
+    <string name="opening">Opening %1$s…</string>
+    <string name="unreachable">Couldn\'t open %1$s. %2$s</string>
+    <string name="revoked_there">%1$s no longer allows this device. Ask it again.</string>
+    <string name="changed_there">Another UpNext answers at %2$s now, so this device didn\'t open it. If %1$s moved, it shows up here again when it is found on the network.</string>
+    <string name="try_again">Try again</string>
+    <string name="forget">Forget</string>
+    <string name="forget_title">Forget %1$s?</string>
+    <string name="forget_message">This device stops using UpNext on %1$s. It asks %1$s to remove it from its devices too, when it can reach it.</string>
+    <string name="forgotten_and_revoked">Forgotten, and removed from %1$s\'s devices.</string>
+    <string name="forgotten_here">Forgotten here. %1$s still lists this device: remove it in Settings › Devices and API there.</string>
+
+    <!-- Asking to be allowed. -->
+    <string name="asking_title">Use UpNext on %1$s</string>
+    <string name="asking">Asking %1$s…</string>
+    <string name="waiting_for_allow">On %1$s, UpNext shows that %2$s wants to use it. Check it shows %3$s, then tap Allow there.</string>
+    <string name="denied">%1$s said no.</string>
+    <string name="expired">Nobody answered in time. Ask again, then tap Allow on the computer.</string>
+    <string name="ask_again">Ask again</string>
+    <string name="ask_to_be_allowed">Ask to be allowed</string>
+    <string name="type_a_code_instead">Type a code instead</string>
+    <string name="type_a_code_help">On the computer, Settings › Devices and API, Add a device shows a six-digit code.</string>
+    <string name="code_hint">Six-digit code</string>
+    <string name="code_is_six_digits">The code is six digits.</string>
+    <string name="pair">Pair</string>
+    <string name="pairing_with_code">Pairing with the code…</string>
+    <string name="keystore_failed">This device\'s keystore couldn\'t keep the token safely, so it wasn\'t saved. The computer lists this device already: remove it there in Settings › Devices and API, then restart this device and try again. Until then, open UpNext in the browser.</string>
+    <string name="found_elsewhere_title">%1$s answered from a new address</string>
+    <string name="found_elsewhere">%1$s can\'t be opened at %2$s, where it was last opened: nothing answers there, or another UpNext does. An UpNext with its id answers at %3$s. Anyone on this network could copy that id, so use the new address only if you expect %1$s there (it changed networks, or the router gave it a new address).</string>
+    <string name="found_elsewhere_short">%1$s answered from a new address.</string>
+    <string name="use_new_address">Use the new address</string>
+    <string name="not_allowed_there">the UpNext at the new address doesn\'t allow this device</string>
+    <string name="something_went_wrong">Something went wrong. Try again.</string>
+
+    <!-- UpNext itself. -->
+    <string name="play_on_computer">Start the game on %1$s: a phone can\'t open the game\'s launcher.</string>
+    <string name="no_browser">No app on this device opens web links.</string>
+    <string name="link_failed">That link couldn\'t be opened on this device.</string>
+    <string name="page_failed">Couldn\'t load UpNext from %1$s: %2$s</string>
+    <string name="other_computers">Other computers</string>
+</resources>

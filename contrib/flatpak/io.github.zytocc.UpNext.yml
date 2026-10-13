@@ -1,0 +1,101 @@
+# UpNext's Flatpak. contrib/flatpak/README.md says how
+# to build it; Flathub's copy of this manifest, in the app's own repository
+# there, builds a release tag from its git URL instead of this checkout.
+#
+# Everything is built from source with no network: the crates and the npm
+# packages come from cargo-sources.json and node-sources.json, which
+# generate-sources.sh writes into generated/ from Cargo.lock and
+# web/package-lock.json.
+app-id: io.github.zytocc.UpNext
+# GNOME 51 is the newest runtime with WebKitGTK for GTK 3 (webkit2gtk-4.1),
+# which the app window links, built with libmanette for gamepads. GNOME's
+# next runtime drops it (only WebKitGTK for GTK 4 is left there), so
+# moving on means the window moving to GTK 4 first; see the README.
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node24
+# The app window; `flatpak run --command=upnext io.github.zytocc.UpNext ...`
+# runs the command line.
+command: upnext-app
+finish-args:
+  # The stores, the AI, the other devices that use UpNext, and the mDNS
+  # announcement they find it by.
+  - --share=network
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  # The GPU for WebKitGTK and gamepads for big screen (libmanette reads
+  # /dev/input). --device=dri with --device=input would do, but only
+  # Flatpak 1.15.6 and later know input, and Ubuntu 24.04 and Debian 12
+  # ship 1.14, where gamepads would then never show up.
+  - --device=all
+  # Reading the libraries is the app's purpose, and no portal hands over
+  # another program's folders. Read-only: UpNext never writes to them, and
+  # "Add to Steam" says how to add it in Steam instead. Steam natively (and
+  # Debian's ~/.steam/debian-installation) and as a Flatpak:
+  - --filesystem=~/.local/share/Steam:ro
+  - --filesystem=~/.steam:ro
+  - --filesystem=~/.var/app/com.valvesoftware.Steam/.local/share/Steam:ro
+  # Heroic (Epic, GOG and Amazon), natively and as a Flatpak:
+  - --filesystem=~/.config/heroic:ro
+  - --filesystem=~/.var/app/com.heroicgameslauncher.hgl/config/heroic:ro
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/node24/bin
+modules:
+  - name: upnext
+    buildsystem: simple
+    build-options:
+      env:
+        # The crates, vendored by cargo-sources.json.
+        CARGO_HOME: /run/build/upnext/cargo
+        CARGO_NET_OFFLINE: 'true'
+        # npm's cache, filled by node-sources.json.
+        npm_config_cache: /run/build/upnext/flatpak-node/npm-cache
+        npm_config_offline: 'true'
+        XDG_CACHE_HOME: /run/build/upnext/flatpak-node/cache
+    build-commands:
+      - cd web && npm ci --offline --no-audit --no-fund
+      # Vite alone: `npm run build` type-checks the end-to-end tests too, which
+      # need Playwright, left out of the sources above. CI type-checks them.
+      - cd web && npx vite build
+      # The commit generate-sources.sh found, since the source is copied
+      # without .git: `upnext --version` and /api/health name it.
+      - UPNEXT_COMMIT="$(cat .upnext-commit)" cargo build --release --locked --offline
+      - install -Dm755 -t /app/bin target/release/upnext target/release/upnext-app
+      - install -Dm644 contrib/flatpak/io.github.zytocc.UpNext.desktop /app/share/applications/io.github.zytocc.UpNext.desktop
+      - install -Dm644 contrib/flatpak/io.github.zytocc.UpNext.metainfo.xml /app/share/metainfo/io.github.zytocc.UpNext.metainfo.xml
+      - install -Dm644 contrib/linux/icons/hicolor/scalable/apps/upnext.svg /app/share/icons/hicolor/scalable/apps/io.github.zytocc.UpNext.svg
+      - install -Dm644 contrib/linux/icons/hicolor/256x256/apps/upnext.png /app/share/icons/hicolor/256x256/apps/io.github.zytocc.UpNext.png
+      # UpNext's licences, and the third-party notices of what is built
+      # into it (committed, since this build has no network to make them).
+      - install -Dm644 -t /app/share/licenses/io.github.zytocc.UpNext LICENSE-MIT LICENSE-APACHE THIRD_PARTY_NOTICES.txt
+    sources:
+      # This checkout, as it is on disk, without what builds leave in it.
+      - type: dir
+        path: ../..
+        skip:
+          - .git
+          - target
+          - web/node_modules
+          - web/dist
+          - android/build
+          - android/.gradle
+          - contrib/flatpak/generated
+          - contrib/flatpak/.flatpak-builder
+          - contrib/flatpak/build
+      - generated/cargo-sources.json
+      - generated/node-sources.json
+      - type: file
+        path: generated/commit
+        dest-filename: .upnext-commit
+      # web/package.json and its lock without Playwright, which only the
+      # end-to-end tests use and whose browsers would otherwise be fetched.
+      - type: file
+        path: generated/web/package.json
+        dest: web
+      - type: file
+        path: generated/web/package-lock.json
+        dest: web

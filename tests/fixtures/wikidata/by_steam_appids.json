@@ -1,0 +1,68 @@
+{
+ "results": {
+  "bindings": [
+   {
+    "steam": {
+     "type": "literal",
+     "value": "620"
+    },
+    "item": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q279446"
+    },
+    "pcgw": {
+     "type": "literal",
+     "value": "Portal_2"
+    },
+    "rawg": {
+     "type": "literal",
+     "value": "portal-2"
+    },
+    "hltb": {
+     "type": "literal",
+     "value": "7231"
+    },
+    "igdb": {
+     "type": "literal",
+     "value": "portal-2"
+    }
+   },
+   {
+    "steam": {
+     "type": "literal",
+     "value": "620"
+    },
+    "item": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q279446"
+    },
+    "pcgw": {
+     "type": "literal",
+     "value": "Portal_2"
+    },
+    "rawg": {
+     "type": "literal",
+     "value": "portal-2"
+    },
+    "hltb": {
+     "type": "literal",
+     "value": "7231"
+    },
+    "igdb": {
+     "type": "literal",
+     "value": "portal-2-second-slug"
+    }
+   },
+   {
+    "item": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1"
+    },
+    "steam": {
+     "type": "literal",
+     "value": "not-a-number"
+    }
+   }
+  ]
+ }
+}

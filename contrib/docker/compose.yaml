@@ -1,0 +1,54 @@
+# UpNext in Docker: `docker compose up -d` in this folder, then
+# `docker logs upnext` for the pairing code, and open http://localhost:8787.
+# docs/install/docker.md has the rest.
+services:
+  upnext:
+    image: ghcr.io/zytocc/upnext:latest
+    # The name the log and the pairing page use: `docker exec upnext upnext pair`.
+    container_name: upnext
+    ports: ["127.0.0.1:8787:8787"]   # this computer only; drop 127.0.0.1: for your network
+    volumes:
+      - upnext-data:/data
+      # Optional, read-only. Each one adds a library (uncomment its
+      # environment line below too). Setup's "Where UpNext runs" step writes
+      # these lines for your system, with a copy button.
+      # - "~/.local/share/Steam:/host/steam:ro"
+      # - "~/.config/heroic:/host/heroic:ro"
+      # Flatpak installs keep them in ~/.var/app/com.valvesoftware.Steam/.local/share/Steam
+      # and ~/.var/app/com.heroicgameslauncher.hgl/config/heroic, Snap's Steam in
+      # ~/snap/steam/common/.local/share/Steam. Docker Desktop on Windows:
+      # "C:/Program Files (x86)/Steam" and "${APPDATA}/heroic"; on macOS:
+      # "~/Library/Application Support/Steam" and "~/Library/Application Support/heroic".
+    environment:
+      # Your IANA time zone (America/New_York, Etc/UTC…), so the daily
+      # sync runs at a sensible local hour.
+      TZ: UTC
+      # UPNEXT_STEAM_DIR: /host/steam
+      # UPNEXT_HEROIC_DIR: /host/heroic
+      # Your Claude subscription (docs/install/docker.md): Claude Code isn't in the
+      # image, so with the first line the container installs it from Anthropic
+      # into /data when it starts. It signs in with the token that
+      # `claude setup-token` prints on any computer where you use Claude.
+      # UPNEXT_INSTALL_CLAUDE: "1"
+      # CLAUDE_CODE_OAUTH_TOKEN: "the token claude setup-token prints"
+      # The token signs in as you, and this file is easy to share or commit
+      # by mistake. To keep it out, put the line
+      # CLAUDE_CODE_OAUTH_TOKEN=<the token> in a file only you can read
+      # (chmod 600 upnext.env) and uncomment env_file below instead.
+    # env_file: [upnext.env]
+    # Ollama or vLLM on this computer, as http://host.docker.internal:11434/v1
+    # in Settings (Docker on Linux needs this line for the name).
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    # A running job gets 10 s to record where it got to and an open AI call
+    # up to 20 s, more than Docker's default 10 s before it kills.
+    stop_grace_period: 30s
+    # Nothing outside /data is written, so the image's own files stay as built.
+    read_only: true
+    tmpfs: [/tmp]
+    # UpNext needs no Linux capabilities and never gains privileges, so a bug
+    # that runs code in the container can't use Debian's setuid programs.
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    restart: unless-stopped
+volumes:
+  upnext-data:

@@ -1,0 +1,69 @@
+# cargo-deny (https://embarkstudios.github.io/cargo-deny/): licences,
+# security advisories, banned crates and where crates come from.
+# `cargo deny check` runs it; CI runs it in the rust job.
+
+[graph]
+# Every platform UpNext builds for, with the `desktop` feature, so the
+# Windows-only and GTK crates are checked too.
+targets = [
+  "x86_64-unknown-linux-gnu",
+  "aarch64-unknown-linux-gnu",
+  "x86_64-pc-windows-msvc",
+  "x86_64-pc-windows-gnu",
+  "aarch64-apple-darwin",
+]
+all-features = true
+
+[advisories]
+version = 2
+# RustSec advisories fail the check: vulnerabilities always, and unmaintained
+# or unsound crates too. An exception goes here with its id and a reason.
+yanked = "deny"
+ignore = [
+  # Both come with gtk-rs 0.18, which wry and tao (the app and GOG login
+  # windows, the `desktop` feature) still build on; GTK 3's bindings are no
+  # longer maintained. UpNext's code never calls `VariantStrIter`, and the
+  # unmaintained proc-macro-error runs only at build time. Drop these when
+  # wry moves off GTK 3.
+  { id = "RUSTSEC-2024-0429", reason = "glib 0.18's VariantStrIter, through wry and tao; not called by UpNext" },
+  { id = "RUSTSEC-2024-0370", reason = "proc-macro-error, a build-time dependency of gtk-rs 0.18's macros" },
+]
+
+[licenses]
+version = 2
+# Permissive licences, plus MPL-2.0 (file-level copyleft, fine to link) and
+# Unicode-3.0, which the ICU crates carry. A licence no crate uses is a
+# warning, so the list stays what the tree needs.
+allow = [
+  "MIT",
+  "MIT-0",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-3-Clause",
+  "BSL-1.0",
+  "ISC",
+  "0BSD",
+  "Zlib",
+  "CC0-1.0",
+  "Unicode-3.0",
+  "MPL-2.0",
+]
+confidence-threshold = 0.9
+
+[bans]
+# Several versions of one crate are common in a tree this size (GTK's and
+# the TLS stack's); they're listed, not failed.
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+# OpenSSL stays out: TLS is rustls with aws-lc-rs.
+deny = [
+  { crate = "openssl", reason = "TLS is rustls" },
+  { crate = "openssl-sys", reason = "TLS is rustls" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

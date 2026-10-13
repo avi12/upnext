@@ -1,0 +1,15 @@
+# Steps dist runs before it builds the release archives (dist-workspace.toml,
+# github-build-setup): the web UI, which a release build embeds from web/dist.
+- name: Set up Node
+  uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+  with:
+    node-version: 24
+    cache: npm
+    cache-dependency-path: web/package-lock.json
+# dist copies only a step's name, uses, with and run, so the step changes
+# into web/ itself.
+- name: Build the web UI
+  run: |
+    cd web
+    npm ci --no-audit --no-fund
+    npm run build

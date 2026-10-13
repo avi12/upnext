@@ -1,0 +1,19 @@
+# The image builds from Cargo.*, build.rs, src/, tests/fixtures/ and web/
+# only, and carries the licences and the third-party notices.
+*
+!Cargo.toml
+!Cargo.lock
+!build.rs
+!LICENSE-MIT
+!LICENSE-APACHE
+!THIRD_PARTY_NOTICES.txt
+!src/
+!tests/fixtures/
+!web/
+web/node_modules/
+web/dist/
+**/*.db
+**/.env
+web/e2e/.data/
+web/test-results/
+web/playwright-report/

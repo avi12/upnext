@@ -1,0 +1,17 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: UpNext
+Source: https://github.com/zytocc/upnext
+
+Files: *
+Copyright: UpNext contributors
+License: MIT or Apache-2.0
+ UpNext is dual-licensed under the MIT licence and the Apache License,
+ Version 2.0, at your option. Both texts are in this folder, as
+ LICENSE-MIT and LICENSE-APACHE. The programs are built with Rust crates
+ and npm packages under their own licences (MIT, Apache-2.0, BSD, ISC,
+ Zlib, Unicode-3.0, MPL-2.0 and others) and include the fonts of the web
+ UI under the SIL Open Font License 1.1; THIRD_PARTY_NOTICES.txt in this
+ folder lists every one with its licence text, and the programs serve the
+ same file at /third-party-notices.txt. Game data comes from the services
+ in the project's docs/THIRD_PARTY.md, under their own terms; the app's
+ Settings, About lists the credits.

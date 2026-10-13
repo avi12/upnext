@@ -1,0 +1,10 @@
+{
+  "upnext_seed": 1,
+  "date": "2026-10-01",
+  "count": 5,
+  "licence": "CC0-1.0",
+  "notice": "UpNext's shared game data: AI-written summaries (People say, Vibes) and review tags, dedicated to the public domain under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/). It holds no player reviews, store descriptions or personal data. The games' names belong to their owners.",
+  "file": "upnext-seed-2026-10-01.jsonl.gz",
+  "bytes": 998,
+  "sha256": "132d7d77b30db317e4807c45bb256aa6b1bc413be314ceb35bcbb67173586873"
+}

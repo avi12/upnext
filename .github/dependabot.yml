@@ -1,0 +1,87 @@
+# Dependency updates: weekly, grouped so a week is one pull request
+# per ecosystem rather than one per crate. Major versions are left out: each
+# would be a pull request of its own, and they need a person to port the code
+# anyway. Security updates come as they're published, whatever the schedule,
+# once Dependabot security updates are on in the repository's settings.
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      cargo:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      # wry and tao build on gtk-rs 0.18 (GTK 3); these move when they do.
+      - dependency-name: "glib"
+      - dependency-name: "gtk"
+
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      npm:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # The verdicts service's Worker: wrangler, Miniflare and esbuild are what
+  # build and deploy it, so they get the same weekly pull request as the web
+  # UI's packages.
+  - package-ecosystem: npm
+    directory: /services/verdicts
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      verdicts:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # The Android app's libraries and plugins, from its version catalogue
+  # (android/gradle/libs.versions.toml); they ship in the APK. A bump fails
+  # the notices workflow until THIRD_PARTY_NOTICES.txt is regenerated, which
+  # is the reminder to do it.
+  - package-ecosystem: gradle
+    directory: /android
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      android:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Every action is pinned to a full commit SHA with its version in a
+  # comment, so a moved tag can't change what runs; Dependabot updates the SHA
+  # and the comment together. .github/build-setup.yml isn't a workflow, so
+  # its one action is bumped by hand.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # The Dockerfile pins each base image to a digest beside its tag, and
+  # Dependabot proposes the new digest when the tag moves: weekly, since a
+  # moved Debian or Node tag usually carries security fixes.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

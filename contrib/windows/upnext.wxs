@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  UpNext's Windows installer, for WiX Toolset 3.14.
+  contrib/windows/build-msi.ps1 builds it from two built programs; see
+  contrib/windows/README.md and docs/dev/RELEASE.md.
+
+  It installs for the current user only, under
+  %LOCALAPPDATA%\Programs\UpNext, so Windows asks for no administrator rights
+  and an unsigned build shows no "Unknown publisher" prompt. It adds two Start
+  menu entries, for upnext-app.exe and for it in big screen, puts
+  the licences and third-party notices beside the programs, and puts the
+  folder on the user's PATH so
+  `upnext` works in a new terminal. It never names %LOCALAPPDATA%\upnext,
+  where the library lives, so uninstalling leaves the library alone. It
+  removes the Run key value Start with Windows adds (see RemoveAutostart).
+
+  Every folder and file is in the user's profile, so each component's key
+  path is a value under HKCU rather than a file (ICE38, ICE43), and every
+  folder it makes has a RemoveFolder (ICE64). Component GUIDs are fixed:
+  change one only when that component's contents change.
+
+  Variables from build-msi.ps1: Version (major.minor.patch), BinDir (the
+  folder with both exes), SourceDir (this folder) and RootDir (the
+  checkout, for the licences and THIRD_PARTY_NOTICES.txt).
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Name="UpNext"
+           Language="1033"
+           Codepage="1252"
+           Version="$(var.Version)"
+           Manufacturer="UpNext contributors"
+           UpgradeCode="829B9437-D64F-4555-9CE8-971A5EA0CAC1">
+
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perUser"
+             InstallPrivileges="limited"
+             Platform="x64"
+             Description="UpNext installer"
+             Comments="Picks what to play next from your game libraries"
+             SummaryCodepage="1252" />
+
+    <!-- A newer build removes the old one first. Builds of the same version
+         (development builds from one checkout) replace each other too, rather
+         than being listed twice in Apps. -->
+    <MajorUpgrade Schedule="afterInstallInitialize"
+                  AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of [ProductName] is already installed. Uninstall it first to install this one." />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="upnext.ico" SourceFile="$(var.SourceDir)\upnext.ico" />
+    <Property Id="ARPPRODUCTICON" Value="upnext.ico" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/zytocc/upnext" />
+    <Property Id="ARPURLINFOABOUT" Value="https://upnext.games" />
+    <Property Id="ARPCOMMENTS" Value="Uninstalling keeps your library in %LOCALAPPDATA%\upnext." />
+    <!-- Apps and features' InstallLocation, which Windows Installer leaves
+         empty unless the package names it; the folder is known once costing
+         has resolved it. -->
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" />
+    <!-- WixUI_Minimal below sets ARPNOMODIFY: there is nothing to choose,
+         so Apps offers no "Modify". -->
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="LocalPrograms" Name="Programs">
+          <Directory Id="INSTALLFOLDER" Name="UpNext" />
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder" />
+    </Directory>
+
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="Cli" Guid="9E84EB7B-164F-482B-8768-17E2ADE1A6E6">
+        <File Id="UpnextExe" Name="upnext.exe" Source="$(var.BinDir)\upnext.exe" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="upnext.exe" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+      <Component Id="App" Guid="E926AFED-830F-4789-B17E-6A6FDE05E05F">
+        <File Id="UpnextAppExe" Name="upnext-app.exe" Source="$(var.BinDir)\upnext-app.exe" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="upnext-app.exe" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+      <!-- UpNext's licences, and the licences and notices of the crates,
+           npm packages and WebView2 loader built into the programs
+           (contrib/notices/generate.mjs). -->
+      <Component Id="Notices" Guid="FD18769B-BECB-4FB7-866B-88A98932EF8C">
+        <File Id="LicenseMit" Name="LICENSE-MIT" Source="$(var.RootDir)\LICENSE-MIT" />
+        <File Id="LicenseApache" Name="LICENSE-APACHE" Source="$(var.RootDir)\LICENSE-APACHE" />
+        <File Id="ThirdPartyNotices" Name="THIRD_PARTY_NOTICES.txt" Source="$(var.RootDir)\THIRD_PARTY_NOTICES.txt" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="Notices" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+      <!-- The program folder, and %LOCALAPPDATA%\Programs if UpNext was the
+           only thing in it. RemoveFolder removes a folder only when it's
+           empty. -->
+      <Component Id="Folders" Guid="793BE2B3-DDA4-4B9A-AA3D-CCF60C8CBA46">
+        <RemoveFolder Id="RemoveInstallFolder" Directory="INSTALLFOLDER" On="uninstall" />
+        <RemoveFolder Id="RemoveLocalPrograms" Directory="LocalPrograms" On="uninstall" />
+        <RemoveRegistryKey Root="HKCU" Key="Software\UpNext\Installer" Action="removeOnUninstall" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="Folders" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+      <!-- `upnext` in a terminal: the folder goes at the end of the user's
+           own PATH (HKCU\Environment), and comes out again on uninstall.
+           Terminals opened before the install don't see it. -->
+      <Component Id="Path" Guid="4DBD9CE0-DA13-48EF-B914-21B692E4A629">
+        <Environment Id="UserPath" Name="PATH" Value="[INSTALLFOLDER]" Part="last" Action="set" System="no" Permanent="no" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="Path" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Start menu entries for the app: as a window, and in big screen, full
+         screen for a controller, which the "add an app"
+         screens of a handheld's launchers (the Xbox app, Armoury Crate SE,
+         Legion Space) and Steam's Add a Non-Steam Game can pick. upnext.exe
+         is the command line and gets none. No desktop shortcut. -->
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="StartMenu" Guid="4A2BA7FA-68E4-453E-AF08-3302AC68357D">
+        <Shortcut Id="AppShortcut"
+                  Name="UpNext"
+                  Description="Pick what to play next from the games you already own"
+                  Target="[INSTALLFOLDER]upnext-app.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="StartMenu" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+      <Component Id="BigScreenMenu" Guid="AC5FAB5C-F8D5-48FA-83B9-29B9D362E233">
+        <Shortcut Id="BigScreenShortcut"
+                  Name="UpNext (big screen)"
+                  Description="UpNext full screen, for a controller, a handheld or a TV"
+                  Target="[INSTALLFOLDER]upnext-app.exe"
+                  Arguments="--big-screen"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\UpNext\Installer" Name="BigScreenMenu" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Start with Windows: the app writes UpNext's value in the Run key
+         when the user turns it on (src/autostart.rs), so the installer
+         doesn't own it and Windows Installer wouldn't remove it. Uninstalling
+         deletes it, with reg.exe and no console window (WixUtilExtension's
+         WixQuietExec64); an upgrade, which uninstalls the old version too,
+         keeps it, and the app names the new program when it next starts.
+         reg.exe fails when the value isn't there, which is fine. -->
+    <CustomAction Id="SetRemoveAutostart"
+                  Property="RemoveAutostart"
+                  Value="&quot;[System64Folder]reg.exe&quot; delete &quot;HKCU\Software\Microsoft\Windows\CurrentVersion\Run&quot; /v UpNext /f"
+                  Execute="immediate" />
+    <CustomAction Id="RemoveAutostart" BinaryKey="WixCA" DllEntry="WixQuietExec64" Execute="deferred" Impersonate="yes" Return="ignore" />
+    <InstallExecuteSequence>
+      <Custom Action="SetRemoveAutostart" Before="RemoveAutostart">REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE</Custom>
+      <Custom Action="RemoveAutostart" Before="RemoveFiles">REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE</Custom>
+    </InstallExecuteSequence>
+
+    <Feature Id="UpNext" Title="UpNext" Level="1" Absent="disallow" AllowAdvertise="no">
+      <ComponentRef Id="Cli" />
+      <ComponentRef Id="App" />
+      <ComponentRef Id="Notices" />
+      <ComponentRef Id="Folders" />
+      <ComponentRef Id="Path" />
+      <ComponentRef Id="StartMenu" />
+      <ComponentRef Id="BigScreenMenu" />
+    </Feature>
+
+    <!-- One page before installing, which says where UpNext goes, that the
+         library stays on uninstall, and the licence. No "launch now" box at
+         the end: the Start menu entry is how it's opened. -->
+    <UIRef Id="WixUI_Minimal" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.SourceDir)\installer-notice.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.SourceDir)\installer-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.SourceDir)\installer-dialog.bmp" />
+  </Product>
+</Wix>

@@ -1,0 +1,34 @@
+# gitleaks (https://github.com/gitleaks/gitleaks): the default rules, plus
+# the one known false positive.
+title = "UpNext"
+
+[extend]
+useDefault = true
+
+# GOG Galaxy's own public OAuth client id and secret (src/gog.rs), the same
+# pair every Galaxy install ships and Heroic, Lutris and gogdl use. Not a
+# secret of this project.
+[[allowlists]]
+description = "GOG Galaxy's public client"
+regexTarget = "match"
+regexes = ['''9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9''']
+
+# The Epic Games Launcher's own public OAuth client (src/epic.rs), the pair
+# every launcher install ships and Legendary, Heroic and Playnite use. Not a
+# secret of this project.
+[[allowlists]]
+description = "The Epic Games Launcher's public client"
+regexTarget = "match"
+regexes = ['''daafbccc737745039dffe53d94fc76cf''']
+
+# Made-up keys in the tests (src/config.rs, src/server/api_tests*), which
+# check that keys are stored, normalized and never sent back.
+[[allowlists]]
+description = "Test keys"
+regexes = [
+  '''(?i)^(0123456789abcdef){2}$''',
+  '''(?i)^(abcdef0123456789){2}$''',
+  '''(?i)^(fedcba9876543210){2}$''',
+  '''^sk-[a-z]+-0123456789$''',
+  '''^igdb-secret-5678$''',
+]

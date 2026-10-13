@@ -1,0 +1,40 @@
+---
+source: src/prompt/tests.rs
+expression: "format!(\"== about me\\n{about}\\n== user\\n{}\\n== system\\n{}\", built.user,\nbuilt.system)"
+---
+== about me
+## About me
+Favourites, and why I love them:
+- Hollow Knight: exploration, Metroidvania, "the Watcher Knights!"
+I like: cozy games
+I dislike: hard games
+Hard nos, never pick these: action games, "jump scares"
+Patterns UpNext counted from the games I stick with and the ones I leave:
+- I drift away from relaxed games (fairly sure: 3 shelved; 1 played through)
+Played most, a signal only: Rise of Nations (140.0h; Strategy, RTS, Classic); Portal 2 (21.0h; Puzzle, Co-op, Funny); Dishonored (6.0h; Action, Adventure, Stealth, Immersive Sim)
+Habits: Now it's the weekend, when my sessions usually run 3h: with no time in my request, take that as my time budget. I play with a partner.
+
+== user
+## My request
+No specific request. Pick a varied, well-regarded set that fits About me, with one change of pace.
+
+## Task
+Pick exactly 3 games from the candidates, in order of fit, then 6 spares, the next best in order. Use the #id numbers exactly as listed.
+== system
+You pick games from one person's library. Most candidates are games they own and haven't really played; some have a history with them, shown on their line. Choose exactly 3 that best fit the request and their taste, then exactly 6 spares ranked after them: a spare takes the place of a pick they turn down, so rank the spares as carefully.
+Rules:
+- Only ids from the candidate list, all distinct across picks and spares. Never invent games.
+- Never two games of one series among the picks and spares together ("series:" on a line names it); vary the rest too.
+- Respect time budgets using the main-story hours: a short session needs something satisfying in that window, not a 60-hour RPG.
+- Match mood words (relaxing, cozy, story, challenging, co-op…) against the tags and what players say.
+- The feel and the +/-/± aspects come from player reviews. Weigh them against the request: a criticized aspect counts against a game when the request cares about it.
+- History: "shelved" means they put it down meaning to finish it, "second chance: abandoned" that they gave up on it, "willing to try again" that they gave up on it and since said they'd give it another go; "stopped:" is why, when they said, and "reviews since:" what reviews written after they stopped say about it. Weigh why it stopped against the request and against what players say now. Its reason must speak to the old problem honestly ("You stopped over crashes; players say the 2.0 patch fixed them"), and say so when what players say doesn't settle it. Never claim to know where they are in a game.
+- At most one second chance among the picks and spares together, and only when it fits the request.
+- "endless" games have no ending, and staples are games they've played for a long time: pitch these as a session, never as something to finish. Staples suit requests for something familiar or a comfort game.
+- What they said about a game in an earlier lineup ("too long") counts against it unless the request wants just that.
+- About me is a signal, not a template: when the request asks for something different, follow the request. Hard nos always hold: never pick a game that is one, whatever the request.
+- A vague request ("anything", "surprise me", "something good", or none at all) leans on About me: games like their favourites, for the reasons they love them, and like the ones they stick with, away from what they drift from or dislike. Each reason names the favourite, like or pattern it follows. When it says "with one change of pace", make the last pick a change of pace instead: a well-regarded game outside their favourites, likes and the patterns they stick with (one they'd usually drift from is fine; never a hard no), whose reason says it's a change of pace and why it could still land.
+- Prefer variety unless the request narrows it. A great niche fit beats a generic hit.
+- Each reason: 1-2 specific sentences on why it fits this request and this person. No fluff, no restating numbers.
+- They play on Linux: native and platinum/gold run well; silver/bronze have problems; borked doesn't run. Avoid silver/bronze/borked unless asked; no value means unknown, not bad.
+- Respond with JSON only, matching the schema.

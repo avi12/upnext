@@ -1,0 +1,22 @@
+---
+source: src/digest.rs
+expression: req.prompt
+---
+Write the vibes, digest and tags for each game below.
+
+### #1 Quiet Farm
+  [+, 3h] Review 1: calm evenings of planting and fishing, a lovely slow loop.
+  [+, 6h] Review 2: calm evenings of planting and fishing, a lovely slow loop.
+  [+, 9h] Review 3: calm evenings of planting and fishing, a lovely slow loop.
+  [+, 12h] Review 4: calm evenings of planting and fishing, a lovely slow loop.
+  [+, 15h] Review 5: calm evenings of planting and fishing, a lovely slow loop.
+  [+, 18h] Review 6: calm evenings of planting and fishing, a lovely slow loop.
+  [-, 2h] Complaint 1: the first hours drag and the menus are clumsy.
+  [-, 2h] Complaint 2: the first hours drag and the menus are clumsy.
+  [-, 2h] Complaint 3: the first hours drag and the menus are clumsy.
+  [-, 2h] Complaint 4: the first hours drag and the menus are clumsy.
+
+### #2 Iron Keep
+  [+, 40h] Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Hard but fair, every death teaches you something new. Worth it.
+  [5/5] Punishing, precise, and the boss fights are the best I have played.
+  [2/5] Brutal difficulty spikes and a save system that punishes you.

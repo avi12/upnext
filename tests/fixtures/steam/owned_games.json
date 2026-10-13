@@ -1,0 +1,25 @@
+{
+ "response": {
+  "game_count": 3,
+  "games": [
+   {
+    "appid": 620,
+    "name": "Portal 2",
+    "playtime_forever": 1260,
+    "playtime_2weeks": 30,
+    "rtime_last_played": 1790000000
+   },
+   {
+    "appid": 400,
+    "name": " Portal ",
+    "playtime_forever": 0,
+    "rtime_last_played": 0
+   },
+   {
+    "appid": 12345,
+    "name": "",
+    "playtime_forever": 5
+   }
+  ]
+ }
+}

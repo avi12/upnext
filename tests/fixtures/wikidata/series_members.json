@@ -1,0 +1,76 @@
+{
+ "results": {
+  "bindings": [
+   {
+    "s": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q2130538"
+    },
+    "g": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q279446"
+    },
+    "gl": {
+     "type": "literal",
+     "value": "Portal 2"
+    },
+    "year": {
+     "type": "literal",
+     "value": "2011"
+    },
+    "appid": {
+     "type": "literal",
+     "value": "620"
+    },
+    "igdbslug": {
+     "type": "literal",
+     "value": "portal-2"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q2130538"
+    },
+    "g": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q279446"
+    },
+    "gl": {
+     "type": "literal",
+     "value": "Portal 2"
+    },
+    "year": {
+     "type": "literal",
+     "value": "2011"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q2130538"
+    },
+    "g": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q17013"
+    },
+    "gl": {
+     "type": "literal",
+     "value": "Portal"
+    },
+    "year": {
+     "type": "literal",
+     "value": "2007"
+    },
+    "gogid": {
+     "type": "literal",
+     "value": "1207658930"
+    },
+    "gogslug": {
+     "type": "literal",
+     "value": "game/portal"
+    }
+   }
+  ]
+ }
+}

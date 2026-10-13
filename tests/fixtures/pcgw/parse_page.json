@@ -1,0 +1,7 @@
+{
+ "parse": {
+  "title": "Portal 2",
+  "pageid": 194,
+  "wikitext": "{{Infobox game\n|taxonomy     =\n{{Infobox game/row/taxonomy/monetization      | One-time game purchase, Cross-game bonus}}\n{{Infobox game/row/taxonomy/microtransactions | Time-limited}}\n{{Infobox game/row/taxonomy/modes             | Singleplayer, Multiplayer}}\n{{Infobox game/row/taxonomy/pacing            | Real-time}}\n{{Infobox game/row/taxonomy/perspectives      | First-person}}\n{{Infobox game/row/taxonomy/controls          | Direct control}}\n{{Infobox game/row/taxonomy/genres            | Platform, Puzzle}}\n{{Infobox game/row/taxonomy/art styles        | Realistic}}\n{{Infobox game/row/taxonomy/themes            | Sci-fi, North America, Post-apocalyptic}}\n{{Infobox game/row/taxonomy/series            | Portal}}\n}}\n'''General information'''\n"
+ }
+}

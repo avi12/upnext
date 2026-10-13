@@ -1,0 +1,72 @@
+name: flatpak
+
+# The Flatpak (contrib/flatpak/): builds it from source
+# with flatpak-builder, runs Flathub's linter on the manifest and the build,
+# then installs the bundle and runs it in its sandbox (contrib/flatpak/
+# smoke-test.sh: `upnext --version`, and `upnext serve` on a made-up library
+# with a health check). On changes to the manifest, the scripts, the two
+# lock files and the licence files it installs only, since a build compiles
+# every crate; workflow_dispatch runs it by hand.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contrib/flatpak/**'
+      - 'Cargo.lock'
+      - 'web/package-lock.json'
+      - 'THIRD_PARTY_NOTICES.txt'
+      - 'LICENSE-MIT'
+      - 'LICENSE-APACHE'
+      - '.github/workflows/flatpak.yml'
+  pull_request:
+    paths:
+      - 'contrib/flatpak/**'
+      - 'Cargo.lock'
+      - 'web/package-lock.json'
+      - 'THIRD_PARTY_NOTICES.txt'
+      - 'LICENSE-MIT'
+      - 'LICENSE-APACHE'
+      - '.github/workflows/flatpak.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: flatpak-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# Where it runs: nowhere until the repository variable UPNEXT_FLATPAK_CI is
+# `on`, then on GitHub's runner only. flatpak-builder needs a privileged
+# container for its own sandbox, which a self-hosted runner shouldn't give
+# (docs/dev/CI-RUNNERS.md). The image is Flathub's own for building GNOME
+# apps, pinned by digest like the actions; docs/dev/RELEASE.md ("The
+# Flatpak") says how to move it on.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: vars.UPNEXT_FLATPAK_CI == 'on'
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-51@sha256:78d969b18225ae107ca29497bf09c4a3f791e5f1838a9a912a529d0024fb6210
+      options: --privileged
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      # generate-sources.sh takes Playwright out of web's lock with npm.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      - name: Build, lint and bundle
+        run: contrib/flatpak/build.sh --out target/flatpak --lint
+
+      - name: Run it in its sandbox
+        run: contrib/flatpak/smoke-test.sh target/flatpak/upnext-*.flatpak
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: flatpak-bundle
+          path: target/flatpak/upnext-*.flatpak*
+          retention-days: 7

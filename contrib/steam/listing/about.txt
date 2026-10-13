@@ -1,0 +1,33 @@
+[h2]Pick what to play next from the games you already own[/h2]
+
+You own more games than you'll ever finish, and choosing one takes longer than it should. UpNext reads your libraries into one list, looks up what each game is like, and when you say what you're in the mood for ("about an hour, something calm with a bit of story"), it suggests a few games from your backlog that fit, with the reasons.
+
+[h2]Your whole library in one place[/h2]
+[list]
+[*]Steam, from the Steam client on the same computer or with your own Steam Web API key.
+[*]Epic, GOG and Amazon games installed through Heroic, your GOG and Epic accounts, and the Epic Games Launcher's installs on Windows.
+[*]The EA app's and Ubisoft Connect's installed games on Windows, a GOG Galaxy 2.0 database, and lists you type in for the stores that can't be read.
+[*]A game you own on several stores is one title.
+[/list]
+
+[h2]Picks that fit the request[/h2]
+[list]
+[*]Say how long you have, the mood, a genre, or "something I can actually finish".
+[*]Turn a lineup down and say why, rate each pick, compare two games, or have UpNext decide between them.
+[*]Shelved games worth going back to, second chances for games you gave up on, hidden gems, and a roll of the dice for a game you'd forgotten you own.
+[/list]
+
+[h2]It learns what you like, in the open[/h2]
+A taste profile you can read and edit: favourites and why, likes, hard nos, habits, and routines for the nights you play with friends or on the couch.
+
+[h2]Made for the couch too[/h2]
+Big screen is UpNext with large type and one focus you move with a controller. The "UpNext" launch option opens it, on a Steam Deck in Gaming mode, in Big Picture or at the desk; "UpNext (desktop window)" opens the usual window. Press Play on a pick and UpNext steps aside while Steam starts the game.
+
+[h2]Your AI, or none[/h2]
+The suggestions come from an AI you choose and set up yourself: your own Claude or ChatGPT plan through their command-line tools, an Anthropic or OpenAI API key, or a model running on your own computer. UpNext doesn't sell or include an AI, and without one it picks from its own ranking. The AI writes its picks, reasons and summaries while you use UpNext, from the games in your library and what the stores and game databases say about them.
+
+[h2]Private by design[/h2]
+Everything UpNext knows stays in a database on your computer. There's no UpNext server, no account and no analytics. It talks only to the stores and game databases it reads, and to the AI you chose, which gets only what the task needs: never your keys, your Steam ID, account names or sign-ins. UpNext's privacy page lists every service and what each is sent.
+
+[h2]Free and open source[/h2]
+UpNext is free, with no ads or purchases, and its source is public under the MIT or Apache 2.0 licence. It is made by UpNext contributors and provided as is, with no support or warranty; questions and bug reports go to the project's issues on GitHub.

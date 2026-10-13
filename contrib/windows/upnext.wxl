@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wording for the installer's pages (contrib/windows/upnext.wxs) where
+     WixUI's own doesn't fit UpNext. A string here replaces WixUI's string
+     with the same Id. -->
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <!-- The page before installing shows a licence; UpNext's is a notice
+       (installer-notice.rtf) with the licence at its end. -->
+  <String Id="WelcomeEulaDlgTitle">{\WixUI_Font_Title}Installing UpNext</String>
+  <!-- Remove, from opening the MSI again: say that the library stays. The
+       text has room for two lines. -->
+  <String Id="MaintenanceTypeDlgRemoveText">Removes [ProductName]. Your library in %LOCALAPPDATA%\upnext stays; delete that folder to remove it too.</String>
+</WixLocalization>

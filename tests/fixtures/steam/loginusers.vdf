@@ -1,0 +1,15 @@
+"users"
+{
+	"76561198000000001"
+	{
+		"AccountName"		"first"
+		"PersonaName"		"First Player"
+		"MostRecent"		"0"
+	}
+	"76561198000000002"
+	{
+		"AccountName"		"second"
+		"PersonaName"		"Second Player"
+		"MostRecent"		"1"
+	}
+}

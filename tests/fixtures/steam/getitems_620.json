@@ -1,0 +1,35 @@
+{
+ "response": {
+  "store_items": [
+   {
+    "appid": 620,
+    "assets": {
+     "asset_url_format": "steam/apps/620/${FILENAME}?t=1790187113",
+     "library_capsule": "library_600x900.jpg",
+     "library_capsule_2x": "library_600x900_2x.jpg",
+     "library_hero": "a58588d857b8683f8065e55f97ab82ad8a945c51/library_hero.jpg"
+    },
+    "screenshots": {
+     "all_ages_screenshots": [
+      {
+       "filename": "steam/apps/620/ss_0cdd90fafc160b52d08b303d205f9fd4e83cf164.jpg?t=1790187113",
+       "ordinal": 3
+      },
+      {
+       "filename": "steam/apps/620/ss_f3f6787d74739d3b2ec8a484b5c994b3d31ef325.jpg?t=1790187113",
+       "ordinal": 1
+      },
+      {
+       "filename": "steam/apps/620/ss_6a4f5afdaa98402de9cf0b59fed27bab3256a6f4.jpg?t=1790187113",
+       "ordinal": 2
+      }
+     ]
+    }
+   },
+   {
+    "appid": 999999,
+    "assets": {}
+   }
+  ]
+ }
+}

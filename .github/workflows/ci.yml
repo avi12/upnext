@@ -1,0 +1,251 @@
+name: ci
+
+on:
+  # Docs-only changes skip CI, except the Markdown that tests read:
+  # docs/API.md and its pages in docs/api/ (every route must be in them),
+  # docs/VERDICTS.md (the verdicts service's limits) and the fixtures (the
+  # price pages are Markdown). docs/verdicts/ isn't read by a test, but its
+  # pages are the rest of that contract and change with it. A later pattern
+  # wins over an earlier one, so those come last.
+  # Nothing here reads the Android app, which the `android` workflow builds,
+  # or the website in site/, which is plain files with nothing to build.
+  # workflow_dispatch still runs it by hand. tests/workflow_paths.rs checks
+  # these lists.
+  push:
+    branches: [main]
+    paths:
+      - '**'
+      - '!**.md'
+      - '!LICENSE*'
+      - '!android/**'
+      - '!.github/workflows/android.yml'
+      - '!site/**'
+      - 'docs/API.md'
+      - 'docs/api/**'
+      - 'docs/VERDICTS.md'
+      - 'docs/verdicts/**'
+      - 'tests/fixtures/**'
+  pull_request:
+    paths:
+      - '**'
+      - '!**.md'
+      - '!LICENSE*'
+      - '!android/**'
+      - '!.github/workflows/android.yml'
+      - '!site/**'
+      - 'docs/API.md'
+      - 'docs/api/**'
+      - 'docs/VERDICTS.md'
+      - 'docs/verdicts/**'
+      - 'tests/fixtures/**'
+  workflow_dispatch:
+
+# A newer push to the same branch or pull request replaces a run still going,
+# to save runner minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Every job reads the code and nothing else. A pull request from a fork gets
+# a read-only token and no secrets whatever this says.
+permissions:
+  contents: read
+
+# Where the jobs run: GitHub's own runner unless the repository
+# variable UPNEXT_RUNNER_LINUX names a self-hosted runner's label
+# (`upnext-linux`, set while the repository is private; docs/dev/CI-RUNNERS.md).
+# A new repository has no variables, so it runs on GitHub's runners with no
+# edit here. Never set the variable on a public repository: a fork's pull
+# request runs its own copy of this file, so a self-hosted runner would run a
+# stranger's code (`docs/dev/CI-RUNNERS.md`, "Rules"). On a self-hosted runner
+# every job is skipped for a pull request from a fork, as a second guard.
+# On GitHub's runners the caches are saved from main only, so pull requests
+# don't crowd out main's within the repository's 10 GB; a self-hosted runner
+# keeps its build folder, npm cache and browsers on its own disk instead.
+
+jobs:
+  rust:
+    runs-on: ${{ vars.UPNEXT_RUNNER_LINUX || 'ubuntu-latest' }}
+    if: vars.UPNEXT_RUNNER_LINUX == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      # persist-credentials: false keeps the job's token out of .git/config,
+      # where every later step could read it (and, on a self-hosted runner,
+      # the next job until the checkout is cleaned). No step pushes to git.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      # wry and tao (the GOG login window) link WebKitGTK and GTK 3. A
+      # self-hosted runner has them installed (docs/dev/CI-RUNNERS.md).
+      - name: System libraries
+        if: runner.environment == 'github-hosted'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential pkg-config libwebkit2gtk-4.1-dev libgtk-3-dev
+
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+
+      # actions/checkout cleans the checkout before each run, so on a
+      # self-hosted runner the build goes to a folder beside it that outlives
+      # the run, in place of rust-cache. Cargo never deletes old builds: past
+      # 30 GB it starts over.
+      - name: Build folder (self-hosted)
+        if: runner.environment == 'self-hosted'
+        run: |
+          dir="$RUNNER_WORKSPACE/cargo-target"
+          if [ -d "$dir" ] && [ "$(du -s --block-size=1G "$dir" | cut -f1)" -gt 30 ]; then rm -rf "$dir"; fi
+          echo "CARGO_TARGET_DIR=$dir" >> "$GITHUB_ENV"
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        if: runner.environment == 'github-hosted'
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      # The server alone, with no GTK or WebKitGTK (the `desktop` feature off).
+      - run: cargo clippy --all-targets --locked --no-default-features -- -D warnings
+      - run: cargo test --locked
+
+      # Licences, security advisories, banned crates and sources (deny.toml).
+      # A new advisory can fail this on any push: update the crate, or add
+      # its id to deny.toml's ignore list with a reason. Installed on every
+      # run, self-hosted too (a release binary of a few MB), so the newest
+      # cargo-deny always reads the advisory database.
+      - uses: taiki-e/install-action@e407f7bafb71fd004bc5c2da3032e5470cbb6ef0 # v2.87.24
+        with:
+          tool: cargo-deny
+      - run: cargo deny --locked check
+
+  web:
+    runs-on: ${{ vars.UPNEXT_RUNNER_LINUX || 'ubuntu-latest' }}
+    if: vars.UPNEXT_RUNNER_LINUX == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          # A self-hosted runner keeps ~/.npm between runs.
+          cache: ${{ runner.environment == 'github-hosted' && 'npm' || '' }}
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      # Every package's licence is on the allowed list (scripts/licenses.mjs).
+      - run: npm run licenses
+      # The API's types are generated from its OpenAPI document
+      # (docs/openapi.json, which `cargo test` keeps current): regenerated
+      # here, they must match what's committed.
+      - run: npm run gen:api
+      - run: git diff --exit-code src/generated/api.ts
+      - run: npx tsc -b
+      - run: npm run lint
+      - run: npm test
+      - run: npx vite build
+
+  # The backlog verdicts service (services/verdicts/): a Cloudflare
+  # Worker tested in Miniflare, Cloudflare's local runtime, with no account
+  # and no network. Deploying is the operator's (its README.md).
+  verdicts-service:
+    runs-on: ${{ vars.UPNEXT_RUNNER_LINUX || 'ubuntu-latest' }}
+    if: vars.UPNEXT_RUNNER_LINUX == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    defaults:
+      run:
+        working-directory: services/verdicts
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          # A self-hosted runner keeps ~/.npm between runs.
+          cache: ${{ runner.environment == 'github-hosted' && 'npm' || '' }}
+          cache-dependency-path: services/verdicts/package-lock.json
+
+      - run: npm ci
+      # Every package's licence is on the allowed list (scripts/licenses.mjs).
+      - run: npm run licenses
+      - run: npm run typecheck
+      - run: npm run lint
+      # The tests also check that tests/fixtures/verdicts/service/, which
+      # `cargo test` reads with UpNext's reader, is what the service writes.
+      - run: npm test
+      # Bundles the Worker as `wrangler deploy` would, without deploying.
+      - run: npm run build
+
+  # The Playwright smoke test (web/e2e/): the server alone on the mock
+  # library with a fake model, driven in Chromium.
+  e2e:
+    runs-on: ${{ vars.UPNEXT_RUNNER_LINUX || 'ubuntu-latest' }}
+    if: vars.UPNEXT_RUNNER_LINUX == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # A hung browser or server must not hold the runner.
+    timeout-minutes: 30
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      # The server alone needs no system libraries beyond the runner's own
+      # compiler and pkg-config.
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          toolchain: stable
+
+      # As in the rust job; serve.sh finds the server through UPNEXT_BIN.
+      - name: Build folder (self-hosted)
+        if: runner.environment == 'self-hosted'
+        run: |
+          dir="$RUNNER_WORKSPACE/cargo-target"
+          if [ -d "$dir" ] && [ "$(du -s --block-size=1G "$dir" | cut -f1)" -gt 30 ]; then rm -rf "$dir"; fi
+          echo "CARGO_TARGET_DIR=$dir" >> "$GITHUB_ENV"
+          echo "UPNEXT_BIN=$dir/debug/upnext" >> "$GITHUB_ENV"
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        if: runner.environment == 'github-hosted'
+        with:
+          key: e2e
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - run: cargo build --locked --no-default-features
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          # A self-hosted runner keeps ~/.npm between runs.
+          cache: ${{ runner.environment == 'github-hosted' && 'npm' || '' }}
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+        working-directory: web
+      - run: npx vite build
+        working-directory: web
+      # On GitHub's runner this installs Chromium's system libraries too; a
+      # self-hosted runner has them (docs/dev/CI-RUNNERS.md) and keeps the
+      # browser in its own cache, so there it downloads only a new version.
+      - run: npx playwright install ${{ runner.environment == 'github-hosted' && '--with-deps' || '' }} chromium
+        working-directory: web
+      - run: npm run e2e
+        working-directory: web
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: failure()
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          retention-days: 7

@@ -1,0 +1,136 @@
+[package]
+name = "upnext"
+version = "0.1.0"
+edition = "2024"
+# The oldest Rust that builds UpNext with every feature: tray-icon, for the
+# app's icon in the notification area, and its menus (muda) need 1.90; the
+# server alone (--no-default-features) builds on 1.89. CI builds with
+# current stable.
+rust-version = "1.90"
+description = "Picks what to play next from your game libraries, with a local web UI"
+license = "MIT OR Apache-2.0"
+homepage = "https://upnext.games"
+repository = "https://github.com/zytocc/upnext"
+keywords = ["games", "steam", "gog", "backlog", "recommendations"]
+categories = ["games", "command-line-utilities"]
+publish = false
+
+[dependencies]
+anyhow = "1.0.104"
+async-trait = "0.1.92"
+axum = "0.8.9"
+chrono = "0.4.45"
+clap = { version = "4.6.7", features = ["derive"] }
+comfy-table = "8.0.1"
+# A PIN typed at `upnext player pin` without echoing it (already in the tree through indicatif).
+console = { version = "0.16.6", default-features = false, features = ["std"] }
+# Steam's id for a non-Steam shortcut ("Add to Steam", `steam_shortcut`).
+crc32fast = "1.5.2"
+directories = "6.0.0"
+dotenvy = "0.15.7"
+flate2 = "1.1.10"
+futures = { version = "0.3", default-features = false, features = ["std", "async-await"] }
+getrandom = "0.4.3"
+indicatif = "0.18.6"
+regex = "1.13.1"
+reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls", "gzip", "http2", "query", "form"] }
+rusqlite = { version = "0.40.2", features = ["bundled", "backup"] }
+rust-embed = { version = "8.12.0", features = ["mime-guess"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.151", features = ["preserve_order"] }
+sha2 = "0.11.0"
+strsim = "0.11.1"
+tao = { version = "0.37", optional = true }
+thiserror = "2.0.21"
+tokio = { version = "1.53.1", features = ["full"] }
+tower-http = { version = "0.7.1", features = ["fs"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+uuid = { version = "1.26.1", features = ["v4"] }
+wry = { version = "0.57", optional = true }
+open = { version = "5", optional = true }
+utoipa = { version = "6", features = ["preserve_order", "preserve_path_order"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["aws_lc_rs", "tls12"] }
+rustls-pki-types = { version = "1", features = ["std"] }
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+argon2 = { version = "0.6.0", default-features = false, features = ["alloc", "password-hash"] }
+mdns-sd = { version = "0.21.5", default-features = false }
+# This computer's addresses on its network for a pairing code (`server::lan`);
+# mdns-sd already lists interfaces with it.
+if-addrs = "0.15.0"
+# Checking an identity provider's ID token (`oidc`): its
+# signature with the crypto rustls already uses here, and its base64url parts.
+aws-lc-rs = { version = "1.18.1", default-features = false, features = ["aws-lc-sys", "prebuilt-nasm"] }
+base64 = "0.23.1"
+
+# GTK's program name, which Wayland uses as the window's app id, and the
+# window's size without GTK's own title bar and shadow (`src/desktop.rs`).
+# WebKitGTK's own calls, to end the window's web process as the app quits
+# (`webkit_web_view_terminate_web_process`, WebKitGTK 2.34, hence `v2_34`);
+# already in the tree through wry, which asks for a later version's features.
+[target.'cfg(target_os = "linux")'.dependencies]
+glib = { version = "0.18", optional = true }
+gtk = { version = "0.18", optional = true }
+webkit2gtk = { version = "2.0", optional = true, features = ["v2_34"] }
+
+# Killing an AI CLI's process group, with whatever it started, when a call
+# times out or is cancelled (`process::Tree`). Already in the tree through
+# comfy-table's crossterm.
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1.1.5", default-features = false, features = ["std", "process"] }
+
+# The Steam client's folder from the registry (`steam_local::steam_dir_candidates`).
+# Windows' Apps list and Ubisoft Connect's keys, for the games the EA app and
+# Ubisoft Connect installed (`installs`).
+# A message box when the app can't open even its error window (`desktop::message_box`).
+# The console's cursor, to tell a double-clicked `upnext.exe` (`cli::double_click`).
+# The app's icon in the notification area, with its menu (`desktop::tray`); its
+# default feature is the Linux tray, which UpNext doesn't use.
+[target.'cfg(windows)'.dependencies]
+winreg = "0.56"
+rfd = { version = "0.17.2", default-features = false, optional = true }
+crossterm_winapi = { version = "0.9.1", optional = true }
+tray-icon = { version = "0.26.1", default-features = false, optional = true }
+
+# The app window with no console on Windows; `upnext` is the CLI.
+# Its code is `cli::app::desktop_main`, which the lib's tests cover.
+[[bin]]
+name = "upnext-app"
+path = "src/bin/upnext-app.rs"
+required-features = ["desktop"]
+test = false
+
+[features]
+default = ["desktop"]
+# The app window (`upnext app`, `upnext install-desktop`) and the GOG login
+# window. `--no-default-features` builds the server alone, with no GTK or WebKitGTK.
+desktop = ["dep:tao", "dep:wry", "dep:open", "dep:glib", "dep:gtk", "dep:webkit2gtk", "dep:rfd", "dep:crossterm_winapi", "dep:tray-icon"]
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+# CI runs clippy with -D warnings; everything in the default set must stay clean.
+all = { level = "warn", priority = -1 }
+
+# The Windows exes' icon and version resource (`build.rs`). Without its
+# `toml` feature it reads the version from Cargo's environment only.
+[target.'cfg(windows)'.build-dependencies]
+winresource = { version = "0.1.31", default-features = false }
+
+[dev-dependencies]
+insta = "1.48.0"
+rcgen = { version = "0.14", default-features = false, features = ["aws_lc_rs", "pem"] }
+tempfile = "3.27.0"
+tower = { version = "0.5.3", features = ["util"] }
+wiremock = "0.6.5"
+
+# `publish = false` keeps UpNext off crates.io; this tells dist (the release
+# workflow, dist-workspace.toml) to build it anyway.
+[package.metadata.dist]
+dist = true
+
+# The release archives' build (dist-workspace.toml).
+[profile.dist]
+inherits = "release"
+lto = "thin"

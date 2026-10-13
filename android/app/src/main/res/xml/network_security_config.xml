@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UpNext on the home network is usually plain HTTP (http://den.lan:8787),
+     at addresses nobody can list ahead of time, so cleartext is allowed here:
+     this file can name domains but not address ranges. The rule lives in the
+     app's code instead: it talks plain HTTP only to a host whose addresses are
+     all private (the home network's ranges and Tailscale's 100.64.0.0/10),
+     link-local or loopback, the rule the server takes a token by
+     (`Addresses.plainHttpAllowed`), and asks for https:// anywhere else.
+     User-added certificate authorities are trusted too, for a computer whose
+     HTTPS certificate comes from the person's own authority. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

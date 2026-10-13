@@ -1,0 +1,70 @@
+# Maintainer: UpNext contributors
+#
+# UpNext's Arch Linux package: the release's own Linux archive,
+# checked against its SHA-256 and installed as it is; nothing is compiled.
+# In UpNext's repository, contrib/arch/upnext-bin/PKGBUILD is the template;
+# each release attaches it with the tag, the version and the checksums filled
+# in by contrib/arch/render-pkgbuild.sh, and that copy is the one to build.
+pkgname=upnext-bin
+_tag=@TAG@
+pkgver=@PKGVER@
+pkgrel=1
+pkgdesc='Picks what to play next from the games you already own'
+arch=('x86_64' 'aarch64')
+url='https://upnext.games'
+# The release files come from the repository, not the website.
+_repo='https://github.com/zytocc/upnext'
+license=('MIT OR Apache-2.0')
+# The libraries both programs link directly (readelf -d), and the package
+# that owns the icon folders.
+depends=('webkit2gtk-4.1' 'gtk3' 'cairo' 'gdk-pixbuf2' 'libsoup3' 'glib2' 'dbus'
+         'glibc' 'gcc-libs' 'hicolor-icon-theme')
+optdepends=('xdg-utils: opening steam:// and heroic:// links and the browser'
+            'steam: the Steam library and launching its games'
+            'claude-code: picks through a Claude subscription'
+            'heroic-games-launcher-bin: Epic, GOG and Amazon libraries')
+provides=('upnext')
+conflicts=('upnext')
+# The programs are release builds already, and there are no debug symbols
+# to split off.
+options=('!strip' '!debug')
+source_x86_64=("upnext-$_tag-x86_64.tar.xz::$_repo/releases/download/$_tag/upnext-x86_64-unknown-linux-gnu.tar.xz")
+source_aarch64=("upnext-$_tag-aarch64.tar.xz::$_repo/releases/download/$_tag/upnext-aarch64-unknown-linux-gnu.tar.xz")
+sha256sums_x86_64=('@SHA256_X86_64@')
+sha256sums_aarch64=('@SHA256_AARCH64@')
+
+package() {
+  cd "upnext-$CARCH-unknown-linux-gnu"
+  install -Dm755 upnext upnext-app -t "$pkgdir/usr/bin/"
+  install -Dm644 upnext.desktop -t "$pkgdir/usr/share/applications/"
+  install -Dm644 icons/hicolor/scalable/apps/upnext.svg -t "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
+  install -Dm644 icons/hicolor/256x256/apps/upnext.png -t "$pkgdir/usr/share/icons/hicolor/256x256/apps/"
+
+  # The archive's unit runs ~/.cargo/bin/upnext and its header says how to
+  # copy it into place; the package's runs /usr/bin/upnext and says how to
+  # turn it on, as the Debian and Fedora packages' unit does.
+  {
+    printf '%s\n' \
+      '# UpNext as a user service: it starts when you log in and keeps the daily' \
+      '# sync running. The package installs it and enables it for no one; each user' \
+      '# who wants it runs:' \
+      '#' \
+      '#   systemctl --user enable --now upnext' \
+      '#' \
+      '# Logs: journalctl --user -u upnext. Settings: ~/.config/upnext/.env and the' \
+      '# app. To keep it running while you are logged out: loginctl enable-linger.'
+    sed -e '1,/^$/{/^#/d}' -e 's|^ExecStart=%h/\.cargo/bin/upnext |ExecStart=/usr/bin/upnext |' upnext.service
+  } > upnext.service.packaged
+  grep -qx 'ExecStart=/usr/bin/upnext serve' upnext.service.packaged
+  # The sed drops only the comments before the unit's first blank line, so
+  # check that no comment with the archive's install steps got through after
+  # it. (The PATH line names ~/.cargo/bin on purpose.)
+  if grep -Eq '^#.*(install -Dm644|daemon-reload|\.cargo/bin)' upnext.service.packaged; then
+    echo "upnext.service.packaged still has the archive's install steps" >&2
+    return 1
+  fi
+  install -Dm644 upnext.service.packaged "$pkgdir/usr/lib/systemd/user/upnext.service"
+
+  install -Dm644 README.md CHANGELOG.md -t "$pkgdir/usr/share/doc/upnext/"
+  install -Dm644 LICENSE-MIT LICENSE-APACHE THIRD_PARTY_NOTICES.txt -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

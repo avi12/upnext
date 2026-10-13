@@ -1,0 +1,455 @@
+{
+  "upnext_verdicts_contract": 1,
+  "vocab": 1,
+  "format": 1,
+  "licence": "CC0-1.0",
+  "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "consent": {
+    "version": 1,
+    "title": "Your verdict will be public.",
+    "paragraphs": [
+      "Everything you send, the answers and anything you type, is published for anyone to read, copy and reuse, for any purpose, with no credit needed. It's released under CC0 1.0, which puts it in the public domain.",
+      "It isn't linked to your name, your Steam or GOG account or your library, and UpNext doesn't publish which verdicts came from the same person. Your hours are sent rounded to a range.",
+      "You can take a verdict down at any time. It's left out of the next daily update and gone from UpNext's servers within a week, but copies people have already downloaded can't be recalled.",
+      "Don't type anything you wouldn't post publicly, such as your name, contact details or someone else's."
+    ],
+    "accept": "Publish my verdicts under CC0",
+    "decline": "Not now",
+    "text_box_line": "Public, CC0: anyone can read and reuse what you type.",
+    "terms_path": "/terms"
+  },
+  "fields": [
+    {
+      "name": "outcome",
+      "question": "Where did you leave it?",
+      "required": true,
+      "many": false,
+      "choices": [
+        {
+          "code": "finished",
+          "label": "Finished it"
+        },
+        {
+          "code": "playing",
+          "label": "Still at it"
+        },
+        {
+          "code": "shelved",
+          "label": "Shelved, meaning to go back"
+        },
+        {
+          "code": "stopped",
+          "label": "Stopped, not going back"
+        },
+        {
+          "code": "endless",
+          "label": "No ending; I play it now and then"
+        },
+        {
+          "code": "bounced",
+          "label": "Didn't get into it"
+        }
+      ]
+    },
+    {
+      "name": "worth",
+      "question": "Worth it on a backlog?",
+      "required": true,
+      "many": false,
+      "choices": [
+        {
+          "code": "yes",
+          "label": "Yes"
+        },
+        {
+          "code": "for_some",
+          "label": "If it's your kind of game"
+        },
+        {
+          "code": "no",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "name": "hours",
+      "question": "About how long have you played?",
+      "required": false,
+      "many": false,
+      "choices": [
+        {
+          "code": "under_2",
+          "label": "Under 2 hours"
+        },
+        {
+          "code": "2_5",
+          "label": "2 to 5 hours"
+        },
+        {
+          "code": "5_10",
+          "label": "5 to 10 hours"
+        },
+        {
+          "code": "10_20",
+          "label": "10 to 20 hours"
+        },
+        {
+          "code": "20_40",
+          "label": "20 to 40 hours"
+        },
+        {
+          "code": "40_80",
+          "label": "40 to 80 hours"
+        },
+        {
+          "code": "80_plus",
+          "label": "80 hours or more"
+        }
+      ]
+    },
+    {
+      "name": "clicked",
+      "question": "When did it click?",
+      "required": false,
+      "many": false,
+      "choices": [
+        {
+          "code": "first_hour",
+          "label": "In the first hour",
+          "line": "Clicks within the first hour",
+          "review_tag": "hook:fast"
+        },
+        {
+          "code": "few_hours",
+          "label": "After a few hours (1 to 3)",
+          "line": "Clicks after a few hours",
+          "review_tag": "hook:gradual"
+        },
+        {
+          "code": "later",
+          "label": "Later (3 to 10 hours)",
+          "line": "Takes 3 to 10 hours to click",
+          "review_tag": "hook:slow"
+        },
+        {
+          "code": "much_later",
+          "label": "Much later (more than 10 hours)",
+          "line": "Takes more than 10 hours to click",
+          "review_tag": "hook:slow"
+        },
+        {
+          "code": "never",
+          "label": "It never did",
+          "line": "Never clicks for most players"
+        }
+      ]
+    },
+    {
+      "name": "sessions",
+      "question": "How long does a session need to be?",
+      "required": false,
+      "many": false,
+      "choices": [
+        {
+          "code": "short",
+          "label": "Under an hour is fine",
+          "line": "Fine in sessions under an hour",
+          "review_tag": "sessions:short"
+        },
+        {
+          "code": "medium",
+          "label": "1 to 2 hours",
+          "line": "Wants sessions of an hour or two",
+          "review_tag": "sessions:medium"
+        },
+        {
+          "code": "long",
+          "label": "It wants a long sitting",
+          "line": "Wants long sittings",
+          "review_tag": "sessions:long"
+        }
+      ]
+    },
+    {
+      "name": "limited_time",
+      "question": "Does it respect limited time?",
+      "required": false,
+      "many": false,
+      "choices": [
+        {
+          "code": "yes",
+          "label": "Yes",
+          "line": "Respects limited time"
+        },
+        {
+          "code": "mostly",
+          "label": "Mostly",
+          "line": "Mostly respects limited time"
+        },
+        {
+          "code": "no",
+          "label": "No",
+          "line": "Hard on limited time"
+        }
+      ]
+    },
+    {
+      "name": "factors",
+      "question": "What helps or hurts?",
+      "required": false,
+      "many": true,
+      "with": "limited_time",
+      "choices": [
+        {
+          "code": "save_anywhere",
+          "label": "Save anywhere",
+          "line": "You can save anywhere",
+          "helps": true
+        },
+        {
+          "code": "easy_to_resume",
+          "label": "Easy to resume: you remember what you were doing",
+          "line": "Easy to pick back up after a break",
+          "helps": true
+        },
+        {
+          "code": "short_chunks",
+          "label": "Missions or levels that fit a session",
+          "line": "Missions or levels fit a session",
+          "helps": true
+        },
+        {
+          "code": "recap",
+          "label": "A journal, recap or clear objectives",
+          "line": "Keeps you on track with a journal or recap",
+          "helps": true
+        },
+        {
+          "code": "hard_to_resume",
+          "label": "Hard to resume: a week off and you're lost",
+          "line": "Hard to pick back up after a break",
+          "helps": false
+        },
+        {
+          "code": "long_stretches",
+          "label": "Long stretches without a save or a stopping point",
+          "line": "Long stretches without a save",
+          "helps": false
+        },
+        {
+          "code": "padding",
+          "label": "Filler, backtracking or grind",
+          "line": "Padded with filler or grind",
+          "helps": false
+        },
+        {
+          "code": "obligations",
+          "label": "Dailies, seasons or events that punish missing a week",
+          "line": "Punishes missing a week",
+          "helps": false
+        },
+        {
+          "code": "needs_a_group",
+          "label": "Needs friends or a schedule",
+          "line": "Needs friends or a schedule",
+          "helps": false
+        }
+      ]
+    },
+    {
+      "name": "stop_point",
+      "question": "When is it fine to stop?",
+      "required": false,
+      "many": false,
+      "choices": [
+        {
+          "code": "at_credits",
+          "label": "After the main story; the rest is optional",
+          "line": "Fine to stop after the credits"
+        },
+        {
+          "code": "before_endgame",
+          "label": "Once the endgame or postgame starts",
+          "line": "Fine to stop when the endgame starts"
+        },
+        {
+          "code": "anytime",
+          "label": "Any time: no ending to reach, or nothing builds to one",
+          "line": "Fine to stop any time"
+        },
+        {
+          "code": "push_through",
+          "label": "Push through: stopping early misses what makes it good",
+          "line": "Worth pushing through to the end"
+        }
+      ]
+    },
+    {
+      "name": "stop_note",
+      "question": "When exactly?",
+      "required": false,
+      "text": true,
+      "with": "stop_point",
+      "max_chars": 80
+    },
+    {
+      "name": "stopped_for",
+      "question": "What stopped you?",
+      "required": false,
+      "many": true,
+      "only_for": [
+        "shelved",
+        "stopped",
+        "bounced"
+      ],
+      "choices": [
+        {
+          "code": "grind",
+          "label": "The grind",
+          "aspects": [
+            "grind"
+          ]
+        },
+        {
+          "code": "stuck",
+          "label": "Got stuck",
+          "aspects": [
+            "difficulty balance"
+          ]
+        },
+        {
+          "code": "lost_story",
+          "label": "Lost the thread of the story",
+          "aspects": [
+            "story"
+          ]
+        },
+        {
+          "code": "too_long",
+          "label": "Too long",
+          "aspects": [
+            "length"
+          ]
+        },
+        {
+          "code": "pacing",
+          "label": "The pacing dragged",
+          "aspects": [
+            "pacing"
+          ]
+        },
+        {
+          "code": "bugs",
+          "label": "Bugs or performance",
+          "aspects": [
+            "bugs",
+            "performance"
+          ]
+        },
+        {
+          "code": "too_hard",
+          "label": "Too hard",
+          "aspects": [
+            "difficulty balance"
+          ]
+        },
+        {
+          "code": "boring",
+          "label": "Got boring",
+          "aspects": [
+            "pacing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "text",
+      "question": "Anything else a busy player should know?",
+      "required": false,
+      "text": true,
+      "max_chars": 500
+    }
+  ],
+  "limits": {
+    "text_chars": 500,
+    "stop_note_chars": 80,
+    "factors": 3,
+    "client_chars": 32,
+    "show_at": 3,
+    "percent_at": 5,
+    "texts_per_game": 20
+  },
+  "text_checks": [
+    {
+      "code": "control",
+      "why": "has invisible control characters",
+      "pattern": "[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f-\\x9f\\u202a-\\u202e\\u2066-\\u206f\\ufff9-\\ufffb]",
+      "flags": "i"
+    },
+    {
+      "code": "wide",
+      "why": "has full-width letters or digits",
+      "pattern": "[\\uff0e-\\uff19\\uff20-\\uff3a\\uff41-\\uff5a]",
+      "flags": "i"
+    },
+    {
+      "code": "steam_profile",
+      "why": "has a Steam profile or link",
+      "pattern": "steamcommunity|s\\.team/|steam://",
+      "flags": "i"
+    },
+    {
+      "code": "email",
+      "why": "has an email address",
+      "pattern": "[a-z0-9._%+-]+@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.[a-z]{2,}",
+      "flags": "i"
+    },
+    {
+      "code": "link",
+      "why": "has a link or a web address",
+      "pattern": "[a-z][a-z0-9+.-]*://|www\\.|[a-z0-9-]+\\.(com|net|org|io|gg|tv|me|co|ly|app|dev|xyz|info|ru|de|uk|fr|jp|cn|br|au|ca|eu|us|to|cc|link|site|online|club|live|store|shop|gl)([^a-z0-9]|$)",
+      "flags": "i"
+    },
+    {
+      "code": "handle",
+      "why": "has an @handle",
+      "pattern": "(^|[^a-z0-9_.@])@[a-z0-9_]{2,}",
+      "flags": "i"
+    },
+    {
+      "code": "long_number",
+      "why": "has a long number, which could be a Steam ID",
+      "pattern": "[0-9]{17}",
+      "flags": "i"
+    },
+    {
+      "code": "phone",
+      "why": "has what looks like a phone number",
+      "pattern": "\\+?\\(?[0-9]([ ().-]{0,2}[0-9]){8,}",
+      "flags": "i"
+    }
+  ],
+  "text_ignored": {
+    "pattern": "[\\u00ad\\u034f\\u061c\\u180e\\u200b-\\u200f\\u2060-\\u2064\\ufeff]",
+    "flags": "g"
+  },
+  "report_reasons": [
+    {
+      "code": "spam",
+      "label": "Spam"
+    },
+    {
+      "code": "personal",
+      "label": "Personal information"
+    },
+    {
+      "code": "abuse",
+      "label": "Abuse or hate"
+    },
+    {
+      "code": "off_topic",
+      "label": "Not about this game"
+    }
+  ],
+  "key_prefix": "upnext_v_"
+}

@@ -1,0 +1,52 @@
+{
+ "overallAvgRating": 4.6,
+ "ratingCount": 14076,
+ "reviewCount": 2183,
+ "_embedded": {
+  "items": [
+   {
+    "id": "r1",
+    "content": {
+     "title": "Worth the slow start",
+     "description": "<p>Long, dark and <i>worth it</i>. The combat takes an hour to click.</p>"
+    },
+    "date": "2017-06-01T16:42:05+03:00",
+    "rating": {
+     "value": 5
+    },
+    "votes": {
+     "downvotes": 87,
+     "upvotes": 634
+    }
+   },
+   {
+    "id": "r2",
+    "content": {
+     "title": "",
+     "description": "Dated controls, great story."
+    },
+    "rating": {
+     "value": 3
+    },
+    "votes": {
+     "upvotes": 12,
+     "downvotes": 4
+    }
+   },
+   {
+    "id": "r3",
+    "content": {
+     "title": "Empty",
+     "description": ""
+    },
+    "rating": {
+     "value": 1
+    },
+    "votes": {
+     "upvotes": 0,
+     "downvotes": 0
+    }
+   }
+  ]
+ }
+}

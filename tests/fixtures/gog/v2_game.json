@@ -1,0 +1,40 @@
+{
+ "overview": "<p>An <b>RPG</b> about monster hunters.</p><br>Choices matter.",
+ "_links": {
+  "store": {
+   "href": "https://www.gog.com/en/game/the_witcher"
+  }
+ },
+ "_embedded": {
+  "tags": [
+   {
+    "name": "Role-playing"
+   },
+   {
+    "name": "Action"
+   },
+   {
+    "name": "Fantasy"
+   }
+  ],
+  "properties": [
+   {
+    "name": "Action"
+   },
+   {
+    "name": "Fantasy"
+   },
+   {
+    "name": "Story Rich"
+   }
+  ],
+  "features": [
+   {
+    "name": "Cloud saves"
+   },
+   {
+    "name": "Single-player"
+   }
+  ]
+ }
+}

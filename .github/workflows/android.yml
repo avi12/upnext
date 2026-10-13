@@ -1,0 +1,57 @@
+name: android
+
+# The Android app (android/): core's tests, the version
+# check and an unsigned release build, on changes under android/ only. The
+# app is built on its own here, never in `ci`'s Rust and web jobs.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - '.github/workflows/android.yml'
+  pull_request:
+    paths:
+      - 'android/**'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# Where it runs: nowhere until the repository variable UPNEXT_ANDROID_CI is
+# `on`, then where `ci` runs (GitHub's runner unless UPNEXT_RUNNER_LINUX
+# names a self-hosted one), which needs JDK 17 or newer and the Android SDK
+# (ANDROID_HOME). GitHub's `ubuntu-latest` has both; a self-hosted runner
+# needs them installed first (docs/dev/CI-RUNNERS.md). Like `ci`, a
+# self-hosted runner skips pull requests from forks.
+jobs:
+  build:
+    runs-on: ${{ vars.UPNEXT_RUNNER_LINUX || 'ubuntu-latest' }}
+    if: vars.UPNEXT_ANDROID_CI == 'on' && (vars.UPNEXT_RUNNER_LINUX == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      # The committed gradle-wrapper.jar runs before anything else in the
+      # build, so it must be Gradle's own for the version it names.
+      - name: Check the Gradle wrapper
+        run: |
+          version=$(sed -n 's|^distributionUrl=.*/gradle-\(.*\)-bin\.zip$|\1|p' gradle/wrapper/gradle-wrapper.properties)
+          expected=$(curl -fsSL "https://services.gradle.org/distributions/gradle-$version-wrapper.jar.sha256")
+          echo "$expected  gradle/wrapper/gradle-wrapper.jar" | sha256sum -c -
+
+      - name: JDK and Android SDK
+        run: |
+          if [ -n "${JAVA_HOME_21_X64:-}" ]; then echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"; fi
+          sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          [ -n "$sdk" ] && [ -d "$sdk" ] || { echo "::error::No Android SDK on this runner: set ANDROID_HOME (docs/dev/CI-RUNNERS.md)"; exit 1; }
+
+      - run: ./gradlew --no-daemon :core:test :app:checkVersion :app:lintDebug :app:assembleDebug :app:assembleRelease

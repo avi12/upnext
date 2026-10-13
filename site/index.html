@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UpNext: pick what to play next</title>
+<meta name="description" content="UpNext gathers your game libraries into one list and, when you say what you're in the mood for, suggests a few games you already own that fit. Free and open source, for Windows, Linux, Docker and Android.">
+<meta name="theme-color" content="#101218">
+<link rel="canonical" href="https://upnext.games/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://upnext.games/">
+<meta property="og:title" content="UpNext: pick what to play next from the games you already own">
+<meta property="og:description" content="Say what you're in the mood for and UpNext suggests a few games from your backlog that fit, with the reasons. Free and open source.">
+<meta property="og:image" content="https://upnext.games/images/share.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the page</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="UpNext, back to the top">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="gh" cx="32" cy="16" r="26" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffc93c" stop-opacity="0.45"/><stop offset="1" stop-color="#ffc93c" stop-opacity="0"/></radialGradient><linearGradient id="ph" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#454c61"/><stop offset="1" stop-color="#2e3343"/></linearGradient><linearGradient id="lh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#ffb81f"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="#1a1d26"/><rect width="64" height="64" rx="15" fill="url(#gh)"/><rect x="24" y="10" width="16" height="44" rx="4" fill="url(#ph)"/><rect x="10" y="24" width="44" height="16" rx="4" fill="url(#ph)"/><path d="M28 10h8a4 4 0 0 1 4 4v11H24V14a4 4 0 0 1 4-4z" fill="url(#lh)"/><path d="M32 13.5l4 5.5h-8z" fill="#1b1503"/><path d="M32 50.5l4-5.5h-8zM13.5 32l5.5-4v8zM50.5 32l-5.5-4v8z" fill="#20242f"/></svg>
+      UpNext
+    </a>
+    <nav aria-label="On this page">
+      <a class="hide-narrow" href="#how">How it works</a>
+      <a class="hide-narrow" href="#inside">What's inside</a>
+      <a class="hide-narrow" href="https://github.com/zytocc/upnext">GitHub</a>
+      <a class="button primary small" href="#get">Get UpNext</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="wrap">
+      <h1 id="hero-title">Play the games you <em>already own</em>.</h1>
+      <div class="hero-row">
+        <p class="lede">Finding the right game for the moment can be a struggle. Tell UpNext what you're in the mood for, and it suggests a few games from your own library that fit, with the reasons why.</p>
+        <div class="actions">
+          <a class="button primary" href="#get">Get UpNext</a>
+          <a class="button ghost" href="#how">See how it works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <svg class="halo" viewBox="0 0 200 100" aria-hidden="true" focusable="false">
+        <defs>
+          <radialGradient id="halo" cx="50%" cy="100%" r="60%">
+            <stop offset="0" stop-color="#ffc93c" stop-opacity="0.2"/>
+            <stop offset="1" stop-color="#ffc93c" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="200" height="100" fill="url(#halo)"/>
+      </svg>
+      <figure class="shot">
+        <img src="images/pick.webp" fetchpriority="high" width="1600" height="1075" alt="UpNext's Pick page. The request reads: about an hour, something calm with a bit of story. Below it, a lineup of three games, Unpacking, Citizen Sleeper and Return to Monkey Island, each with its length, how well players liked it, and what people say about it.">
+      </figure>
+      <div class="wrap below">
+        <ul class="facts mono" aria-label="Runs on">
+          <li>Windows</li>
+          <li>Linux</li>
+          <li>Steam Deck</li>
+          <li>Docker</li>
+          <li>Android</li>
+        </ul>
+        <ul class="promises" aria-label="Promises">
+          <li>Free and open source</li>
+          <li>No sign-up</li>
+          <li>No ads</li>
+        </ul>
+        <p class="caption mono">The Pick page on a made-up library. Cover art belongs to the games' publishers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-title">Three steps to your next game.</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="n" aria-hidden="true">1</span>
+          <h3>Bring your games together</h3>
+          <p>UpNext reads your libraries from Steam, Epic, GOG, Amazon, the EA app and Ubisoft Connect into one list.</p>
+          <p>Then it looks at each game in detail to see how it fits you.</p>
+        </li>
+        <li>
+          <span class="n" aria-hidden="true">2</span>
+          <h3>Say what you're in the mood for</h3>
+          <div class="request" aria-hidden="true">
+            <span class="typed" data-requests="About an hour, something calm with a bit of story|Something I can actually finish|Co-op night with two friends|A weekend story|A hidden gem I forgot I own">About an hour, something calm with a bit of story</span>
+            <span class="go">Curate</span>
+          </div>
+          <p>Ask in your own words, or start from one of these:</p>
+          <ul class="chips" aria-label="Ready-made requests">
+            <li>A quiet hour</li>
+            <li>A weekend story</li>
+            <li>Co-op night</li>
+            <li>New to me</li>
+            <li>A hidden gem</li>
+            <li>Surprise me</li>
+          </ul>
+        </li>
+        <li>
+          <span class="n" aria-hidden="true">3</span>
+          <h3>Pick one and play</h3>
+          <div>
+            <p class="pickline"><b><span>1</span>Unpacking</b><span class="mono">3.5h story · 96% liked it · Steam</span></p>
+            <p class="pickline"><b><span>2</span>A Short Hike</b><span class="mono">1.5h story · 98% liked it · Steam</span></p>
+            <p class="pickline"><b><span>3</span>Baba Is You</b><span class="mono">12h story · 97% liked it · Steam</span></p>
+          </div>
+          <p>Each pick says why it fits. Press Play to start it.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="flush-top" id="couch" aria-labelledby="couch-title">
+    <div class="wrap split">
+      <figure class="frame">
+        <img src="images/big-screen.webp" loading="lazy" width="1280" height="570" alt="UpNext's big screen layout on the Curate page. Rows of large buttons choose the routine, how long, the mood and who with; Couch with a pad, An hour and Relaxing are picked, the controller's focus is on One I can finish, and a Curate button sits at the end.">
+      </figure>
+      <div class="copy">
+        <p class="eyebrow">Big screen</p>
+        <h2 id="couch-title">Made for the couch too.</h2>
+        <p>Big screen is UpNext with large type and one focus you move with a gamepad, the arrow keys or a TV remote. Use it on a Steam Deck in Gaming Mode, on a Windows handheld, or on the TV in Big Picture.</p>
+        <p>Add it to your Steam library and start it like any other game.</p>
+        <ul class="keys" aria-label="Controls">
+          <li><kbd>A</kbd>Choose</li>
+          <li><kbd>B</kbd>Back</li>
+          <li><kbd>Y</kbd>Change the request</li>
+          <li><kbd>LB</kbd><kbd>RB</kbd>Switch pages</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="inside" id="inside" aria-labelledby="inside-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What's inside</p>
+        <h2 id="inside-title">A game connoisseur, fitted to you.</h2>
+      </div>
+      <div class="inside-grid">
+        <dl class="features">
+          <div>
+            <dt>Your whole library in one place</dt>
+            <dd>Steam, Epic, GOG, Amazon, EA and Ubisoft games in one list, plus any you add by hand.</dd>
+          </div>
+          <div>
+            <dt>Details for every game</dt>
+            <dd>Genres, tags, length, review scores and what players say, from the stores and game databases.</dd>
+          </div>
+          <div>
+            <dt>Picks that fit the request</dt>
+            <dd>Ask for a length, a mood or a genre. Rate the picks, or compare two and let UpNext choose.</dd>
+          </div>
+          <div>
+            <dt>A taste profile you can read</dt>
+            <dd>It learns your favourites, hard nos and habits, and you can see and change all of it.</dd>
+          </div>
+          <div>
+            <dt>Other ways to pick</dt>
+            <dd>Shelved games worth a second look, hidden gems, and a roll of the dice for one you forgot.</dd>
+          </div>
+          <div>
+            <dt>Web, window or command line</dt>
+            <dd>Use it as an app, in any browser at home, or from a terminal.</dd>
+          </div>
+        </dl>
+        <figure class="setup">
+          <div class="frame">
+            <img src="images/setup.webp" loading="lazy" width="1280" height="688" alt="UpNext's setup on its first page. A list of thirteen steps runs down the left, from Welcome through Steam, the other stores, the AI and your taste to Done, with a Start button.">
+          </div>
+          <figcaption>
+            <span class="eyebrow">Getting started</span>
+            <span>The first time you open UpNext, setup walks you through your stores, the AI and your taste. Every step can be skipped and done later.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="yours" aria-labelledby="ai-title privacy-title">
+    <div class="wrap pair">
+      <div>
+        <p class="eyebrow">Your AI, or none</p>
+        <h2 id="ai-title">Bring the AI you already use.</h2>
+        <p>The suggestions come from an AI you choose and set up yourself. Without one, UpNext still picks from its own ranking.</p>
+        <ul class="ticks">
+          <li>Your Claude or ChatGPT subscription plan, through their command-line tools, with no API key needed</li>
+          <li>An Anthropic or OpenAI API key</li>
+          <li>A model on your own computer, with Ollama, LM Studio, llama.cpp or vLLM</li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">Private by design</p>
+        <h2 id="privacy-title">Your library stays on your computer.</h2>
+        <p>Everything UpNext knows is kept in a database on your own machine. It has no accounts, no ads and no analytics. This site has no trackers either.</p>
+        <ul class="ticks">
+          <li>It talks to your stores, game databases and the AI you chose, and never to ad or analytics services</li>
+          <li>The AI gets only what the task needs, never your keys, Steam ID, account names or sign-ins</li>
+          <li>The <a href="https://github.com/zytocc/upnext/blob/main/docs/privacy.md">privacy page</a> lists every service it talks to and what each one is sent</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="get" id="get" aria-labelledby="get-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Get UpNext</p>
+        <h2 id="get-title">Runs where you game.</h2>
+        <p>UpNext runs on Windows, Linux or a home server, and every other device in the house can open it in a browser or the Android app. It's free, with no purchases inside.</p>
+      </div>
+
+      <!-- Remove this notice once v0.1.0 is on the releases page. -->
+      <p class="notice"><strong>First release soon.</strong> <span>UpNext's first release is being prepared. Until it's out, the download links lead to the releases page, where it will appear.</span></p>
+
+      <div class="platforms">
+        <article class="platform" aria-labelledby="p-windows">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+            <h3 id="p-windows">Windows</h3>
+          </header>
+          <p class="mono">Windows 10 and 11 · x64 · .msi</p>
+          <p class="about">An installer that needs no administrator rights. It adds UpNext and UpNext (big screen) to the Start menu. The builds aren't code-signed yet, so SmartScreen asks first: choose More info, then Run anyway.</p>
+          <div class="links">
+            <a class="button primary small" href="https://github.com/zytocc/upnext/releases">Download<span class="vh"> for Windows</span></a>
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/windows.md">Install guide<span class="vh"> for Windows</span></a>
+          </div>
+        </article>
+
+        <article class="platform" aria-labelledby="p-linux">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>
+            <h3 id="p-linux">Debian, Ubuntu, Fedora, openSUSE</h3>
+          </header>
+          <p class="mono">.deb · .rpm · x86_64 and arm64</p>
+          <p class="about">Packages for Debian, Ubuntu and Fedora, and for distributions built on them: Fedora-based ones such as Nobara, and Debian-based ones such as PikaOS. The .rpm should work on openSUSE Tumbleweed too, though it hasn't been tried there or on Nobara and PikaOS yet. Elsewhere, use the <a href="https://github.com/zytocc/upnext/blob/main/docs/install/linux.md#release-archive">release's archive</a> or Flatpak.</p>
+          <div class="links">
+            <a class="button primary small" href="https://github.com/zytocc/upnext/releases">Download<span class="vh"> for Debian, Ubuntu, Fedora and openSUSE</span></a>
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/linux.md#debian-ubuntu-and-fedora">Install guide<span class="vh"> for Debian, Ubuntu, Fedora and openSUSE</span></a>
+          </div>
+        </article>
+
+        <article class="platform" aria-labelledby="p-arch">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L3 20h18L12 3z"/><path d="M9 15h6"/></svg>
+            <h3 id="p-arch">Arch Linux, CachyOS</h3>
+          </header>
+          <p class="mono">PKGBUILD · x86_64 (builds on aarch64)</p>
+          <p class="about">Each release has a PKGBUILD for <code>upnext-bin</code> and a ready-built package for pacman, for Arch and the distributions built on it, like CachyOS. An AUR package will follow.</p>
+          <div class="links">
+            <a class="button primary small" href="https://github.com/zytocc/upnext/releases">Download<span class="vh"> for Arch Linux</span></a>
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/linux.md#arch-linux">Install guide<span class="vh"> for Arch Linux</span></a>
+          </div>
+          <p class="status soon">AUR: coming later</p>
+        </article>
+
+        <article class="platform" aria-labelledby="p-flatpak">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>
+            <h3 id="p-flatpak">Flatpak</h3>
+          </header>
+          <p class="mono">io.github.zytocc.UpNext · x86_64</p>
+          <p class="about">For any Linux with Flatpak. Until UpNext is on Flathub, a release can carry it as a single file you install with one command.</p>
+          <pre><code><span>flatpak install --user ./upnext-&lt;version&gt;-x86_64.flatpak</span></code></pre>
+          <div class="links">
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/flatpak.md">Install guide<span class="vh"> for Flatpak</span></a>
+            <span class="status soon">Flathub: coming soon</span>
+          </div>
+        </article>
+
+        <article class="platform" aria-labelledby="p-deck">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="4"/><rect x="8" y="9" width="8" height="6" rx="1"/><path d="M5 11v2M4 12h2M18.5 11.5h.01M18.5 13h.01"/></svg>
+            <h3 id="p-deck">Steam Deck</h3>
+          </header>
+          <p class="mono">SteamOS 3 · Flatpak · big screen</p>
+          <p class="about">Install the Flatpak in Desktop Mode, add UpNext to Steam as a non-Steam game with <code>--big-screen</code>, and it opens with the controller layout in Gaming Mode. A free listing on Steam itself is planned.</p>
+          <div class="links">
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/flatpak.md#on-a-steam-deck">Steam Deck steps</a>
+            <span class="status">Steam: planned</span>
+          </div>
+        </article>
+
+        <article class="platform" aria-labelledby="p-docker">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="8" rx="2"/><path d="M7 11V7h4v4M11 9h4v2"/></svg>
+            <h3 id="p-docker">Docker</h3>
+          </header>
+          <p class="mono">ghcr.io/zytocc/upnext · amd64 and arm64</p>
+          <p class="about">For a home server or a NAS: the server and web UI, without the app window.</p>
+          <pre><code><span>git clone https://github.com/zytocc/upnext &amp;&amp; cd upnext
+</span><span>docker compose -f contrib/docker/compose.yaml <b>up -d</b>
+</span><span>docker logs upnext</span></code></pre>
+          <div class="links">
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/docker.md">Install guide<span class="vh"> for Docker</span></a>
+          </div>
+        </article>
+
+        <article class="platform" aria-labelledby="p-android">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
+            <h3 id="p-android">Android</h3>
+          </header>
+          <p class="mono">Android 8 or later · phone, tablet, TV</p>
+          <p class="about">Use UpNext on your computer from the couch. The app finds your computer on the network, and you allow it once there. Games still start on the computer.</p>
+          <div class="links">
+            <a class="button primary small" href="https://github.com/zytocc/upnext/releases">Download<span class="vh"> for Android</span></a>
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/android.md">How pairing works</a>
+          </div>
+          <p class="status soon">F-Droid: coming later</p>
+        </article>
+
+        <article class="platform" aria-labelledby="p-browser">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+            <h3 id="p-browser">Any other device</h3>
+          </header>
+          <p class="mono">Any browser · your home network</p>
+          <p class="about">Turn on Allow other devices in Settings, and a laptop, tablet or phone in the house opens UpNext in its browser. Each one asks once, and you approve it on the computer.</p>
+          <div class="links">
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/other-devices.md">Other devices</a>
+            <span class="status now">Built in</span>
+          </div>
+        </article>
+
+        <article class="platform" aria-labelledby="p-source">
+          <header>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg>
+            <h3 id="p-source">From source</h3>
+          </header>
+          <p class="mono">Rust 1.90+ · Node 22.18+</p>
+          <p class="about">Build it yourself on Linux or Windows. The source is public under the MIT or Apache 2.0 licence, and contributions are welcome.</p>
+          <div class="links">
+            <a class="button ghost small" href="https://github.com/zytocc/upnext">Source on GitHub</a>
+            <a href="https://github.com/zytocc/upnext/blob/main/docs/install/source.md">Build guide</a>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fine">
+      <a class="brand" href="#top">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="gf" cx="32" cy="16" r="26" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffc93c" stop-opacity="0.45"/><stop offset="1" stop-color="#ffc93c" stop-opacity="0"/></radialGradient><linearGradient id="pf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#454c61"/><stop offset="1" stop-color="#2e3343"/></linearGradient><linearGradient id="lf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#ffb81f"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="#1a1d26"/><rect width="64" height="64" rx="15" fill="url(#gf)"/><rect x="24" y="10" width="16" height="44" rx="4" fill="url(#pf)"/><rect x="10" y="24" width="44" height="16" rx="4" fill="url(#pf)"/><path d="M28 10h8a4 4 0 0 1 4 4v11H24V14a4 4 0 0 1 4-4z" fill="url(#lf)"/><path d="M32 13.5l4 5.5h-8z" fill="#1b1503"/><path d="M32 50.5l4-5.5h-8zM13.5 32l5.5-4v8zM50.5 32l-5.5-4v8z" fill="#20242f"/></svg>
+        UpNext
+      </a>
+      <p>Free software under the MIT or Apache 2.0 licence, made by UpNext contributors and provided as is.</p>
+      <p>UpNext isn't affiliated with Valve, GOG, Epic, Amazon, Electronic Arts or Ubisoft. Game names and cover art belong to their publishers.</p>
+      <p>Set in Bricolage Grotesque, Figtree and Martian Mono, under the SIL Open Font License.</p>
+    </div>
+    <ul aria-label="Links">
+      <li><a href="https://github.com/zytocc/upnext">Source code</a></li>
+      <li><a href="https://github.com/zytocc/upnext/releases">Releases</a></li>
+      <li><a href="https://github.com/zytocc/upnext#install">Install guide</a></li>
+      <li><a href="https://github.com/zytocc/upnext/issues">Report a bug</a></li>
+      <li><a href="https://github.com/zytocc/upnext/blob/main/docs/privacy.md">Privacy</a></li>
+      <li><a href="https://ko-fi.com/zytocc">Support UpNext on Ko-fi</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="main.js" defer></script>
+</body>
+</html>

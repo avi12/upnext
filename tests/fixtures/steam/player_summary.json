@@ -1,0 +1,12 @@
+{
+ "response": {
+  "players": [
+   {
+    "steamid": "76561198000000000",
+    "personaname": "Player One",
+    "avatarfull": "https://avatars.steamstatic.com/abc_full.jpg",
+    "profileurl": "https://steamcommunity.com/id/playerone/"
+   }
+  ]
+ }
+}

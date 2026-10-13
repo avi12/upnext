@@ -1,0 +1,19 @@
+{
+  "upnext_verdicts": 1,
+  "date": "2026-10-09",
+  "vocab": 1,
+  "games": 4,
+  "verdicts": 37,
+  "licence": "CC0-1.0",
+  "notice": "UpNext backlog verdicts: players' answers about how games fit a backlog and limited time, dedicated to the public domain under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/). They carry no names, accounts or libraries, and nothing in them links one person's verdicts together.",
+  "summary": {
+    "file": "verdicts-summary-2026-10-09.jsonl.gz",
+    "bytes": 1067,
+    "sha256": "3619bb8a2a29919a56ba8ea48b7d9a26db65b7c972d27b6f79a2a52371e7bb70"
+  },
+  "all": {
+    "file": "verdicts-all-2026-10-09.jsonl.gz",
+    "bytes": 1050,
+    "sha256": "ac3cc8263725a82fef3ce07151b78996abd7270903ef48b84f5f3ecb4fed2f35"
+  }
+}

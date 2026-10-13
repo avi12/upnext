@@ -1,0 +1,37 @@
+{
+  "digests": [
+    {
+      "id": "FARM",
+      "vibes": "Slow mornings on a little farm, fishing at dusk while the music hums.",
+      "digest": "Praised for calm farming and fishing loops and lovely music. Complaints: slow first hours, clumsy menus.",
+      "facets": ["pace:relaxed", "pace:intense", "Sessions:Short", "mood:relaxing", "mood:cozy", "mood:uplifting", "difficulty:trivial", "learning:gentle"],
+      "praised": ["music", "art", "world", "atmosphere", "core loop", "Exploration"],
+      "criticized": ["UI", "pacing", "graphics"],
+      "divisive": ["length"],
+      "notes": ["Slow first hours"]
+    },
+    {
+      "id": "#KEEP",
+      "vibes": "  ",
+      "digest": "  Praised for precise, fair combat. Complaints: difficulty spikes.  ",
+      "facets": ["difficulty:punishing"],
+      "praised": "combat",
+      "criticized": [],
+      "divisive": [],
+      "notes": "none"
+    },
+    {
+      "id": 999999,
+      "digest": "A game that was not in the request.",
+      "facets": [],
+      "praised": [],
+      "criticized": [],
+      "divisive": [],
+      "notes": []
+    },
+    {
+      "id": "FARM",
+      "facets": ["difficulty:easy"]
+    }
+  ]
+}

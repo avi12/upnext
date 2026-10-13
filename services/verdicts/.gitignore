@@ -1,0 +1,8 @@
+/node_modules
+/dist
+/.wrangler
+# wrangler's local secrets for `wrangler dev`; never commit them.
+/.dev.vars
+# The operator's own copy of wrangler.toml with the real database id and
+# settings (docs/dev/VERDICTS-SERVICE.md).
+/wrangler.local.toml

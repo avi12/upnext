@@ -1,0 +1,35 @@
+{
+ "page": 1,
+ "totalPages": 2,
+ "totalProducts": 3,
+ "products": [
+  {
+   "id": 1207658924,
+   "title": "The Witcher: Enhanced Edition ",
+   "isGame": true,
+   "image": "//images-1.gog-statics.com/abc123",
+   "url": "/en/game/the_witcher",
+   "category": "Role-playing",
+   "slug": "the_witcher",
+   "releaseDate": {
+    "date": "2008-09-16 00:00:00.000000",
+    "timezone_type": 3,
+    "timezone": "Europe/Nicosia"
+   }
+  },
+  {
+   "id": 1,
+   "title": "Soundtrack Bundle",
+   "isGame": false,
+   "image": "//images-1.gog-statics.com/def",
+   "url": "/en/game/ost",
+   "category": "",
+   "releaseDate": 1204502400
+  },
+  {
+   "id": 2,
+   "title": "   ",
+   "isGame": true
+  }
+ ]
+}

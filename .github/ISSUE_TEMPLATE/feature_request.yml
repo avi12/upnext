@@ -1,0 +1,21 @@
+name: Idea or feature request
+description: Something UpNext could do, or do better.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you'd like to do
+      description: The problem or the situation, in your words. What do you do today instead?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How it could work
+      description: Optional. A sketch of the change, if you have one in mind.
+  - type: textarea
+    id: source
+    attributes:
+      label: A new store or data source?
+      description: Which service, whether it has a public API, and its terms of use (docs/THIRD_PARTY.md lists the ones UpNext uses).

@@ -1,0 +1,27 @@
+{
+ "count": 3,
+ "data": [
+  {
+   "game_id": 7231,
+   "game_name": "Portal 2",
+   "game_alias": "",
+   "comp_main": 30780,
+   "comp_plus": 48600,
+   "comp_100": 79200
+  },
+  {
+   "game_id": 7230,
+   "game_name": "Portal",
+   "game_alias": "",
+   "comp_main": 10800,
+   "comp_plus": 0,
+   "comp_100": 20000
+  },
+  {
+   "game_id": 9000,
+   "game_name": "Portal Stories: Mel",
+   "game_alias": "",
+   "comp_main": 25000
+  }
+ ]
+}

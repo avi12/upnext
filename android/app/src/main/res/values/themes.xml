@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The platform's own Material theme, so the app needs no theme library.
+         The screens draw under the system bars and pad themselves by their
+         insets (ScreenInsets.kt). -->
+    <style name="Theme.UpNext" parent="android:Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">@color/upnext_background</item>
+        <item name="android:colorAccent">@color/upnext_accent</item>
+        <item name="android:windowBackground">@color/upnext_background</item>
+        <item name="android:textColorPrimary">@color/upnext_text</item>
+        <item name="android:textColorSecondary">@color/upnext_text_muted</item>
+    </style>
+</resources>

@@ -1,0 +1,37 @@
+# UpNext as a user service: it starts when you log in and keeps the daily
+# sync running. Install it (once; nothing enables it for you):
+#
+#   install -Dm644 contrib/systemd/upnext.service ~/.config/systemd/user/upnext.service
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now upnext
+#
+# Logs: journalctl --user -u upnext. Settings: ~/.config/upnext/.env and the
+# app. To keep it running while you're logged out: loginctl enable-linger.
+# The Debian, Fedora and Arch packages ship their own copy with
+# /usr/bin/upnext, made from this file by contrib/linux/build-packages.sh and
+# by the PKGBUILD in contrib/arch/upnext-bin.
+
+[Unit]
+Description=UpNext game backlog picker
+Documentation=https://github.com/zytocc/upnext
+
+[Service]
+Type=exec
+ExecStart=%h/.cargo/bin/upnext serve
+# A service doesn't get your login shell's PATH. The Claude and Codex CLIs
+# install into ~/.local/bin (UpNext also looks there on its own), and they
+# may need what else is on it.
+Environment=PATH=%h/.local/bin:%h/.cargo/bin:/usr/local/bin:/usr/bin:/bin
+# The setup wizard says it runs as a service.
+Environment=UPNEXT_MODE=service
+Restart=on-failure
+RestartSec=5
+# SIGTERM: UpNext stops the running job (it resumes on the next run) and
+# finishes open requests within 20 s.
+TimeoutStopSec=30
+NoNewPrivileges=yes
+# No ProtectHome: UpNext reads the Steam and Heroic folders under your home
+# and runs the CLIs from it.
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,125 @@
+name: windows
+
+# Builds and tests on Windows. A workflow of its own, apart from
+# ci.yml, so its queue and cancelling never touch the Linux jobs.
+#
+# Where it runs: GitHub's `windows-latest` unless the repository
+# variable UPNEXT_RUNNER_WINDOWS names a self-hosted runner's label
+# (`upnext-windows`, set while the repository is private;
+# docs/dev/CI-RUNNERS.md). A new repository has no variables, so it runs on
+# GitHub's runner with no edit here. Never set the variable on a public
+# repository (ci.yml says why); on a self-hosted runner the job is skipped
+# for a pull request from a fork, as a second guard.
+#
+# GitHub's Windows runners take twice the Linux minutes from a private
+# repository's allowance, and are slower everywhere, so it runs only when
+# Rust code, the fixtures or this file change. workflow_dispatch runs it by
+# hand.
+#
+# Windows test builds come from `cargo build --release --bins` on a Windows
+# machine, to save Actions minutes, and the release MSI
+# from cargo-dist on tags (release.yml).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'contrib/**'
+      - 'Cargo.toml'
+      - 'build.rs'
+      - 'Cargo.lock'
+      - '.gitattributes'
+      - '.github/workflows/windows.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'contrib/**'
+      - 'Cargo.toml'
+      - 'build.rs'
+      - 'Cargo.lock'
+      - '.gitattributes'
+      - '.github/workflows/windows.yml'
+  workflow_dispatch:
+
+# On main a run finishes before the next starts (one more waits, newer
+# pushes replace it): several threads push to main, and a run cancelled
+# partway never saves its build cache, so the next starts cold again. A
+# pull request's newer push cancels its older run.
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# The job reads the code and nothing else; the build cache needs no token
+# scope of its own.
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    runs-on: ${{ vars.UPNEXT_RUNNER_WINDOWS || 'windows-latest' }}
+    if: vars.UPNEXT_RUNNER_WINDOWS == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 60
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      # persist-credentials: false keeps the job's token out of .git/config,
+      # where every later step could read it (and, on a self-hosted runner,
+      # the next job until the checkout is cleaned). No step pushes to git.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      # The MSVC toolchain links WebView2's loader statically, so the
+      # desktop feature needs nothing installed. On a self-hosted runner
+      # this installs rustup for the runner's account the first time, then
+      # only a new stable; the Build Tools, NASM, Git Bash and PowerShell 7
+      # come from docs/dev/CI-RUNNERS.md.
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          toolchain: stable
+          components: clippy
+
+      # actions/checkout cleans the checkout before each run, so on a
+      # self-hosted runner the build goes to a folder beside it that outlives
+      # the run, in place of rust-cache. Cargo never deletes old builds: past
+      # 30 GB it starts over.
+      - name: Build folder (self-hosted)
+        if: runner.environment == 'self-hosted'
+        shell: pwsh
+        run: |
+          $dir = Join-Path $env:RUNNER_WORKSPACE 'cargo-target'
+          if ((Test-Path $dir) -and ((Get-ChildItem $dir -Recurse -File | Measure-Object Length -Sum).Sum -gt 30GB)) {
+            Remove-Item $dir -Recurse -Force
+          }
+          "CARGO_TARGET_DIR=$dir" >> $env:GITHUB_ENV
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        if: runner.environment == 'github-hosted'
+
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      # Debug test builds read web/dist from disk and serve a placeholder
+      # without it, so the UI isn't built here.
+      - run: cargo test --locked
+
+      # The two programs: `upnext.exe` is built for the console,
+      # `upnext-app.exe` for the desktop, so the Start menu opens it without
+      # a terminal. The PE header's Subsystem field says which: 3 is the
+      # console, 2 the desktop (Windows GUI).
+      - run: cargo build --locked --bins
+      - name: Check each program's subsystem
+        shell: pwsh
+        run: |
+          function Get-Subsystem($path) {
+            $bytes = [IO.File]::ReadAllBytes($path)
+            $pe = [BitConverter]::ToInt32($bytes, 0x3C)
+            [BitConverter]::ToUInt16($bytes, $pe + 24 + 68)
+          }
+          $debug = Join-Path ($env:CARGO_TARGET_DIR ?? 'target') 'debug'
+          $cli = Get-Subsystem (Join-Path $debug upnext.exe)
+          $app = Get-Subsystem (Join-Path $debug upnext-app.exe)
+          "upnext.exe: $cli, upnext-app.exe: $app"
+          if ($cli -ne 3 -or $app -ne 2) { throw "expected 3 (console) and 2 (desktop)" }
+          & (Join-Path $debug upnext.exe) --version

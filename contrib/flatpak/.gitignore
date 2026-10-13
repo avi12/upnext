@@ -1,0 +1,4 @@
+# Written by generate-sources.sh, and what flatpak-builder leaves.
+/generated/
+/.flatpak-builder/
+/build/

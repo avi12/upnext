@@ -1,0 +1,33 @@
+{
+  "name": "upnext-verdicts-service",
+  "private": true,
+  "version": "0.0.0",
+  "description": "UpNext's backlog verdicts service: a Cloudflare Worker with D1 and R2.",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "lint": "oxlint --deny-warnings",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.test.json",
+    "licenses": "node scripts/licenses.mjs",
+    "check": "npm run typecheck && npm run lint && npm run licenses && npm test",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "dev": "wrangler dev --test-scheduled",
+    "migrate:local": "wrangler d1 migrations apply upnext-verdicts --local",
+    "migrate:remote": "wrangler d1 migrations apply upnext-verdicts --remote --config wrangler.local.toml",
+    "deploy": "wrangler deploy --config wrangler.local.toml"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261009.1",
+    "@types/node": "24.19.1",
+    "esbuild": "0.28.2",
+    "miniflare": "5.20261006.1-alpha",
+    "oxlint": "1.86.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.11",
+    "wrangler": "4.149.0"
+  }
+}

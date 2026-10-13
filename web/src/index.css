@@ -1,0 +1,359 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque/opsz.css";
+@import "@fontsource-variable/figtree/wght.css";
+@import "@fontsource-variable/figtree/wght-italic.css";
+@import "@fontsource/martian-mono/400.css";
+@import "@fontsource/martian-mono/500.css";
+
+/* Three themes, one set of tokens. Arcade is the default; the theme lives in
+   <html data-theme> (see lib/theme.ts). Tailwind colours point at these
+   variables, so `bg-ground`, `text-muted`, `border-line` follow the theme. */
+:root,
+:root[data-theme="arcade"] {
+  color-scheme: dark;
+  --ground: #101218;
+  --raised: #1a1d26;
+  --raised-2: #2f3444;
+  --sheet: #161922;
+  --backdrop: rgb(11 12 17 / 0.72);
+  --sheet-veil: rgb(11 12 17 / 0.35);
+  --line: #242836;
+  --line-soft: #1d2029;
+  --line-strong: #2f3444;
+  --key: #353b4c;
+  --ink: #e9ecf5;
+  --muted: #a2a8ba;
+  --dim: #858ca0;
+  --faint: #5e6478;
+  --underline: #4a5064;
+  --accent: #ffc93c;
+  --accent-ink: #1b1503;
+  --good: #5ee0b5;
+  --warn: #ff9f5a;
+  --bad: #ff6b6b;
+  --cover-ink: rgb(233 236 245 / 0.92);
+  --tone-0: #2b3246;
+  --tone-1: #3a2e4a;
+  --tone-2: #24403f;
+  --tone-3: #433a2a;
+  --tone-4: #2e3a52;
+  --tone-5: #3f2c3c;
+  --tone-6: #2a3a30;
+  --tone-7: #3b3346;
+}
+
+:root[data-theme="ember"] {
+  color-scheme: dark;
+  --ground: #151412;
+  --raised: #1f1d1a;
+  --raised-2: #34302b;
+  --sheet: #1a1916;
+  --backdrop: rgb(14 13 12 / 0.72);
+  --sheet-veil: rgb(14 13 12 / 0.35);
+  --line: #2a2724;
+  --line-soft: #221f1c;
+  --line-strong: #34302b;
+  --key: #3a3631;
+  --ink: #efeae2;
+  --muted: #a9a196;
+  --dim: #8c8479;
+  --faint: #6e675e;
+  --underline: #56504a;
+  --accent: #ff7a45;
+  --accent-ink: #1a1210;
+  --good: #7fd1a8;
+  --warn: #f2c14e;
+  --bad: #e86a5c;
+  --cover-ink: rgb(239 234 226 / 0.9);
+  --tone-0: #3b3a31;
+  --tone-1: #46382b;
+  --tone-2: #2d3b36;
+  --tone-3: #33323f;
+  --tone-4: #403037;
+  --tone-5: #383b2c;
+  --tone-6: #2f3539;
+  --tone-7: #3a3027;
+}
+
+:root[data-theme="daylight"] {
+  color-scheme: light;
+  --ground: #f7f3ec;
+  --raised: #eee8de;
+  --raised-2: #ddd4c6;
+  --sheet: #fffdf9;
+  --backdrop: rgb(30 27 23 / 0.35);
+  --sheet-veil: rgb(30 27 23 / 0.16);
+  --line: #e2dacd;
+  --line-soft: #ebe4d8;
+  --line-strong: #d8cfc0;
+  --key: #cfc5b5;
+  --ink: #1e1b17;
+  --muted: #5f584f;
+  --dim: #6f675d;
+  --faint: #857c70;
+  --underline: #b9ae9e;
+  --accent: #b53a15;
+  --accent-ink: #ffffff;
+  --good: #2a7248;
+  --warn: #8f5a00;
+  --bad: #b3261e;
+  --cover-ink: rgb(30 27 23 / 0.85);
+  --tone-0: #d8ccb8;
+  --tone-1: #c4d0c0;
+  --tone-2: #d6c0b9;
+  --tone-3: #c3c6d6;
+  --tone-4: #d9c9a8;
+  --tone-5: #bfd0cf;
+  --tone-6: #cdbfd2;
+  --tone-7: #d3c4b0;
+}
+
+@theme inline {
+  --font-sans: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --color-ground: var(--ground);
+  --color-raised: var(--raised);
+  --color-raised-2: var(--raised-2);
+  --color-sheet: var(--sheet);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+  --color-key: var(--key);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-underline: var(--underline);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* The desktop app's slim title bar (components/WindowFrame.tsx), fixed over
+   the top of its frameless window on a page with no top bar of its own to
+   carry the window's buttons (setup, pairing); the frame marks the page.
+   The page starts below it, and whatever sticks to or sits against the top
+   of the window keeps clear of it through this height, 0 everywhere else. */
+:root {
+  --titlebar-h: 0px;
+}
+:root[data-titlebar] {
+  --titlebar-h: 32px;
+  scroll-padding-top: var(--titlebar-h);
+}
+:root[data-titlebar] body {
+  padding-top: var(--titlebar-h);
+}
+/* WebView2 keeps the page's scrollbar in a strip down the whole window,
+   beside the top bar, so the close button couldn't reach the corner; the
+   Windows app window floats its own over the page (PageScrollbar.tsx). */
+:root[data-frame="windows"] {
+  scrollbar-width: none;
+  scrollbar-gutter: auto;
+}
+
+/* Windows' scrollbar takes room beside the page (elsewhere it floats over
+   it), so the room is kept on pages too short to scroll as well: otherwise
+   the top bar moves sideways between Pick or Lists and a longer page. */
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@layer base {
+  a {
+    color: inherit;
+  }
+}
+
+/* Buttons. Accent = the one main action on a screen; ink = Play;
+   outline = secondary; quiet = text-only. */
+@utility btn-base {
+  @apply inline-flex items-center justify-center gap-2 rounded-[10px] font-sans text-sm transition-colors select-none disabled:pointer-events-none disabled:opacity-50;
+}
+@utility btn-accent {
+  @apply btn-base h-11 px-5 bg-accent text-accent-ink font-display font-bold text-[15.5px] hover:brightness-105;
+}
+@utility btn-ink {
+  @apply btn-base h-10 px-[18px] bg-ink text-ground font-bold;
+}
+@utility btn-outline {
+  @apply btn-base h-10 px-4 border border-line-strong bg-raised text-ink font-semibold hover:border-key;
+}
+@utility btn-quiet {
+  @apply inline-flex items-center gap-1.5 text-muted transition-colors hover:text-ink disabled:opacity-50;
+}
+
+/* Form fields. */
+@utility field {
+  @apply h-10 w-full rounded-[10px] border border-line-strong bg-raised px-3 text-ink placeholder:text-dim outline-none focus:border-accent;
+}
+
+/* Segmented control: a row of seg-item buttons. */
+@utility seg {
+  @apply inline-flex rounded-[10px] bg-raised p-[3px];
+}
+@utility seg-item {
+  @apply inline-flex h-[38px] items-center gap-2 rounded-[8px] px-3.5 text-sm text-muted transition-colors hover:text-ink;
+}
+@utility seg-item-on {
+  @apply bg-raised-2 font-semibold text-ink;
+}
+
+/* Small labels and numbers. */
+@utility mono {
+  @apply font-mono text-[11px] text-dim;
+}
+
+/* An underlined word that is a control (filter sentences). */
+@utility sentence-link {
+  @apply text-ink underline decoration-underline underline-offset-[5px] hover:decoration-accent;
+}
+
+/* A blank in a sentence, still to be filled in: accent, dashed. */
+@utility sentence-blank {
+  @apply text-accent decoration-accent decoration-dashed;
+}
+
+/* Skeleton block (Settings loading state). */
+@layer components {
+  .skeleton { @apply animate-pulse rounded-lg bg-raised; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.3s ease both; }
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.sheet-in { animation: sheet-in 0.22s ease both; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--raised) 25%, var(--raised-2) 50%, var(--raised) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* Curating: the three cards of CurateIcon trade heights, as if being
+   sorted into a lineup. */
+@keyframes curate-a { 0%, 100% { transform: scaleY(0.5); } 33% { transform: scaleY(1); } 66% { transform: scaleY(0.75); } }
+@keyframes curate-b { 0%, 100% { transform: scaleY(0.75); } 33% { transform: scaleY(0.5); } 66% { transform: scaleY(1); } }
+@keyframes curate-c { 0%, 100% { transform: scaleY(1); } 33% { transform: scaleY(0.75); } 66% { transform: scaleY(0.5); } }
+.curating rect:nth-child(1) { animation: curate-a 1.8s ease-in-out infinite; }
+.curating rect:nth-child(2) { animation: curate-b 1.8s ease-in-out infinite; }
+.curating rect:nth-child(3) { animation: curate-c 1.8s ease-in-out infinite; }
+
+/* Rolling the dice: the dice tumbles while the draw comes back. */
+@keyframes dice-tumble { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.dicing { animation: dice-tumble 0.6s ease-in-out infinite; }
+
+/* A pick whose slot is being refilled ("It's too ___"): a slow sheen
+   sweeps across its art while the AI looks through the spares. */
+@keyframes sift {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+.sifting { position: relative; overflow: hidden; }
+.sifting::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--accent) 28%, transparent) 50%, transparent 80%);
+  animation: sift 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .sheet-in, .shimmer, .curating rect, .dicing { animation: none; }
+  .sifting::after { animation: none; opacity: 0.5; }
+}
+
+/* Big screen: one scale for a Steam Deck, a handheld and a TV.
+   The root size follows the window's shorter side and the big-screen pages
+   are sized in rem, so the layout is the same at every size. At 1280×800 a
+   rem is 17.6 px, and no text there is under 0.8rem (14 px), above the 9 px
+   Valve's Deck checks allow. BigShell sets data-bigscreen while it shows. */
+:root[data-bigscreen] {
+  font-size: clamp(16px, 2.2vmin, 40px);
+}
+:root[data-bigscreen] body {
+  font-size: 1rem;
+}
+/* The focus is always shown: a gamepad moves it with focus(), which some
+   browsers don't count as a keyboard focus. BigShell sets the ring's width
+   and offset, and leaves room for them around its tabs. */
+:root[data-bigscreen] :focus {
+  outline: var(--big-ring) solid var(--accent);
+  outline-offset: var(--big-ring-offset);
+}
+:root[data-bigscreen] * {
+  scroll-margin: 6rem 2rem 2rem;
+}
+/* Toasts keep their own small type elsewhere; here it stays readable. */
+:root[data-bigscreen] [data-toasts] {
+  width: min(92vw, 28rem);
+}
+:root[data-bigscreen] [data-toasts] .text-sm {
+  font-size: 1rem;
+}
+:root[data-bigscreen] [data-toasts] .text-xs {
+  font-size: 0.875rem;
+}
+
+@utility big-btn {
+  @apply inline-flex min-h-[3rem] items-center justify-center gap-[0.5em] rounded-[0.7rem] px-[1.2rem] text-[1.05rem] font-semibold transition-colors select-none disabled:opacity-50;
+}
+@utility big-btn-accent {
+  @apply big-btn bg-accent text-accent-ink font-display font-bold;
+}
+@utility big-btn-ink {
+  @apply big-btn bg-ink text-ground font-bold;
+}
+@utility big-btn-outline {
+  @apply big-btn border-[0.1rem] border-line-strong bg-raised text-ink;
+}
+/* A choice that stays chosen: a chip in the request, a filter. */
+@utility big-chip {
+  @apply inline-flex min-h-[3rem] items-center rounded-full border-[0.1rem] border-line-strong bg-raised px-[1.1rem] text-[1rem] text-muted transition-colors select-none aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:font-semibold aria-pressed:text-accent-ink;
+}

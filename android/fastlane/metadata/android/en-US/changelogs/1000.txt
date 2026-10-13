@@ -1,0 +1,1 @@
+The first release of the Android app: find the computer on your network, tap Allow there, and use UpNext from your phone, tablet or TV.

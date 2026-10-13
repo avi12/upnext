@@ -1,0 +1,7 @@
+# LF everywhere, Windows checkouts included: the tests read fixtures and
+# snapshots byte for byte, and include_str! files go into the binary.
+* text=auto eol=lf
+# Windows batch files written by npm, kept byte for byte as npm writes them.
+tests/fixtures/process/*.cmd -text
+# The Gradle wrapper's batch file, which cmd.exe reads with CRLF line endings.
+android/gradlew.bat text eol=crlf

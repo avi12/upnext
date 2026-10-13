@@ -1,0 +1,158 @@
+# The Debian and Fedora packages (the rpm is for openSUSE too), built by nfpm from binaries that
+# are already built: contrib/linux/build-packages.sh sets the two variables
+# below and runs it, once per format and architecture. Paths are relative to
+# the checkout's root, where the script runs nfpm, and target/linux-stage is
+# where it puts the programs and the generated service (nfpm expands
+# variables in the fields above contents, not in contents).
+#
+#   VERSION  the release's version, such as 0.1.0 or 0.2.0-rc.1
+#   ARCH     amd64 or arm64 (nfpm names them x86_64 and aarch64 in an rpm)
+name: upnext
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+# 0.2.0-rc.1 becomes 0.2.0~rc.1, which sorts before 0.2.0 in apt and dnf.
+version_schema: semver
+release: 1
+section: games
+priority: optional
+maintainer: UpNext contributors
+vendor: UpNext contributors
+homepage: https://upnext.games
+license: MIT OR Apache-2.0
+description: |-
+  Picks what to play next from the games you already own
+  UpNext reads your Steam, GOG, Epic and Amazon libraries (through Heroic
+  for the last three), learns what you like, and suggests what to play
+  next, with a local web UI and an app window. It runs on your machine
+  alone, with the AI you choose. Run `upnext app`, or `upnext serve` and
+  open http://127.0.0.1:8787.
+
+# Declared by hand: the list is short and stable, and an automatic one would
+# pin every library WebKitGTK pulls in. glibc 2.35 is what the release builds
+# on (Ubuntu 22.04). Debian 13 and Ubuntu 24.04 ship libgtk-3-0t64, which
+# provides libgtk-3-0. The rpm asks for WebKitGTK and GTK by their libraries
+# rather than by Fedora's package names (webkit2gtk4.1, gtk3), which
+# openSUSE's packages (libwebkit2gtk-4_1-0, libgtk-3-0) aren't sure to
+# provide; rpm adds each library's name to the package that ships it, on both.
+# xdg-open opens steam:// and heroic:// links and the browser.
+overrides:
+  deb:
+    depends:
+      - libc6 (>= 2.35)
+      - libwebkit2gtk-4.1-0
+      - libgtk-3-0
+    recommends:
+      - xdg-utils
+  rpm:
+    depends:
+      - glibc >= 2.35
+      - libwebkit2gtk-4.1.so.0()(64bit)
+      - libgtk-3.so.0()(64bit)
+    recommends:
+      - xdg-utils
+
+contents:
+  - src: target/linux-stage/upnext
+    dst: /usr/bin/upnext
+    file_info:
+      mode: 0755
+  - src: target/linux-stage/upnext-app
+    dst: /usr/bin/upnext-app
+    file_info:
+      mode: 0755
+  - src: contrib/linux/upnext.desktop
+    dst: /usr/share/applications/upnext.desktop
+    file_info:
+      mode: 0644
+  - src: contrib/linux/icons/hicolor/scalable/apps/upnext.svg
+    dst: /usr/share/icons/hicolor/scalable/apps/upnext.svg
+    file_info:
+      mode: 0644
+  - src: contrib/linux/icons/hicolor/256x256/apps/upnext.png
+    dst: /usr/share/icons/hicolor/256x256/apps/upnext.png
+    file_info:
+      mode: 0644
+  # Generated from contrib/systemd/upnext.service, with /usr/bin/upnext.
+  # Nothing enables it: the post-install message says how.
+  - src: target/linux-stage/upnext.service
+    dst: /usr/lib/systemd/user/upnext.service
+    file_info:
+      mode: 0644
+  # In an rpm, the docs and licences are marked as such (%doc, %license);
+  # nfpm leaves files with those types out of a deb, so it gets them plain.
+  - src: README.md
+    dst: /usr/share/doc/upnext/README.md
+    packager: deb
+    file_info:
+      mode: 0644
+  - src: CHANGELOG.md
+    dst: /usr/share/doc/upnext/CHANGELOG.md
+    packager: deb
+    file_info:
+      mode: 0644
+  - src: LICENSE-MIT
+    dst: /usr/share/doc/upnext/LICENSE-MIT
+    packager: deb
+    file_info:
+      mode: 0644
+  - src: LICENSE-APACHE
+    dst: /usr/share/doc/upnext/LICENSE-APACHE
+    packager: deb
+    file_info:
+      mode: 0644
+  # The licences and notices of the crates and npm packages built into the
+  # programs (contrib/notices/generate.mjs).
+  - src: THIRD_PARTY_NOTICES.txt
+    dst: /usr/share/doc/upnext/THIRD_PARTY_NOTICES.txt
+    packager: deb
+    file_info:
+      mode: 0644
+  - src: README.md
+    dst: /usr/share/doc/upnext/README.md
+    type: doc
+    packager: rpm
+    file_info:
+      mode: 0644
+  - src: CHANGELOG.md
+    dst: /usr/share/doc/upnext/CHANGELOG.md
+    type: doc
+    packager: rpm
+    file_info:
+      mode: 0644
+  - src: LICENSE-MIT
+    dst: /usr/share/licenses/upnext/LICENSE-MIT
+    type: license
+    packager: rpm
+    file_info:
+      mode: 0644
+  - src: LICENSE-APACHE
+    dst: /usr/share/licenses/upnext/LICENSE-APACHE
+    type: license
+    packager: rpm
+    file_info:
+      mode: 0644
+  - src: THIRD_PARTY_NOTICES.txt
+    dst: /usr/share/licenses/upnext/THIRD_PARTY_NOTICES.txt
+    type: license
+    packager: rpm
+    file_info:
+      mode: 0644
+  # Debian's policy wants the licence in this file of every package.
+  - src: contrib/linux/copyright
+    dst: /usr/share/doc/upnext/copyright
+    packager: deb
+    file_info:
+      mode: 0644
+
+# Prints how to start the service at login, on a first install only. It runs
+# nothing and touches no one's data: the library in ~/.local/share/upnext
+# belongs to each user, and removing the package leaves it.
+scripts:
+  postinstall: contrib/linux/postinstall.sh
+
+deb:
+  compression: xz
+rpm:
+  compression: zstd
+  group: Amusements/Games

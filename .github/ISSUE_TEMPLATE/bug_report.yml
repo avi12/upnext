@@ -1,0 +1,48 @@
+name: Bug report
+description: Something doesn't work the way the README or the app says it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please don't include API keys, tokens or your database. For a security problem, use the Security tab's "Report a vulnerability" instead (SECURITY.md).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Settings, Library data, Fetch details
+        2. ...
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "`upnext --version`, or the commit you built from."
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How you run it
+      options:
+        - Linux, installed binary or service
+        - Linux, app window
+        - Windows
+        - Docker
+        - From a checkout (cargo run)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: "`upnext doctor` and logs"
+      description: The output of `upnext doctor`, and the job's log from Settings, Jobs if a job failed. Check it for anything private first.
+      render: text

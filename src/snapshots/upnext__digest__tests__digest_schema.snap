@@ -1,0 +1,236 @@
+---
+source: src/digest.rs
+expression: "serde_json::to_string_pretty(&req.schema).unwrap()"
+---
+{
+  "type": "object",
+  "properties": {
+    "digests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "vibes": {
+            "type": "string"
+          },
+          "digest": {
+            "type": "string"
+          },
+          "facets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "difficulty:easy",
+                "difficulty:moderate",
+                "difficulty:hard",
+                "difficulty:punishing",
+                "learning:gentle",
+                "learning:moderate",
+                "learning:steep",
+                "hook:fast",
+                "hook:gradual",
+                "hook:slow",
+                "pace:relaxed",
+                "pace:steady",
+                "pace:intense",
+                "sessions:short",
+                "sessions:medium",
+                "sessions:long",
+                "focus:low",
+                "focus:medium",
+                "focus:high",
+                "complexity:simple",
+                "complexity:moderate",
+                "complexity:deep",
+                "structure:linear",
+                "structure:hubs",
+                "structure:open",
+                "grind:none",
+                "grind:light",
+                "grind:heavy",
+                "story:none",
+                "story:light",
+                "story:central",
+                "emotion:light",
+                "emotion:moving",
+                "emotion:powerful",
+                "replay:low",
+                "replay:high",
+                "mood:relaxing",
+                "mood:cozy",
+                "mood:uplifting",
+                "mood:funny",
+                "mood:chaotic",
+                "mood:mysterious",
+                "mood:tense",
+                "mood:scary",
+                "mood:dark",
+                "mood:melancholic",
+                "mood:epic",
+                "skills:reflexes",
+                "skills:precision",
+                "skills:timing",
+                "skills:strategy",
+                "skills:logic",
+                "skills:patience",
+                "skills:memorization",
+                "skills:observation",
+                "skills:management",
+                "skills:creativity",
+                "skills:teamwork"
+              ]
+            }
+          },
+          "praised": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "combat",
+                "story",
+                "writing",
+                "characters",
+                "choices",
+                "world",
+                "atmosphere",
+                "exploration",
+                "puzzles",
+                "level design",
+                "core loop",
+                "progression",
+                "grind",
+                "pacing",
+                "difficulty balance",
+                "controls",
+                "camera",
+                "performance",
+                "bugs",
+                "UI",
+                "music",
+                "sound",
+                "voice acting",
+                "art",
+                "length",
+                "ending",
+                "endgame",
+                "content",
+                "co-op",
+                "multiplayer",
+                "mods",
+                "value",
+                "monetization"
+              ]
+            }
+          },
+          "criticized": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "combat",
+                "story",
+                "writing",
+                "characters",
+                "choices",
+                "world",
+                "atmosphere",
+                "exploration",
+                "puzzles",
+                "level design",
+                "core loop",
+                "progression",
+                "grind",
+                "pacing",
+                "difficulty balance",
+                "controls",
+                "camera",
+                "performance",
+                "bugs",
+                "UI",
+                "music",
+                "sound",
+                "voice acting",
+                "art",
+                "length",
+                "ending",
+                "endgame",
+                "content",
+                "co-op",
+                "multiplayer",
+                "mods",
+                "value",
+                "monetization"
+              ]
+            }
+          },
+          "divisive": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "combat",
+                "story",
+                "writing",
+                "characters",
+                "choices",
+                "world",
+                "atmosphere",
+                "exploration",
+                "puzzles",
+                "level design",
+                "core loop",
+                "progression",
+                "grind",
+                "pacing",
+                "difficulty balance",
+                "controls",
+                "camera",
+                "performance",
+                "bugs",
+                "UI",
+                "music",
+                "sound",
+                "voice acting",
+                "art",
+                "length",
+                "ending",
+                "endgame",
+                "content",
+                "co-op",
+                "multiplayer",
+                "mods",
+                "value",
+                "monetization"
+              ]
+            }
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "vibes",
+          "digest",
+          "facets",
+          "praised",
+          "criticized",
+          "divisive",
+          "notes"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "digests"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,110 @@
+---
+source: src/prompt/tests.rs
+expression: "format!(\"== system\\n{}\\n== prefix\\n{}\\n== user\\n{}\\n== schema\\n{}\", p.system,\np.prefix, p.user, serde_json::to_string_pretty(&p.schema).unwrap())"
+---
+== system
+You pick games from one person's library. Most candidates are games they own and haven't really played; some have a history with them, shown on their line. Choose exactly 3 that best fit the request and their taste, then exactly 6 spares ranked after them: a spare takes the place of a pick they turn down, so rank the spares as carefully.
+Rules:
+- Only ids from the candidate list, all distinct across picks and spares. Never invent games.
+- Never two games of one series among the picks and spares together ("series:" on a line names it); vary the rest too.
+- Respect time budgets using the main-story hours: a short session needs something satisfying in that window, not a 60-hour RPG.
+- Match mood words (relaxing, cozy, story, challenging, co-op…) against the tags and what players say.
+- The feel and the +/-/± aspects come from player reviews. Weigh them against the request: a criticized aspect counts against a game when the request cares about it.
+- History: "shelved" means they put it down meaning to finish it, "second chance: abandoned" that they gave up on it, "willing to try again" that they gave up on it and since said they'd give it another go; "stopped:" is why, when they said, and "reviews since:" what reviews written after they stopped say about it. Weigh why it stopped against the request and against what players say now. Its reason must speak to the old problem honestly ("You stopped over crashes; players say the 2.0 patch fixed them"), and say so when what players say doesn't settle it. Never claim to know where they are in a game.
+- At most one second chance among the picks and spares together, and only when it fits the request.
+- "endless" games have no ending, and staples are games they've played for a long time: pitch these as a session, never as something to finish. Staples suit requests for something familiar or a comfort game.
+- What they said about a game in an earlier lineup ("too long") counts against it unless the request wants just that.
+- The taste list is a signal, not a template: when the request asks for something different, follow the request.
+- Prefer variety unless the request narrows it. A great niche fit beats a generic hit.
+- Each reason: 1-2 specific sentences on why it fits this request and this person. No fluff, no restating numbers.
+- They play on Linux: native and platinum/gold run well; silver/bronze have problems; borked doesn't run. Avoid silver/bronze/borked unless asked; no value means unknown, not bad.
+- Respond with JSON only, matching the schema.
+== prefix
+## My taste (most-played games, as a signal only)
+- Rise of Nations (140.0h; Strategy, RTS, Classic, Historical)
+- Portal 2 (21.0h; Puzzle, Co-op, Funny)
+- Hollow Knight (14.0h; Action, Adventure, Metroidvania, Difficult, Exploration)
+- Dishonored (6.0h; Action, Adventure, Stealth, Immersive Sim, Steampunk)
+
+## Candidates (9 of 9 owned games I haven't finished, or play now and then)
+Format: #id name [stores, if not only Steam] | genres & tags | series: shared with another candidate | main-story hours (?h = unknown) | played so far | my history with it | review % positive/count (or rating out of 5) | year | linux (native or ProtonDB tier) | installed | feel: what players say it's like | aspects players praised (+), criticized (-) or disagree on (±) | says: what players say
+
+#2 Stardew Valley | Simulation, RPG, Farming | 53h | played 30m | 98%/500k | 2018 | native | feel: relaxing, cozy, relaxed pace, short sessions, light grind | +core loop, +music, -pacing | says: Praised for a calm, flexible daily loop of farming, fishing and friendships that suits short sessions, and for endless variety. Complaints: slow first week, energy limits, and co-op that desyncs on some connections.
+#3 Celeste | Platformer, Difficult, Great Soundtrack | 8h | 97%/80k | 2018 | native | feel: hard, linear, no grind, tests precision, tests timing | +controls, +level design, ±difficulty balance | says: Praised for precise controls, clever levels and a moving story. Complaints: some late screens feel unfair.
+#8 Dishonored | Action, Adventure, Stealth, Immersive Sim, Steampunk | 12h | second chance: abandoned 2022 after 6.0h; stopped: bugs or performance | 96%/60k | 2018 | native
+#7 Hollow Knight | Action, Adventure, Metroidvania, Difficult, Exploration | 27h | shelved 8 months ago after 14.0h; stopped: got busy, got stuck, "the Watcher Knights" | 97%/300k | 2018 | native
+#5 Hades | Action, Roguelike, Roguelite, Fast-Paced | series: Hades | 22h | 98%/250k | 2018 | native | feel: hard, intense, high replay value, tests reflexes | +combat, +story, -grind | says: Praised for tight combat and a story told across runs. Complaints: grind for late upgrades.
+#6 Hades II | Action, Roguelike, Roguelite, Mythology | series: Hades | ?h | 94%/90k | 2018 | native
+#9 Rise of Nations | Strategy, RTS, Classic, Historical | 19.8h | staple, 140.0h; endless | 91%/20k | 2018 | native
+#11 The Witcher [gog] | ?h
+#10 Control [epic] | 11.5h
+
+== user
+## My request
+2 hours, something relaxing
+
+## Task
+Pick exactly 3 games from the candidates, in order of fit, then 6 spares, the next best in order. Use the #id numbers exactly as listed.
+== schema
+{
+  "type": "object",
+  "properties": {
+    "picks": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Candidate id exactly as listed"
+          },
+          "name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "spares": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Candidate id exactly as listed"
+          },
+          "name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "picks",
+    "spares"
+  ],
+  "additionalProperties": false
+}

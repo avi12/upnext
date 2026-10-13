@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UpNext's AppStream metadata for its Flatpak, which
+     software centres such as Discover and GNOME Software show. Each release
+     gets a <release> line when it's tagged (docs/dev/RELEASE.md). -->
+<component type="desktop-application">
+  <id>io.github.zytocc.UpNext</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT OR Apache-2.0</project_license>
+  <name>UpNext</name>
+  <summary>Pick what to play next from the games you own</summary>
+  <developer id="io.github.zytocc">
+    <name>UpNext contributors</name>
+  </developer>
+  <description>
+    <p>
+      UpNext gathers your game libraries into one list, looks up what each game is like, and when you say what you're in
+      the mood for, such as about an hour of something calm with a bit of story, it suggests a few games from your backlog
+      that fit, with the reasons.
+    </p>
+    <ul>
+      <li>Steam, and Epic, GOG and Amazon through the Heroic launcher, read from their own files on this computer</li>
+      <li>Details for every game: genres, tags, review scores and what players say</li>
+      <li>Picks from an AI you choose (an API key, a server of your own, or Claude Code), or from UpNext's own ranking with no AI at all</li>
+      <li>A taste profile you can read and edit, which learns from what you play</li>
+      <li>Big screen: a layout for a gamepad, a Steam Deck or a TV</li>
+      <li>Phones and other computers on your network can use it too, once you allow them on this computer</li>
+    </ul>
+    <p>
+      Everything is kept in a database on this computer. UpNext reads the Steam and Heroic folders and never changes them.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.zytocc.UpNext.desktop</launchable>
+  <provides>
+    <binary>upnext</binary>
+    <binary>upnext-app</binary>
+  </provides>
+  <url type="homepage">https://upnext.games</url>
+  <url type="bugtracker">https://github.com/zytocc/upnext/issues</url>
+  <url type="vcs-browser">https://github.com/zytocc/upnext</url>
+  <url type="donation">https://github.com/zytocc/upnext#supporting-upnext</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>A request, and a lineup of three games with what players say about each</caption>
+      <image>https://raw.githubusercontent.com/zytocc/upnext/main/docs/images/pick.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Big screen, for a gamepad, a Steam Deck or a TV</caption>
+      <image>https://raw.githubusercontent.com/zytocc/upnext/main/docs/images/big-screen.png</image>
+    </screenshot>
+  </screenshots>
+  <categories>
+    <category>Game</category>
+  </categories>
+  <keywords>
+    <keyword>backlog</keyword>
+    <keyword>library</keyword>
+    <keyword>Steam</keyword>
+    <keyword>Heroic</keyword>
+    <keyword>GOG</keyword>
+  </keywords>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>gamepad</control>
+    <control>touch</control>
+  </supports>
+  <branding>
+    <color type="primary" scheme_preference="light">#f7f3ec</color>
+    <color type="primary" scheme_preference="dark">#101218</color>
+  </branding>
+  <!-- Backlog verdicts, which the person chooses to send and agrees to
+       publish, are short public texts; nothing else leaves the computer
+       but what the stores and the chosen AI are asked. -->
+  <content_rating type="oars-1.1">
+    <content_attribute id="social-info">mild</content_attribute>
+  </content_rating>
+  <releases>
+    <release version="0.1.0" date="2026-10-13">
+      <description>
+        <p>The first release.</p>
+      </description>
+    </release>
+  </releases>
+</component>

@@ -1,0 +1,11 @@
+{
+  "pages": 1,
+  "currentlyShownProductCount": 3,
+  "productCount": 3,
+  "products": [
+    {"id": "1207658931", "slug": "the_witcher_2_soundtrack", "title": "The Witcher 2 Soundtrack", "productType": "game", "storeLink": "https://www.gog.com/en/game/the_witcher_2_soundtrack"},
+    {"id": "1207658930", "slug": "the_witcher_2", "title": "The Witcher 2: Assassins of Kings Enhanced Edition", "productType": "game", "storeLink": "https://www.gog.com/en/game/the_witcher_2"},
+    {"id": 1207658924, "slug": "the_witcher", "title": "The Witcher: Enhanced Edition", "productType": "game", "storeLink": "https://www.gog.com/en/game/the_witcher"}
+  ],
+  "filters": {}
+}

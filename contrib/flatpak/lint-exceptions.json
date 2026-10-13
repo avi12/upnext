@@ -1,0 +1,8 @@
+{
+  "io.github.zytocc.UpNext": [
+    "finish-args-flatpak-appdata-folder-com.heroicgameslauncher.hgl-config-heroic-ro-access",
+    "finish-args-flatpak-appdata-folder-com.valvesoftware.Steam-.local-share-Steam-ro-access",
+    "appstream-external-screenshot-url",
+    "appstream-screenshots-not-mirrored-in-ostree"
+  ]
+}

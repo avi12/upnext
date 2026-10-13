@@ -1,0 +1,121 @@
+---
+source: src/prompt/tests.rs
+expression: "format!(\"== system, added\\n{}\\n== user, from the wishlist\\n{}\\n== schema\\n{}\",\nrules.join(\"\\n\"), &p.user[from..],\nserde_json::to_string_pretty(&p.schema).unwrap())"
+---
+== system, added
+- "On my wishlist" lists games they want but don't own. At most one of them may join the lineup, as "wishlisted", and only when it fits this request clearly better than one of the picks: "instead_of" names the pick it stands in for. That pick stays a full pick, as it's what they get when they switch to a game they own. Its id is the w-number as listed. Most lineups have none.
+- A suggestion is optional: one real PC game on Steam that they don't own, from your own knowledge, named in "suggestion" only when it fits this request and their taste unusually well. Never a candidate, a wishlist game, another edition of one, or a hard no. Its reason is one sentence on why it's right down their alley. Leave it out unless the fit is unusually strong.
+== user, from the wishlist
+## On my wishlist (games I don't own)
+Format: w<id> name | genres & tags | main-story hours (?h = unknown) | review % positive/count | year | says: the store's blurb
+w7 Dredge | Indie, Fishing, Horror, Relaxing | 6.5h | 93%/12k | 2024 | says: Dredge, in a sentence.
+w8 Balatro | Indie, Card Game, Roguelike | 6.5h | 97%/12k | 2024 | says: Balatro, in a sentence.
+
+## Task
+Pick exactly 3 games from the candidates, in order of fit, then 6 spares, the next best in order. Use the #id numbers exactly as listed. If one wishlist game fits clearly better than a pick, add it as "wishlisted". Add a "suggestion" only for a game I don't own that fits unusually well.
+== schema
+{
+  "type": "object",
+  "properties": {
+    "picks": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Candidate id exactly as listed"
+          },
+          "name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "spares": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Candidate id exactly as listed"
+          },
+          "name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "wishlisted": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Wishlist id exactly as listed, like w12"
+        },
+        "name": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "instead_of": {
+          "type": "integer",
+          "description": "The #id of the pick it stands in for"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "reason",
+        "instead_of"
+      ],
+      "additionalProperties": false
+    },
+    "suggestion": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The game's name as Steam's store has it"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "picks",
+    "spares"
+  ],
+  "additionalProperties": false
+}

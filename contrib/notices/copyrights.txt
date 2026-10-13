@@ -1,0 +1,26 @@
+# Copyright lines for the crates whose licence cargo-about can give only as
+# its template ("Copyright (c) <year> <copyright holders>"), because the
+# crate as published has no licence file. generate.mjs puts them in place of
+# the template's line, and stops when a crate needs lines that aren't here
+# or no longer needs the ones that are.
+#
+# One line per copyright line: the crate's name, a colon, a space and the
+# line as the crate's repository has it. Say where it came from: the
+# repository's licence file at the commit the crate was published from
+# (the crate's .cargo_vcs_info.json names it).
+
+# OpenByteDev/dlopen2's LICENSE (MIT) at cc80e4a, which dlopen2 0.8.2 and
+# dlopen2_derive 0.4.3 were published from.
+dlopen2: Copyright (c) 2017 Szymon Wieloch
+dlopen2: Copyright (C) 2019 Ahmed Masud <ahmed.masud@saf.ai>
+dlopen2: Copyright (C) 2022 OpenByte <development.openbyte@gmail.com>
+dlopen2_derive: Copyright (c) 2017 Szymon Wieloch
+dlopen2_derive: Copyright (C) 2019 Ahmed Masud <ahmed.masud@saf.ai>
+dlopen2_derive: Copyright (C) 2022 OpenByte <development.openbyte@gmail.com>
+
+# wravery/webview2-rs's LICENSE (MIT) at edc2caf, which webview2-com 0.39.1
+# and webview2-com-sys 0.39.1 were published from, and at dffa41a, which
+# webview2-com-macros 0.8.1 was published from.
+webview2-com: Copyright (c) 2021 Bill Avery
+webview2-com-macros: Copyright (c) 2021 Bill Avery
+webview2-com-sys: Copyright (c) 2021 Bill Avery
