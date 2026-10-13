@@ -1,6 +1,6 @@
 [package]
 name = "upnext"
-version = "0.1.0-rc.1"
+version = "0.1.0-rc.2"
 edition = "2024"
 # The oldest Rust that builds UpNext with every feature: tray-icon, for the
 # app's icon in the notification area, and its menus (muda) need 1.90; the
