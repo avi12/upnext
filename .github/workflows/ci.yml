@@ -53,7 +53,7 @@ permissions:
 
 # Where the jobs run: GitHub's own runner unless the repository
 # variable UPNEXT_RUNNER_LINUX names a self-hosted runner's label
-# (`upnext-linux`, set while the repository is private; docs/dev/CI-RUNNERS.md).
+# (`upnext-linux`, optional while the repository is private; docs/dev/CI-RUNNERS.md).
 # A new repository has no variables, so it runs on GitHub's runners with no
 # edit here. Never set the variable on a public repository: a fork's pull
 # request runs its own copy of this file, so a self-hosted runner would run a

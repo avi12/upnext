@@ -5,7 +5,7 @@ name: windows
 #
 # Where it runs: GitHub's `windows-latest` unless the repository
 # variable UPNEXT_RUNNER_WINDOWS names a self-hosted runner's label
-# (`upnext-windows`, set while the repository is private;
+# (`upnext-windows`, optional while the repository is private;
 # docs/dev/CI-RUNNERS.md). A new repository has no variables, so it runs on
 # GitHub's runner with no edit here. Never set the variable on a public
 # repository (ci.yml says why); on a self-hosted runner the job is skipped

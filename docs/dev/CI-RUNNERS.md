@@ -1,6 +1,6 @@
 # Self-hosted CI runners
 
-While the repository is private, `ci` and `windows` (and `docker`, if its runner has Docker) run on the owner's own machines instead of GitHub's runners. This page installs a runner on an Arch-based Linux machine and on a Windows 11 Home desktop, turns the workflows over to them, and undoes it all before the repository goes public. Every command runs as the owner, on the machine named in its section; nothing here belongs in the repository afterwards (no machine names, addresses or paths).
+While the repository is private, `ci` and `windows` (and `docker`, if its runner has Docker) can run on the owner's own machines instead of GitHub's runners. That's optional: GitHub's runners run a private repository's workflows too, counted against the private repository's Actions minutes, and every workflow uses them while its variable is unset. This page installs a runner on an Arch-based Linux machine and on a Windows 11 Home desktop, turns the workflows over to them, and undoes it all before the repository goes public. Every command runs as the owner, on the machine named in its section; nothing here belongs in the repository afterwards (no machine names, addresses or paths).
 
 ## What runs where
 
