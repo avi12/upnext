@@ -4,10 +4,6 @@ All notable changes to UpNext are listed here. The format follows [Keep a Change
 
 ## [Unreleased]
 
-### Changed
-
-- UpNext's shared game data downloads from UpNext's own data server, `https://data.upnext.games/upnext-seed.json`, instead of GitHub's release pages, so new data can be published whenever it's rebuilt rather than only with a release of the app. An address given in Settings › Library data or to `upnext seed apply` works as before.
-
 ## [0.1.0] - 2026-10-13
 
 The first public release.
@@ -79,6 +75,7 @@ The first public release.
 
 ### Changed
 
+- UpNext's shared game data downloads from UpNext's own data server, `https://data.upnext.games/upnext-seed.json`, instead of GitHub's release pages, so new data can be published whenever it's rebuilt rather than only with a release of the app. An address given in Settings › Library data or to `upnext seed apply` works as before.
 - Building UpNext from source needs Rust 1.90 or newer (`rust-version` in Cargo.toml, so an older Rust says so plainly) and Node 22.18 or newer; the README asked for current stable Rust and Node 22.12, which the third-party notices script and the web tests had outgrown. The Android app's `core` tests build again without Google's Maven repository (`-Pupnext.coreOnly=true`).
 - The backlog verdicts service holds a reported text only on reports from three keys that each have a published verdict of their own. A key costs nothing to make, so three new keys from one address could hold any published text until a moderator looked; reports from keys with no published verdict are still listed for the moderators.
 - The backlog verdicts service's moderation page lists every reported text under "Reported texts", not only the held ones, so a text with one or two reports is seen too; "Dismiss the reports" clears a shown text's reports.
