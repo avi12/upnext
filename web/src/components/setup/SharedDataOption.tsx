@@ -13,8 +13,8 @@ function errText(e: unknown) {
  *  match, whichever step is open by then; the box only says whether.
  *  It isn't offered when the library had games before the sync (not a first
  *  sync), when shared data is already kept, since each sync applies that
- *  again, or when the newest release's manifest can't be read (none is
- *  published yet, or GitHub can't be reached), since there's nothing to
+ *  again, or when the newest data's manifest can't be read (none is
+ *  published yet, or the data server can't be reached), since there's nothing to
  *  apply; Settings › Library data offers it any time. `empty`: the library
  *  has no games yet. */
 export function SharedDataOption({ seed, empty }: { seed: SeedProgress; empty: boolean }) {
@@ -22,7 +22,7 @@ export function SharedDataOption({ seed, empty }: { seed: SeedProgress; empty: b
   const toast = useToast()
   const open = seed.state === 'waiting' || (seed.state === 'idle' && empty)
   const status = useQuery({ queryKey: ['seed'], queryFn: api.seed, staleTime: 30_000, enabled: open })
-  // Read by the server from the newest release; without it there is nothing to offer.
+  // Read by the server from UpNext's data server; without it there is nothing to offer.
   const offer = useQuery({ queryKey: ['seed-offer'], queryFn: api.seedOffer, retry: false, staleTime: Infinity, enabled: open })
   const choose = useMutation({
     mutationFn: (on: boolean) => api.setupBackground({ seed: on }),

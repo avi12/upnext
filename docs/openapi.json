@@ -9158,7 +9158,7 @@
         "tags": [
           "seed"
         ],
-        "description": "What shared data is applied: how many titles have summaries from it, its date, the kept copy that games added later get theirs from after a sync, the latest times it was applied, and where the newest release's data is.",
+        "description": "What shared data is applied: how many titles have summaries from it, its date, the kept copy that games added later get theirs from after a sync, the latest times it was applied, and where the newest published data is.",
         "operationId": "seed_get",
         "responses": {
           "200": {
@@ -9467,7 +9467,7 @@
         "tags": [
           "seed"
         ],
-        "description": "Read a release's manifest without downloading its data: how many games and how recent, for the first-run wizard's \"Use UpNext's game data (10,000 games, updated October 2026)\". A POST, though it changes nothing, so another website can't make the server fetch an address with an image or a link.",
+        "description": "Read a manifest without downloading its data: how many games and how recent, for the first-run wizard's \"Use UpNext's game data (10,000 games, updated October 2026)\". A POST, though it changes nothing, so another website can't make the server fetch an address with an image or a link.",
         "operationId": "seed_offer",
         "requestBody": {
           "content": {
@@ -19540,13 +19540,13 @@
               "string",
               "null"
             ],
-            "description": "A manifest (`upnext-seed.json`) or data file (`upnext-seed-<date>.jsonl.gz`), http or https.\nDefault: the newest release's manifest."
+            "description": "A manifest (`upnext-seed.json`) or data file (`upnext-seed-<date>.jsonl.gz`), http or https.\nDefault: the newest published data's manifest."
           }
         }
       },
       "SeedManifest": {
         "type": "object",
-        "description": "What a release says about its data, beside the data file.",
+        "description": "What the published data says about itself, beside the data file.",
         "required": [
           "upnext_seed",
           "date",
@@ -19599,7 +19599,7 @@
               "string",
               "null"
             ],
-            "description": "A manifest's address (default: the newest release's)."
+            "description": "A manifest's address (default: the newest published data's)."
           }
         }
       },
@@ -19682,7 +19682,7 @@
           },
           "default_url": {
             "type": "string",
-            "description": "Where the newest release's data is."
+            "description": "Where the newest published data is, UpNext's data server."
           }
         }
       },

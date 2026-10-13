@@ -4,6 +4,10 @@ All notable changes to UpNext are listed here. The format follows [Keep a Change
 
 ## [Unreleased]
 
+### Changed
+
+- UpNext's shared game data downloads from UpNext's own data server, `https://data.upnext.games/upnext-seed.json`, instead of GitHub's release pages, so new data can be published whenever it's rebuilt rather than only with a release of the app. An address given in Settings › Library data or to `upnext seed apply` works as before.
+
 ## [0.1.0] - 2026-10-13
 
 The first public release.
@@ -59,7 +63,7 @@ The first public release.
 - A "Send to UpNext" bookmark connects GOG where no sign-in window can open: in Docker, or from another device.
 - UpNext's shared game data: People say, Vibes and review tags for popular games, written once and shared under CC0, applied with `upnext seed apply` or Settings › Library data, "Shared game data", so those games need no AI call and no review fetch. Games added later get theirs after a sync, and "What players wrote" fetches a seeded game's reviews when it's opened. The API has `/api/v1/seed` (status, apply, remove), `/api/v1/seed/upload`, `/api/v1/seed/offer` and `POST /api/v1/games/{id}/reviews`.
 - Setup's first sync offers UpNext's shared game data, on by default, and applies it when the sync finishes.
-- For maintainers, `upnext seed build`, `seed fetch`, `seed generate` and `seed export` build the shared game data in a database of their own: SteamSpy's 10,000 most-owned games, their Steam reviews and GOG ids, summaries on the AI the build's settings name, and the two release files. Summaries that copy 8 or more words from a review are written again or left out. `docs/dev/RELEASE.md` has the steps.
+- For maintainers, `upnext seed build`, `seed fetch`, `seed generate` and `seed export` build the shared game data in a database of their own: SteamSpy's 10,000 most-owned games, their Steam reviews and GOG ids, summaries on the AI the build's settings name, and the two files to publish. Summaries that copy 8 or more words from a review are written again or left out. `docs/dev/RELEASE.md` has the steps.
 - Settings › Accounts lists the stores GOG Galaxy brings in (EA app, Xbox, Ubisoft Connect…) with each one's game count and the date a game was last added, and a store unticked there is left out of the sync, with the copies read from it before removed. A store that drops out of Galaxy keeps its copies until it is unticked.
 - An AI server's "Thinking" setting (`openai_thinking`): off by default for a server at home, so a local Qwen or similar answers a pick without minutes of reasoning first.
 - `steam_include_hidden`: games hidden in the Steam client are left out of a sync unless this is on.
@@ -186,7 +190,7 @@ The first public release.
 - A failed backup left an empty file that counted toward "keep N" and pushed good backups out.
 - A Claude or Codex CLI that hung without reading its prompt held the job slot until a restart, and cancelling an AI job waited for running calls for up to 15 minutes.
 - With the network down, Fetch details held the job slot for hours: ProtonDB, GOG and the Second Chance fetch now give up after a few failures in a row, and the Second Chance fetch keeps to its limit.
-- The first-sync step offered UpNext's shared game data before any was published, then ended the sync with a 404 error; it is now offered only when a release carries it.
+- The first-sync step offered UpNext's shared game data before any was published, then ended the sync with a 404 error; it is now offered only once data is published.
 - A Galaxy sync imported family-shared Steam games, EA Play subscription titles, open betas and test servers as owned games, and read dates with a time zone offset as no date.
 - The Library's store filter left out the stores Galaxy brings in, and the game sheet called them "Origin" and "Xboxone".
 - "A hidden gem" always found nothing with HowLongToBeat off. Without a HowLongToBeat time, players' review tags and Steam's tags now say whether a game is short or long, and a game nothing speaks for counts, after the short ones.

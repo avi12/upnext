@@ -447,7 +447,7 @@ Check that the release has `upnext-steam-linux-sources.tar` and its `.sha256` (t
 
 ## Building the shared game data
 
-The shared game data (People say, Vibes and review tags for the 10,000 most-owned games on Steam, CC0) is built on a Linux machine with a checkout, and attached to a release as two files: `upnext-seed-<date>.jsonl.gz` and `upnext-seed.json`. The build runs in a database of its own, never the live one, and its titles come from SteamSpy's catalogue, not from anyone's library: `upnext seed build` refuses UpNext's usual database and any database with a library in it. Every step stores as it goes, so a step that stops (a failure, a reboot, a timeout) carries on when the same command runs again.
+The shared game data (People say, Vibes and review tags for the 10,000 most-owned games on Steam, CC0) is built on a Linux machine with a checkout and published on UpNext's data server, `https://data.upnext.games`, as two files: `upnext-seed-<date>.jsonl.gz` and `upnext-seed.json`. The app's default address (`DEFAULT_URL` in `src/seed.rs`) is that manifest's, so new data reaches every install whenever it's published, with or without a release of the app. The server is a public Cloudflare R2 bucket behind that address, with no Worker; [UpNext's data server](#upnexts-data-server-once) sets it up. The build runs in a database of its own, never the live one, and its titles come from SteamSpy's catalogue, not from anyone's library: `upnext seed build` refuses UpNext's usual database and any database with a library in it. Every step stores as it goes, so a step that stops (a failure, a reboot, a timeout) carries on when the same command runs again.
 
 The steps, in order. The examples use `~/src/upnext` for the checkout, `~/upnext-seed` for the build's folder and `http://192.168.0.42:8000/v1` for the model server; use your own.
 
@@ -501,7 +501,44 @@ The steps, in order. The examples use `~/src/upnext` for the checkout, `~/upnext
 
    It writes `upnext-seed-<today>.jsonl.gz` and `upnext-seed.json`, and leaves out games without a summary and summaries that still copy a review. Check them on a mock library, which needs no AI: `UPNEXT_DATA_DIR=$(mktemp -d) sh -c "$U mock-library && $U seed apply ~/upnext-seed/release/upnext-seed.json"`.
 
-6. **Publishing** is the maintainer's call, after Valve's API terms are read: `gh release upload vX.Y.Z ~/upnext-seed/release/upnext-seed.json ~/upnext-seed/release/upnext-seed-<date>.jsonl.gz`. Nothing else from the build's folder goes anywhere: not its database, not its settings.
+6. **Publishing** is the maintainer's call, after Valve's API terms are read. With wrangler from the verdicts service's folder, signed in to the account that holds the bucket (`npx wrangler whoami`), upload the data file first and the manifest after it, so the manifest never names a file that isn't there yet. `<date>` is the date in the data file's name, which the manifest's `file` gives:
+
+   ```sh
+   cd ~/src/upnext/services/verdicts && npm ci
+   npx wrangler r2 object put upnext-shared-data/upnext-seed-<date>.jsonl.gz --remote \
+     --file ~/upnext-seed/release/upnext-seed-<date>.jsonl.gz \
+     --content-type application/gzip --cache-control "public, max-age=31536000, immutable"
+   npx wrangler r2 object put upnext-shared-data/upnext-seed.json --remote \
+     --file ~/upnext-seed/release/upnext-seed.json \
+     --content-type application/json --cache-control "public, max-age=300"
+   curl -sSI https://data.upnext.games/upnext-seed.json | grep -i '^content-type'   # application/json
+   UPNEXT_DATA_DIR=$(mktemp -d) sh -c "$U mock-library && $U seed apply https://data.upnext.games/upnext-seed.json"
+   ```
+
+   Without `--remote`, wrangler writes to a local bucket under `.wrangler/` and nothing is published. A dated data file never changes, so it may be cached for a year; the manifest changes with each publish, so caches keep it five minutes. Leave the content encoding unset: UpNext unpacks the `.gz` itself. Older data files can stay in the bucket (about 3 MB each): only the manifest says which is newest, and installs apply their own kept copy. Nothing else from the build's folder goes anywhere: not its database, not its settings.
+
+### UpNext's data server (once)
+
+A bucket of its own, separate from the verdicts service's private one, served as plain files at `https://data.upnext.games`. R2's free tier covers it (10 GB of storage, 10 million reads a month, no egress charge; [VERDICTS-SERVICE.md](VERDICTS-SERVICE.md) has the table). The steps use the Cloudflare dashboard; each has its wrangler line, run from `services/verdicts` after `npm ci` and `npx wrangler login`. No step puts an account id or zone id in the repository.
+
+1. **R2.** If the verdicts service runs on the same account, R2 is on already. Otherwise turn it on once: Storage & Databases › R2 Object Storage, which asks for a payment method even on the free plan.
+2. **The bucket.** R2 Object Storage › Create bucket. Name it `upnext-shared-data`, leave the location on Automatic and the storage class on Standard, and select Create bucket.
+
+   ```sh
+   npx wrangler r2 bucket create upnext-shared-data
+   ```
+
+3. **Its address.** In the bucket, Settings › Custom Domains › Add. Enter `data.upnext.games` (the domain has to be a zone in the same Cloudflare account), select Continue, then Connect Domain. Cloudflare adds the DNS record itself, and the domain shows Active once its certificate is issued, usually within a few minutes. The bucket's files are then readable by anyone at that address, which is what makes it public.
+
+   ```sh
+   npx wrangler r2 bucket domain add upnext-shared-data --domain data.upnext.games --zone-id <zone id>
+   npx wrangler r2 bucket domain list upnext-shared-data   # data.upnext.games, enabled
+   ```
+
+   The zone id is on the domain's Overview page in the dashboard (API, Zone ID). Leave the bucket's Public Development URL (`r2.dev`) disabled: it is rate-limited and not meant for downloads, and the custom domain is the only address the app knows.
+4. **Check it** once the first data is uploaded (step 6 above): `curl -sSI https://data.upnext.games/upnext-seed.json` answers `200` with `content-type: application/json`. Until then the app's wizard and Settings say no shared data is published yet, which isn't an error.
+
+A copy of UpNext run by someone else can publish its own data the same way under its own domain; players then give that manifest's address in Settings › Library data or to `upnext seed apply`.
 
 ## Going public (once, for 0.1.0)
 

@@ -1,6 +1,6 @@
 # Privacy
 
-Everything UpNext knows is in its database on your computer: `~/.local/share/upnext` on Linux, `%LOCALAPPDATA%\upnext` on Windows, the `/data` volume in Docker. There's no account and no analytics. UpNext's one server is the backlog verdicts service, and it hears from your computer only when you publish a verdict or while verdicts from other players are on (the setup wizard turns them on; Settings › Library data turns them off). These are the services UpNext talks to, and what each gets:
+Everything UpNext knows is in its database on your computer: `~/.local/share/upnext` on Linux, `%LOCALAPPDATA%\upnext` on Windows, the `/data` volume in Docker. There's no account and no analytics. UpNext's own servers are the shared game data server, which your computer downloads from at setup and when you ask, and the backlog verdicts service, which hears from your computer only when you publish a verdict or while verdicts from other players are on (the setup wizard turns them on; Settings › Library data turns them off). These are the services UpNext talks to, and what each gets:
 
 | Service | When | What it's sent |
 |---|---|---|
@@ -14,7 +14,7 @@ Everything UpNext knows is in its database on your computer: `~/.local/share/upn
 | IGDB, RAWG | Fetching details, with your own credentials | Your credentials, game names |
 | HowLongToBeat | Only when you turn it on | Game names |
 | Your identity provider | Only if you set one up, when someone signs in with it | Your browser goes to it; UpNext reads its public settings and keys and sends it the sign-in's code with UpNext's client id and secret; it answers with who signed in |
-| UpNext's shared game data, on GitHub's release pages | Once during setup, unless you untick it, and when you ask for it again (Settings › Library data, or `upnext seed apply`) | Nothing about you; GitHub sees your address, as any server does |
+| UpNext's shared game data (`https://data.upnext.games`, or another address you give) | Once during setup, unless you untick it, and when you ask for it again (Settings › Library data, or `upnext seed apply`) | Nothing about you; like any request, it shows the server your address and UpNext's version |
 | UpNext's backlog verdicts service (`https://verdicts.upnext.games`, or another address in `verdicts_url`) | Daily, if verdicts from other players are on; and when you publish, withdraw or report a verdict | The daily download sends nothing about you; like any request, it shows the service your address and UpNext's version. A verdict you publish goes with your player's random key, never your name, accounts or library, and is published under CC0 ([Backlog verdicts](backlog-verdicts.md)) |
 | Steam, GOG, IGDB and Epic image servers | When a page shows cover art | Your browser loads the images directly, so these servers see your IP address |
 | Anthropic, OpenAI and OpenRouter pricing pages | Weekly, to show costs | Nothing about you |

@@ -393,7 +393,7 @@ enum SeedCmd {
     /// Kept, so games added later get theirs after a sync
     Apply {
         /// A manifest (upnext-seed.json) or data file (upnext-seed-<date>.jsonl.gz), as a path or URL
-        /// (default: the newest release's)
+        /// (default: the newest published data's)
         from: Option<String>,
     },
     /// What shared data is applied, and when
@@ -419,7 +419,7 @@ enum SeedCmd {
         #[arg(long)]
         limit: Option<usize>,
     },
-    /// Maintainers: write the release assets, upnext-seed-<date>.jsonl.gz and upnext-seed.json
+    /// Maintainers: write the files to publish, upnext-seed-<date>.jsonl.gz and upnext-seed.json
     Export {
         /// The folder to write them in
         #[arg(long)]

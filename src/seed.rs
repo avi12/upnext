@@ -1,5 +1,5 @@
 //! UpNext's shared game data: People say, Vibes and review tags for
-//! popular games, written once and published under CC0 with each release,
+//! popular games, written once and published under CC0 on UpNext's data server,
 //! so a new install has summaries for most of its library without fetching a
 //! review or calling an AI. This is the side that reads and applies the
 //! data; `build` makes it.
@@ -9,7 +9,7 @@
 //!   [`Header`]; every other line is one game, an [`Entry`]. The header's
 //!   `sha256` is of everything after the first line, uncompressed, so the
 //!   file checks itself wherever it came from.
-//! - `upnext-seed.json`: the [`Manifest`] beside it on a release, with the
+//! - `upnext-seed.json`: the [`Manifest`] beside it on the server, with the
 //!   header's facts and the data file's name, size and SHA-256, so the
 //!   first-run wizard can say what it offers before downloading anything.
 //!
@@ -36,9 +36,10 @@ pub const LICENCE: &str = "CC0-1.0";
 pub const NOTICE: &str = "UpNext's shared game data: AI-written summaries (People say, Vibes) and review tags, \
 dedicated to the public domain under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/). \
 It holds no player reviews, store descriptions or personal data. The games' names belong to their owners.";
-/// Where the newest release's manifest downloads from: what the wizard and
-/// Settings offer by default.
-pub const DEFAULT_URL: &str = "https://github.com/zytocc/upnext/releases/latest/download/upnext-seed.json";
+/// Where the newest data's manifest downloads from, UpNext's data server:
+/// what the wizard and Settings offer by default. The data file sits beside
+/// it (docs/dev/RELEASE.md says how it's published).
+pub const DEFAULT_URL: &str = "https://data.upnext.games/upnext-seed.json";
 
 /// Limits on what is read, so a wrong or hostile file can't fill memory.
 /// The real data is about 3 MB compressed for 10,000 games.
@@ -68,7 +69,7 @@ pub struct Header {
     pub notice: String,
 }
 
-/// What a release says about its data, beside the data file.
+/// What the published data says about itself, beside the data file.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, utoipa::ToSchema)]
 #[schema(as = SeedManifest)]
 #[serde(deny_unknown_fields)]
@@ -361,8 +362,8 @@ pub fn apply_and_record(db: &Db, seed: &Seed, source: &str) -> Result<Applied> {
 // -- where data comes from ----------------------------------------------------
 
 /// The client shared data is downloaded with. It follows at most five
-/// redirects, and only to https addresses: the release download goes on to
-/// GitHub's file host, and a redirect down to plain http would let anyone on
+/// redirects, and only to https addresses: another address may move its
+/// files elsewhere, and a redirect down to plain http would let anyone on
 /// the way change what comes back. Nothing checks where an address points,
 /// the server's own network included: the server's API takes only an
 /// http(s) scheme (`web_address`), and asking it to fetch an address needs
@@ -387,7 +388,7 @@ fn is_url(from: &str) -> bool {
 async fn download(http: &reqwest::Client, url: &str, max: usize) -> Result<Vec<u8>> {
     let mut resp = http.get(url).send().await.with_context(|| format!("couldn't download {url}"))?;
     if resp.status() == reqwest::StatusCode::NOT_FOUND {
-        // What the newest release answers until shared data is published.
+        // What the data server answers until shared data is published.
         return Err(Refused(format!("no shared game data is published at {url} yet (it answered 404)")).into());
     }
     if !resp.status().is_success() {
@@ -564,7 +565,7 @@ pub struct SeedStatus {
     pub kept: Option<String>,
     /// The latest times shared data was applied, newest first.
     pub applies: Vec<SeedApply>,
-    /// Where the newest release's data is.
+    /// Where the newest published data is, UpNext's data server.
     pub default_url: String,
 }
 

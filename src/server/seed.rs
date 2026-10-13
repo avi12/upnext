@@ -54,9 +54,9 @@ async fn apply(state: &AppState, loaded: seed::Loaded, source: String) -> ApiRes
     Ok(Json(apply_loaded(state, loaded, source).await?))
 }
 
-/// The setup wizard's apply when the first sync ends: the release's
-/// data at `url`. None when its manifest can't be read, since no release
-/// has published one yet or the release can't be reached: there's nothing
+/// The setup wizard's apply when the first sync ends: the published
+/// data at `url`. None when its manifest can't be read, since none is
+/// published yet or the server can't be reached: there's nothing
 /// to apply, which isn't a failure.
 pub(super) async fn apply_offered(state: &AppState, url: &str) -> anyhow::Result<Option<Applied>> {
     let http = http()?;
@@ -70,7 +70,7 @@ pub(super) async fn apply_offered(state: &AppState, url: &str) -> anyhow::Result
 }
 
 #[utoipa::path(get, path = "/seed", tag = "seed", operation_id = "seed_get",
-    description = "What shared data is applied: how many titles have summaries from it, its date, the kept copy that games added later get theirs from after a sync, the latest times it was applied, and where the newest release's data is.",
+    description = "What shared data is applied: how many titles have summaries from it, its date, the kept copy that games added later get theirs from after a sync, the latest times it was applied, and where the newest published data is.",
     responses((status = 200, body = SeedStatus)))]
 async fn seed_get(State(state): State<AppState>) -> ApiResult<SeedStatus> {
     Ok(Json(seed::status(&state.db, &state.cfg())?))
@@ -79,7 +79,7 @@ async fn seed_get(State(state): State<AppState>) -> ApiResult<SeedStatus> {
 #[derive(Debug, Default, Deserialize, utoipa::ToSchema)]
 #[schema(as = SeedOfferBody)]
 pub struct OfferBody {
-    /// A manifest's address (default: the newest release's).
+    /// A manifest's address (default: the newest published data's).
     url: Option<String>,
 }
 
@@ -104,7 +104,7 @@ fn web_address(url: Option<String>) -> Result<String, ApiError> {
 }
 
 #[utoipa::path(post, path = "/seed/offer", tag = "seed", operation_id = "seed_offer",
-    description = "Read a release's manifest without downloading its data: how many games and how recent, for the first-run wizard's \"Use UpNext's game data (10,000 games, updated October 2026)\". \
+    description = "Read a manifest without downloading its data: how many games and how recent, for the first-run wizard's \"Use UpNext's game data (10,000 games, updated October 2026)\". \
         A POST, though it changes nothing, so another website can't make the server fetch an address with an image or a link.",
     request_body = Option<OfferBody>,
     responses((status = 200, body = Manifest),
@@ -119,7 +119,7 @@ async fn seed_offer(body: Option<Json<OfferBody>>) -> ApiResult<Manifest> {
 #[schema(as = SeedApplyBody)]
 pub struct ApplyBody {
     /// A manifest (`upnext-seed.json`) or data file (`upnext-seed-<date>.jsonl.gz`), http or https.
-    /// Default: the newest release's manifest.
+    /// Default: the newest published data's manifest.
     url: Option<String>,
 }
 

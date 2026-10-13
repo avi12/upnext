@@ -1799,11 +1799,11 @@ export interface StatementEdit {
   confirm?: boolean
 }
 
-/** UpNext's shared game data: what is applied, and the newest release's address. */
+/** UpNext's shared game data: what is applied, and the data server's address. */
 export type SeedStatus = components['schemas']['SeedStatus']
 /** What applying shared data did. */
 export type SeedApplied = components['schemas']['SeedApplied']
-/** A release's shared data, read before downloading it: how many games and how recent. */
+/** Published shared data, read before downloading it: how many games and how recent. */
 export type SeedManifest = components['schemas']['SeedManifest']
 
 // ---------------------------------------------------------------------------

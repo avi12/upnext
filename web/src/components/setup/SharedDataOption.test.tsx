@@ -7,7 +7,7 @@ import type { SeedProgress, SeedStatus, SetupBackground } from '../../types'
 import { ToastProvider } from '../Toast'
 import { SharedDataOption } from './SharedDataOption'
 
-const DEFAULT_URL = 'https://github.com/zytocc/upnext/releases/latest/download/upnext-seed.json'
+const DEFAULT_URL = 'https://data.upnext.games/upnext-seed.json'
 const MANIFEST = {
   upnext_seed: 1,
   date: '2026-10-01',
@@ -32,7 +32,7 @@ function mount({ progress = seed('waiting'), empty = true, kept = null as string
   if (offer) vi.spyOn(api, 'seedOffer').mockResolvedValue(MANIFEST)
   else
     vi.spyOn(api, 'seedOffer').mockRejectedValue(
-      new ApiError(400, 'no shared game data is published at https://github.com/zytocc/upnext/releases/latest/download/upnext-seed.json yet (it answered 404)'),
+      new ApiError(400, 'no shared game data is published at https://data.upnext.games/upnext-seed.json yet (it answered 404)'),
     )
   const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })
   const tree = (p: SeedProgress) => (
@@ -51,7 +51,7 @@ const background = (wanted: boolean): SetupBackground => ({ sync_waiting: false,
 describe('The setup wizard, UpNext’s game data', () => {
   afterEach(() => vi.restoreAllMocks())
 
-  it('is on by default with the newest release’s numbers, and says when the server applied it', async () => {
+  it('is on by default with the newest data’s numbers, and says when the server applied it', async () => {
     const s = mount()
     const box = await screen.findByRole('checkbox', { name: /Use UpNext’s game data \(10,000 games, updated October 2026\)/ })
     expect((box as HTMLInputElement).checked).toBe(true)

@@ -1753,7 +1753,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description What shared data is applied: how many titles have summaries from it, its date, the kept copy that games added later get theirs from after a sync, the latest times it was applied, and where the newest release's data is. */
+        /** @description What shared data is applied: how many titles have summaries from it, its date, the kept copy that games added later get theirs from after a sync, the latest times it was applied, and where the newest published data is. */
         get: operations["seed_get"];
         put?: never;
         /** @description Download shared data and apply it: matching titles get People say, Vibes and review tags, with no review fetch and no AI call. An install's own summary written with the same prompt version or a newer one is kept. The data is kept, so games added later get theirs after a sync. */
@@ -1791,7 +1791,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Read a release's manifest without downloading its data: how many games and how recent, for the first-run wizard's "Use UpNext's game data (10,000 games, updated October 2026)". A POST, though it changes nothing, so another website can't make the server fetch an address with an image or a link. */
+        /** @description Read a manifest without downloading its data: how many games and how recent, for the first-run wizard's "Use UpNext's game data (10,000 games, updated October 2026)". A POST, though it changes nothing, so another website can't make the server fetch an address with an image or a link. */
         post: operations["seed_offer"];
         delete?: never;
         options?: never;
@@ -4550,11 +4550,11 @@ export interface components {
         SeedApplyBody: {
             /**
              * @description A manifest (`upnext-seed.json`) or data file (`upnext-seed-<date>.jsonl.gz`), http or https.
-             *     Default: the newest release's manifest.
+             *     Default: the newest published data's manifest.
              */
             url?: string | null;
         };
-        /** @description What a release says about its data, beside the data file. */
+        /** @description What the published data says about itself, beside the data file. */
         SeedManifest: {
             /** Format: int64 */
             upnext_seed: number;
@@ -4572,7 +4572,7 @@ export interface components {
             sha256: string;
         };
         SeedOfferBody: {
-            /** @description A manifest's address (default: the newest release's). */
+            /** @description A manifest's address (default: the newest published data's). */
             url?: string | null;
         };
         SeedProgress: {
@@ -4604,7 +4604,7 @@ export interface components {
             kept?: string | null;
             /** @description The latest times shared data was applied, newest first. */
             applies: components["schemas"]["SeedApply"][];
-            /** @description Where the newest release's data is. */
+            /** @description Where the newest published data is, UpNext's data server. */
             default_url: string;
         };
         /** @description A game in a series, whether or not the person owns it. */

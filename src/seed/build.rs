@@ -1,6 +1,6 @@
 //! Building UpNext's shared data: the 10,000 most-owned
 //! games on Steam, their reviews, the summaries written from them, and the
-//! export to the release assets the apply side reads.
+//! export to the two files the apply side reads.
 //!
 //! The build runs in a database of its own (`UPNEXT_DATA_DIR` set to an
 //! empty folder), never in a library: the list comes from SteamSpy's
@@ -650,7 +650,7 @@ fn entries(db: &Db, cfg: &Config) -> Result<(Vec<Entry>, usize, usize)> {
     Ok((out, unwritten, copying))
 }
 
-/// Write the release assets into `out`: `upnext-seed-<date>.jsonl.gz` and
+/// Write the files to publish into `out`: `upnext-seed-<date>.jsonl.gz` and
 /// its manifest, `upnext-seed.json`. The data is read back with the apply
 /// side's own checks before anything is written.
 pub fn export(db: &Db, cfg: &Config, out: &Path, date: &str) -> Result<Exported> {

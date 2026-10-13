@@ -2,7 +2,7 @@
 
 [API index](../API.md) · [Game details](details.md) · [Background work in setup](setup-background.md)
 
-UpNext's shared data is People say, Vibes and review tags for popular games, written once by UpNext's maintainers and published under CC0 with each release. Applying it gives matching titles their summaries with no review fetch and no AI call.
+UpNext's shared data is People say, Vibes and review tags for popular games, written once by UpNext's maintainers and published under CC0 on UpNext's data server, `https://data.upnext.games`. New data is published there when it's rebuilt, not with each release of the app. Applying it gives matching titles their summaries with no review fetch and no AI call.
 
 - Each title is matched by its Steam appid, then by the GOG id of any of its GOG copies.
 - A title keeps its own summary when that was written with the same prompt version (`DIGEST_VERSION`) or a newer one; an older own summary, or older shared data, gives way.
@@ -16,19 +16,19 @@ Version 1, in `src/seed.rs`. `upnext-seed-<date>.jsonl.gz` is gzipped JSON lines
 
 Any other field refuses the whole file: that's the allowlist (identifiers, the three AI-written texts, and how and when they were written). Tag values outside this build's vocabulary are dropped, as they are from the AI's replies.
 
-Beside it on a release, `upnext-seed.json` is the manifest: `{"upnext_seed": 1, "date", "count", "licence", "notice", "file": "upnext-seed-<date>.jsonl.gz", "bytes", "sha256"}`, with the data file's size and SHA-256 as downloaded. A damaged file, a checksum or count that doesn't match, a newer format or another licence refuses the file before anything is written.
+Beside it on the server, `upnext-seed.json` is the manifest: `{"upnext_seed": 1, "date", "count", "licence", "notice", "file": "upnext-seed-<date>.jsonl.gz", "bytes", "sha256"}`, with the data file's size and SHA-256 as downloaded. A damaged file, a checksum or count that doesn't match, a newer format or another licence refuses the file before anything is written.
 
 ## GET /api/seed
 
 ```json
 {"seeded": 812, "seed_date": "2026-10-01", "kept": "upnext-seed-2026-10-01.jsonl.gz", "applies": [SeedApply],
- "default_url": "https://github.com/zytocc/upnext/releases/latest/download/upnext-seed.json"}
+ "default_url": "https://data.upnext.games/upnext-seed.json"}
 ```
 
 - `seeded`: titles whose summary came from shared data; `seed_date` the newest data's date among them.
 - `kept`: the data file applied again after each sync, or null.
 - `applies`: the latest five applies, newest first: `{"applied_at", "seed_date", "source", "entries", "matched", "written", "kept_own"}`. `source` is the address, the uploaded file's name, or "the kept shared data, after a sync" (recorded only when that wrote something).
-- `default_url`: the newest release's manifest.
+- `default_url`: the newest published data's manifest, on UpNext's data server.
 
 ## POST /api/seed
 

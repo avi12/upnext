@@ -452,9 +452,9 @@ export const api = {
 
   /** UpNext's shared game data: what is applied. */
   seed: () => request<SeedStatus>('/api/v1/seed'),
-  /** The newest release's shared data, read by the server without downloading it: for the setup wizard. */
+  /** The newest published shared data, read by the server without downloading it: for the setup wizard. */
   seedOffer: () => request<SeedManifest>('/api/v1/seed/offer', { method: 'POST' }),
-  /** Download shared data and apply it; without an address, the newest release's. */
+  /** Download shared data and apply it; without an address, the newest published data. */
   applySeed: (url?: string) => request<SeedApplied>('/api/v1/seed', { method: 'POST', body: JSON.stringify(url ? { url } : {}) }),
   /** Apply a shared data file from this computer. */
   uploadSeed: (file: File) =>

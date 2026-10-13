@@ -57,7 +57,7 @@ pub fn status(cfg: &Config) -> Result<()> {
     }
     let s = seed::status(&db, &cfg)?;
     match (&s.seed_date, &s.kept) {
-        (None, None) => println!("No shared data in use. `upnext seed apply` applies the newest release's."),
+        (None, None) => println!("No shared data in use. `upnext seed apply` applies the newest published data."),
         _ => println!(
             "{} summaries from UpNext's shared data{}.",
             crate::enrich::plural(s.seeded, "title has", "titles have"),

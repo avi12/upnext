@@ -7,7 +7,7 @@ import type { SeedStatus } from '../../types'
 import { ToastProvider } from '../Toast'
 import { SharedDataRow } from './SharedData'
 
-const DEFAULT_URL = 'https://github.com/zytocc/upnext/releases/latest/download/upnext-seed.json'
+const DEFAULT_URL = 'https://data.upnext.games/upnext-seed.json'
 
 function status(seeded: number): SeedStatus {
   return {
@@ -37,7 +37,7 @@ function setup(seeded: number) {
 describe('Settings, shared game data', () => {
   afterEach(() => vi.restoreAllMocks())
 
-  it("says it isn't used, and applies the newest release's", async () => {
+  it("says it isn't used, and applies the newest published data", async () => {
     const apply = vi.spyOn(api, 'applySeed').mockResolvedValue({ date: '2026-10-01', entries: 10000, matched: 812, written: 812, kept_own: 0, already: 0 })
     const user = setup(0)
     expect(await screen.findByText('· not used')).toBeTruthy()

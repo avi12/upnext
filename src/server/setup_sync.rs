@@ -80,7 +80,7 @@ pub enum SeedState {
     Failed,
     /// Not applied: the library had games already (not a first sync),
     /// shared data is kept already (each sync applies it), it was turned
-    /// off, or the newest release has none or couldn't be reached.
+    /// off, or none is published or the data server couldn't be reached.
     Skipped,
 }
 
@@ -137,7 +137,7 @@ struct Plan {
 #[derive(Default)]
 pub struct WizardJobs {
     plan: Mutex<Plan>,
-    /// Where the shared data comes from: the newest release's, unless a
+    /// Where the shared data comes from: the newest published data, unless a
     /// test points it at a mock.
     seed_url: Mutex<Option<String>>,
 }

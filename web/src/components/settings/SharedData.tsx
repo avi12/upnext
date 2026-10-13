@@ -13,7 +13,7 @@ function errText(e: unknown) {
 
 /** UpNext's shared game data: People say, Vibes and tags for popular
  *  games, applied without fetching reviews or asking the AI. Apply it from the
- *  newest release, another address or a file; see what's applied; stop using it. */
+ *  data server, another address or a file; see what's applied; stop using it. */
 export function SharedDataRow() {
   const qc = useQueryClient()
   const toast = useToast()
