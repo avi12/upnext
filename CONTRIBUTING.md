@@ -1,6 +1,6 @@
 # Contributing to UpNext
 
-Thanks for looking. UpNext is a Rust server (axum, rusqlite, clap) in `src/` with a React, Vite and Tailwind UI in `web/`. This page covers setting up and the project's conventions. [Checks](docs/contributing/checks.md) has the tests CI runs, and [Where things go](docs/contributing/code-map.md) is a map of the code. `CLAUDE.md` has the same rules in short, for contributors who use Claude Code.
+Thanks for looking. UpNext is a Rust server (axum, rusqlite, clap) in `src/` with a React, Vite and Tailwind UI in `web/`. This page covers setting up and the project's conventions. [Checks](docs/contributing/checks.md) has the tests CI runs, and [Where things go](docs/contributing/code-map.md) is a map of the code. `AGENTS.md` has the same rules in short, for contributors who use an AI coding agent.
 
 UpNext itself is developed with AI coding assistants, mostly Claude Code, as the README says. A pull request written with an assistant's help is welcome on the same terms as any other: it passes the checks, and you stand behind every line of it.
 

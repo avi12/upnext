@@ -1,6 +1,6 @@
 # UpNext
 
-A local, single-user game-backlog picker: a Rust server (axum, rusqlite, clap) in `src/` and a React, Vite and Tailwind UI in `web/`. README.md says what it does; CONTRIBUTING.md has setup, with the checks and where things go in `docs/contributing/`. This file is the short form for Claude Code.
+A local, single-user game-backlog picker: a Rust server (axum, rusqlite, clap) in `src/` and a React, Vite and Tailwind UI in `web/`. README.md says what it does; CONTRIBUTING.md has setup, with the checks and where things go in `docs/contributing/`. This file is the short form for AI coding agents.
 
 ## Checks before a commit
 
