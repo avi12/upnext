@@ -53,10 +53,12 @@ Every build of the programs also serves the file at `/third-party-notices.txt` (
 2. In `CHANGELOG.md`, turn `## [Unreleased]` into `## [X.Y.Z] - YYYY-MM-DD` with that day's date, and start a new empty `## [Unreleased]` above it (for 0.1.0, fold it into the existing section instead, as "Going public" step 2 says). In `contrib/flatpak/io.github.zytocc.UpNext.metainfo.xml`, add `<release version="X.Y.Z" date="YYYY-MM-DD">` with a line on what's new at the top of `<releases>` (the 0.1.0 line's date becomes the day it's tagged), and check it with `appstreamcli validate --no-net` on that file.
 3. Preview what the release will say and build: `dist plan --tag=vX.Y.Z` lists the files, and `dist build --tag=vX.Y.Z` builds the archive for the machine it runs on into `target/distrib/` (build `web/dist` first: `cd web && npm ci && npm run build`). To try the MSI, build it on a Windows machine and run through "Checking an MSI" in `contrib/windows/README.md`. To try the Linux packages, build them from a release build on Linux (`cargo build --release --locked --bins`, then `contrib/linux/build-packages.sh --bin-dir target/release`, which writes them to `target/linux-packages`) and run `contrib/linux/smoke-test.sh` on each, as the workflow does (its comment has the command); it needs docker. To try the Arch package, run `contrib/arch/build-package.sh --tag vX.Y.Z --dist-dir target/distrib` after `dist build`, which writes it and the `PKGBUILD` to `target/arch-package`, then the smoke test in `archlinux:latest`; it needs docker and Arch's mirrors, and on Arch itself `--host` builds with the machine's makepkg instead (the script's comment has the options).
 4. Commit, push, and wait for `ci` to pass on that commit. Check too that the `notices` workflow's latest run on `main` passed (it runs when a commit changes what goes into the notices; run it by hand from the Actions tab if unsure), since the container image the tag publishes relies on it ([Third-party notices](#third-party-notices)).
-5. Tag and push the tag:
+5. Tag and push the tag. A tag records who made it and when, and it is public: make it in a clone whose `user.name` and `user.email` are the GitHub account's name and noreply address (`git config user.name` and `git config user.email` in that clone), and with `TZ=UTC`, so the date is `+0000` like the commits':
 
    ```sh
-   git tag -a vX.Y.Z -m "UpNext X.Y.Z"
+   git config user.email                        # the noreply address
+   TZ=UTC git tag -a vX.Y.Z -m "UpNext X.Y.Z"
+   git for-each-ref refs/tags/vX.Y.Z --format='%(taggername) %(taggeremail) %(taggerdate:iso)'
    git push origin vX.Y.Z
    gh run watch "$(gh run list --workflow release.yml --limit 1 --json databaseId --jq '.[0].databaseId')"
    ```
@@ -685,7 +687,7 @@ Make the container image public too: the package's settings, "Change visibility"
 First a prerelease (the owner's decision, 2026-10-11): none of the release workflow's hand-added jobs runs before a tag, and one of them would have stopped the first release (the Linux smoke test's version check). Set the version to `0.1.0-rc.1` in a commit on `main` (step 1 of [Releasing a version](#releasing-a-version): `Cargo.toml`, `Cargo.lock`, `docs/openapi.json` and the Android `versionName`; the paragraph after those steps says why), tag `v0.1.0-rc.1` on that commit and push it, let the release workflow run end to end, and fix whatever breaks in commits on `main` (setting the version to `0.1.0-rc.2` and tagging that, and so on after a fix, until a run is green). The prerelease's release page gets the same files, and [Checking a release](#checking-a-release) applies to it; Cloudsmith skips prereleases. Then set the version back to `0.1.0` in a commit of its own, with nothing else in it, and tag `v0.1.0` on that commit.
 
 ```sh
-git tag -a v0.1.0-rc.1 -m "UpNext 0.1.0-rc.1"
+TZ=UTC git tag -a v0.1.0-rc.1 -m "UpNext 0.1.0-rc.1"
 git push origin v0.1.0-rc.1
 gh run list --limit 5          # release and docker, both started by the tag
 gh release view v0.1.0-rc.1
@@ -694,7 +696,7 @@ gh release view v0.1.0-rc.1
 Before tagging `v0.1.0`, check that the 0.1.0 date in `CHANGELOG.md` and the Flatpak metainfo is today's; if the tag slipped to another day, fix both in a commit of their own and push it first, rather than amending the squashed commit.
 
 ```sh
-git tag -a v0.1.0 -m "UpNext 0.1.0"
+TZ=UTC git tag -a v0.1.0 -m "UpNext 0.1.0"
 git push origin v0.1.0
 gh run list --limit 5          # release and docker, both started by the tag
 gh release view v0.1.0
