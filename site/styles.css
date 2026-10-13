@@ -38,7 +38,6 @@
   --muted: #a2a8ba;
   --dim: #858ca0;
   --accent: #ffc93c;
-  --accent-soft: rgb(255 201 60 / 0.12);
   --accent-ink: #1b1503;
   --good: #5ee0b5;
   --warn: #ff9f5a;
@@ -714,21 +713,6 @@ section {
   background: var(--sheet);
   border-top: 1px solid var(--line);
 }
-.notice {
-  display: flex;
-  gap: 12px;
-  align-items: baseline;
-  padding: 14px 18px;
-  margin-bottom: 28px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-  border: 1px solid rgb(255 201 60 / 0.35);
-  max-width: 52rem;
-}
-.notice strong {
-  color: var(--accent);
-  white-space: nowrap;
-}
 .platforms {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -850,10 +834,6 @@ pre code b {
 @media (max-width: 640px) {
   .platforms {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .notice {
-    display: grid;
-    gap: 4px;
   }
 }
 
