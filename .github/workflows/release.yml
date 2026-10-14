@@ -24,6 +24,8 @@
 # - dist checked against its SHA-256 before it runs: its shell installer on
 #   Linux, and on Windows its zip, unpacked by hand (dist's PowerShell
 #   installer checks nothing);
+# - the "Code signing policy" line the host job adds to the release notes,
+#   which SignPath Foundation's terms ask for on the release page;
 # - the build-msi job, which builds the per-user Windows
 #   installer from the programs in dist's Windows zip with
 #   contrib/windows/build-msi.ps1, and the host job's wait for it;
@@ -869,6 +871,9 @@ jobs:
         run: |
           # Write and read notes from a file to avoid quoting breaking things
           echo "$ANNOUNCEMENT_BODY" > $RUNNER_TEMP/notes.txt
+          # SignPath Foundation's terms want the code signing policy on the
+          # release page too (added by hand).
+          printf '\n**Code signing policy:** see the [README](%s/%s#code-signing-policy).\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" >> $RUNNER_TEMP/notes.txt
 
           gh release create "${{ needs.plan.outputs.tag }}" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
 

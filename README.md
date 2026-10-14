@@ -60,7 +60,14 @@ UpNext is developed with AI coding assistants, mostly Claude Code. Every change 
 
 ## Code signing policy
 
-UpNext's Windows programs and installer aren't code-signed. Every file on a release page is built from this repository, from the commit the release's tag names, by the `release` workflow (`.github/workflows/release.yml`) on GitHub's own runners, and published with its SHA-256 checksum. The project's maintainers make and approve releases, and review every change from anyone else before it's merged. UpNext talks only to the services [Privacy](docs/privacy.md) lists, and its one server, the backlog verdicts service, sees only the connection and UpNext's version unless you publish a verdict.
+Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
+
+Signing starts with the first release after SignPath Foundation accepts UpNext; until then, 0.1.0 included, the Windows programs and installer aren't signed. Only files the `release` workflow (`.github/workflows/release.yml`) builds are signed: it builds every file on a release page from this repository, from the commit the release's tag names, on GitHub's own runners, and publishes each with its SHA-256 checksum.
+
+- **Committers and reviewers:** [zytoc](https://github.com/zytoc). Every change from anyone else, such as a pull request, is reviewed by a committer before it's merged.
+- **Approvers:** [zytoc](https://github.com/zytoc), who approves each release's signing by hand.
+
+**Privacy policy:** UpNext has no accounts and no analytics. [Privacy](docs/privacy.md) lists every service it talks to, when, and what each is sent: your stores, the game-data services, the AI you choose, and UpNext's shared game data and backlog verdicts services, which see only the connection and UpNext's version unless you publish a verdict.
 
 ## Licence
 
