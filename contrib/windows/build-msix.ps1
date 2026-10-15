@@ -160,6 +160,14 @@ $Obj = Join-Path $OutDir 'obj'
 New-Item -ItemType Directory -Force -Path $Obj | Out-Null
 $PriConfig = Join-Path $Obj 'priconfig.xml'
 Invoke-Checked $MakePri @('createconfig', '/cf', $PriConfig, '/dq', 'en-US', '/pv', '10.0.0', '/o')
+# The default configuration splits the larger pictures into
+# resources.scale-200.pri for a bundle's resource packages, which a single
+# package never loads; without its packaging section every scale stays in
+# resources.pri.
+[xml]$config = [IO.File]::ReadAllText($PriConfig)
+$packaging = $config.SelectSingleNode('/resources/packaging')
+if ($packaging) { [void]$packaging.ParentNode.RemoveChild($packaging) }
+$config.Save($PriConfig)
 Invoke-Checked $MakePri @(
     'new', '/pr', $Layout, '/cf', $PriConfig, '/mn', (Join-Path $Layout 'AppxManifest.xml'),
     '/of', (Join-Path $Layout 'resources.pri'), '/o'
