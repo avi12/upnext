@@ -38,6 +38,7 @@ mod lineup;
 mod llm;
 mod manual;
 mod mock;
+mod msix;
 mod names;
 mod oidc;
 mod other_users;

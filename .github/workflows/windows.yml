@@ -18,7 +18,8 @@ name: windows
 #
 # Windows test builds come from `cargo build --release --bins` on a Windows
 # machine, to save Actions minutes, and the release MSI
-# from cargo-dist on tags (release.yml).
+# from cargo-dist on tags (release.yml). Run by hand, it also builds the
+# Microsoft Store package (the msix job), to test between releases.
 
 on:
   push:
@@ -123,3 +124,61 @@ jobs:
           "upnext.exe: $cli, upnext-app.exe: $app"
           if ($cli -ne 3 -or $app -ne 2) { throw "expected 3 (console) and 2 (desktop)" }
           & (Join-Path $debug upnext.exe) --version
+
+  # The Microsoft Store package from this commit, only when the workflow is
+  # run by hand (Actions, windows, Run workflow): a release build of both
+  # programs with the web UI, packed by contrib/windows/build-msix.ps1 with
+  # the identity Partner Center gave the app, from the repository variables
+  # UPNEXT_MSIX_IDENTITY_NAME, UPNEXT_MSIX_PUBLISHER,
+  # UPNEXT_MSIX_PUBLISHER_DISPLAY_NAME and UPNEXT_MSIX_DISPLAY_NAME, or with
+  # the script's placeholders while they aren't set. The artifact carries
+  # the package and its unpacked folder, which a Windows machine in
+  # Developer Mode registers to test it (contrib/windows/README.md).
+  msix:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ${{ vars.UPNEXT_RUNNER_WINDOWS || 'windows-latest' }}
+    timeout-minutes: 60
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          toolchain: stable
+      # A cache of its own: a release build shares nothing with the tests'.
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        if: runner.environment == 'github-hosted'
+        with:
+          key: msix
+      # A release build embeds the web UI from web/dist.
+      - name: Build the web UI
+        working-directory: web
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+      - run: cargo build --release --locked --bins
+      - name: Build the package
+        shell: pwsh
+        env:
+          IDENTITY_NAME: ${{ vars.UPNEXT_MSIX_IDENTITY_NAME }}
+          PUBLISHER: ${{ vars.UPNEXT_MSIX_PUBLISHER }}
+          PUBLISHER_DISPLAY_NAME: ${{ vars.UPNEXT_MSIX_PUBLISHER_DISPLAY_NAME }}
+          DISPLAY_NAME: ${{ vars.UPNEXT_MSIX_DISPLAY_NAME }}
+        run: |
+          $identity = @{}
+          if ($env:IDENTITY_NAME) { $identity.IdentityName = $env:IDENTITY_NAME }
+          if ($env:PUBLISHER) { $identity.Publisher = $env:PUBLISHER }
+          if ($env:PUBLISHER_DISPLAY_NAME) { $identity.PublisherDisplayName = $env:PUBLISHER_DISPLAY_NAME }
+          if ($env:DISPLAY_NAME) { $identity.DisplayName = $env:DISPLAY_NAME }
+          ./contrib/windows/build-msix.ps1 -BinDir target/release -OutDir target/msix @identity
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: upnext-msix-${{ github.sha }}
+          path: target/msix/
+          retention-days: 14
+          if-no-files-found: error

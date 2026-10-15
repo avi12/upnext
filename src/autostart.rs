@@ -12,6 +12,12 @@
 //! only as [`change`] says: a second copy (a scratch or development build
 //! with a data folder of its own) never takes the installed copy's value
 //! just by starting. Elsewhere the setting is kept but does nothing.
+//!
+//! The Microsoft Store's copy (`msix`) can't use the Run value: Windows
+//! keeps that copy's `HKCU` writes in a registry of the package's own, which
+//! it doesn't read at sign-in. Its package declares a startup task, which
+//! starts the same `upnext-app.exe --background`, and which the user turns
+//! on or off in Windows' own settings (see [`in_package`]).
 
 // Off Windows only the tests build the value; the app reads the flag.
 #![cfg_attr(not(windows), allow(dead_code))]
@@ -115,6 +121,9 @@ pub(crate) fn change(on: bool, why: Why, current: Option<&str>, app: &Path, exis
 /// it, or leave it as it is. Doing any of them twice changes nothing.
 #[cfg(windows)]
 pub(crate) fn set(on: bool, why: Why) -> anyhow::Result<()> {
+    if crate::msix::get().is_some() {
+        return in_package(on, why);
+    }
     let exe = std::env::current_exe().context("locating this program")?;
     let app = app_exe(&exe);
     let key = run_key();
@@ -128,6 +137,22 @@ pub(crate) fn set(on: bool, why: Why) -> anyhow::Result<()> {
             write(&key, Some(&command(&app))).context("adding UpNext to the programs Windows starts at sign-in")
         }
     }
+}
+
+/// What turning the setting on or off does in the Microsoft Store's copy,
+/// whose Start with Windows is the package's startup task. UpNext can't turn
+/// that on itself without the Windows Runtime, so turning the setting on
+/// says where to do it; turning it off, or starting, changes nothing, so a
+/// setting carried over from another copy's library can still be turned
+/// off.
+pub(crate) fn in_package(on: bool, why: Why) -> anyhow::Result<()> {
+    if on && why == Why::Asked {
+        anyhow::bail!(
+            "this is UpNext from the Microsoft Store, which Windows starts at sign-in from its own list: turn UpNext on \
+             in Windows Settings, Apps, Startup"
+        );
+    }
+    Ok(())
 }
 
 /// Off Windows there is no Run key; the setting is only stored.
@@ -188,6 +213,16 @@ mod tests {
     fn the_value_starts_the_app_in_the_background() {
         let installed = Path::new(r"C:\Users\Some One\AppData\Local\Programs\UpNext\upnext-app.exe");
         assert_eq!(command(installed), r#""C:\Users\Some One\AppData\Local\Programs\UpNext\upnext-app.exe" --background"#);
+    }
+
+    #[test]
+    fn the_store_copy_sends_the_user_to_windows_settings() {
+        let e = in_package(true, Why::Asked).unwrap_err().to_string();
+        assert!(e.contains("Windows Settings, Apps, Startup"), "{e}");
+        // Starting never fails over it, and the setting can still go off.
+        assert!(in_package(true, Why::Starting).is_ok());
+        assert!(in_package(false, Why::Asked).is_ok());
+        assert!(in_package(false, Why::Starting).is_ok());
     }
 
     #[test]

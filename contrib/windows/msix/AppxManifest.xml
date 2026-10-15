@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Microsoft Store package's manifest. build-msix.ps1 fills in the
+     @...@ values: the identity and publisher that Partner Center gives the
+     reserved app (placeholders for a test package), and the version. The
+     package carries the same two programs as the MSI, which run as ordinary
+     desktop programs (runFullTrust). contrib/windows/README.md says what
+     each part is for. -->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:virtualization="http://schemas.microsoft.com/appx/manifest/virtualization/windows10"
+  IgnorableNamespaces="uap uap5 uap10 desktop desktop4 desktop6 rescap virtualization">
+
+  <Identity Name="@IDENTITY_NAME@" Publisher="@PUBLISHER@" Version="@VERSION@" ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>@DISPLAY_NAME@</DisplayName>
+    <PublisherDisplayName>@PUBLISHER_DISPLAY_NAME@</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <!-- The library stays in %LOCALAPPDATA%\upnext, where every other copy
+         of UpNext keeps it, and outlives uninstalling, as with the MSI.
+         Windows would otherwise move a packaged program's new files under
+         AppData to a folder of the package's own and delete them with it.
+         Windows 11 exempts that one folder; Windows 10 doesn't know the
+         per-folder form and turns the redirection off for all of AppData
+         instead. Both need the unvirtualizedResources capability below. -->
+    <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
+    <virtualization:FileSystemWriteVirtualization>
+      <virtualization:ExcludedDirectories>
+        <virtualization:ExcludedDirectory>$(KnownFolder:LocalAppData)\upnext</virtualization:ExcludedDirectory>
+      </virtualization:ExcludedDirectories>
+    </virtualization:FileSystemWriteVirtualization>
+  </Properties>
+
+  <!-- Windows 10 version 2004 or newer, for the Parameters attributes. -->
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="UpNext" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="UpNext"
+        Description="Picks what to play next from your game library."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <!-- `upnext` in a terminal, as the MSI's PATH entry gives it. -->
+        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:AppExecutionAlias desktop4:Subsystem="console">
+            <uap5:ExecutionAlias Alias="upnext.exe" />
+          </uap5:AppExecutionAlias>
+        </uap5:Extension>
+        <!-- What Steam's shortcut starts (src/msix.rs): a path that stays
+             the same when an update moves the programs. -->
+        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:AppExecutionAlias desktop4:Subsystem="windows">
+            <uap5:ExecutionAlias Alias="upnext-app.exe" />
+          </uap5:AppExecutionAlias>
+        </uap5:Extension>
+        <!-- Start with Windows: the package's writes to the Run key would
+             stay in its own registry, so Windows starts it from this task
+             instead, which the user turns on in Settings, Apps, Startup
+             (src/autostart.rs). -->
+        <desktop:Extension Category="windows.startupTask" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication" uap10:Parameters="--background">
+          <desktop:StartupTask TaskId="UpNext" Enabled="false" DisplayName="UpNext" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+    <!-- The MSI's second Start menu entry. -->
+    <Application Id="BigScreen" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication" uap10:Parameters="--big-screen">
+      <uap:VisualElements
+        DisplayName="UpNext (big screen)"
+        Description="Opens UpNext full screen, for a TV and a controller."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
+  </Capabilities>
+</Package>

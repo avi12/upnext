@@ -41,6 +41,11 @@ fn target(state: &AppState) -> Result<Target, String> {
     if !cfg!(feature = "desktop") {
         return Err("this UpNext was built without its app window, so Steam would have nothing to open".into());
     }
+    // The Microsoft Store's copy is started through its alias, which stays
+    // put when an update moves the programs to a new folder.
+    if let Some(package) = crate::msix::get() {
+        return Ok(in_package(package));
+    }
     let exe = std::env::current_exe().map_err(|e| format!("couldn't find UpNext's own program: {e}"))?;
     let target = Target::for_exe(&exe, cfg!(windows));
     // A test runs from cargo's `deps` folder, with no `upnext-app.exe` beside
@@ -49,6 +54,13 @@ fn target(state: &AppState) -> Result<Target, String> {
         return Ok(target);
     }
     there(target, &exe)
+}
+
+/// What a launcher runs in the Microsoft Store's copy (`msix`): the
+/// package's `upnext-app.exe` alias, in big screen. The alias isn't an
+/// ordinary file, so it isn't checked like a program beside this one.
+fn in_package(package: &crate::msix::Msix) -> Target {
+    Target { program: package.launcher.clone(), arguments: crate::autostart::BIG_SCREEN_FLAG.to_string() }
 }
 
 /// The target, if its program is there. On Windows the shortcut runs
@@ -168,6 +180,13 @@ async fn add(State(state): State<AppState>) -> ApiResult<SteamShortcut> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_store_copy_is_started_through_its_alias() {
+        let alias = std::path::PathBuf::from(r"C:\Users\you\AppData\Local\Microsoft\WindowsApps\upnext-app.exe");
+        let target = in_package(&crate::msix::Msix { launcher: alias.clone() });
+        assert_eq!(target, Target { program: alias, arguments: "--big-screen".into() });
+    }
 
     #[test]
     fn a_flatpak_shows_its_command_and_the_steps_in_steam() {

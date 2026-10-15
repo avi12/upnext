@@ -4,6 +4,10 @@ All notable changes to UpNext are listed here. The format follows [Keep a Change
 
 ## [Unreleased]
 
+### Added
+
+- A Microsoft Store package (MSIX) of the Windows app, which the release workflow builds for the Store, where UpNext isn't listed yet. The Store's copy opens the same library as the installer's, in `%LOCALAPPDATA%\upnext`, keeps it when uninstalled, puts `upnext` in terminals, and starts with Windows once it's turned on in Windows Settings › Apps › Startup.
+
 ### Changed
 
 - The Flatpak is offered as a file on each release rather than on Flathub, where UpNext won't be submitted. [Flatpak and Steam Deck](docs/install/flatpak.md) says how to move an installed copy to a new release, since `flatpak update` doesn't.
