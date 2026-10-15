@@ -172,6 +172,10 @@ Invoke-Checked $MakePri @(
     'new', '/pr', $Layout, '/cf', $PriConfig, '/mn', (Join-Path $Layout 'AppxManifest.xml'),
     '/of', (Join-Path $Layout 'resources.pri'), '/o'
 )
+$split = @(Get-ChildItem -LiteralPath $Layout -Filter 'resources.*.pri')
+if ($split.Count -gt 0) {
+    throw "MakePri split pictures into $($split.Name -join ', '), which a single package never loads; its configuration's packaging section needs removing"
+}
 Remove-Item -Recurse -Force -LiteralPath $Obj
 
 $Package = Join-Path $OutDir $PackageName
