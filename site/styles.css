@@ -377,11 +377,10 @@ p {
     opacity: 0;
   }
 }
-/* The screenshot fills the content's width. Its largest copy is 1600 pixels
-   wide, so past 125rem it would only get blurrier and stops growing. */
+/* The screenshot fills the content's width; its largest copy is 3200 pixels
+   wide, enough for that width on a high-density screen. */
 .shot {
   position: relative;
-  max-width: 125rem;
   margin-inline: auto;
   border-radius: 16px 16px 0 0;
   border: 1px solid var(--line-strong);
