@@ -15,6 +15,18 @@ function reply(content) {
   }
 }
 
+// What a model would say about the games the README and store screenshots
+// show (readme-shot.spec.ts), so the shots don't carry a placeholder: a model
+// writes one or two sentences on why each pick fits the request and the
+// player. Every other game gets a placeholder.
+const REASONS = {
+  Unpacking: 'Calm and wordless: you learn a life from the things in the boxes, and a few moves fill an hour.',
+  'Citizen Sleeper': 'A quiet, tender story told a day at a time, so an hour ends at a natural stop.',
+  'Return to Monkey Island': 'Gentle puzzles and good jokes, with chapters that break an evening into easy pieces.',
+  'A Short Hike': 'Nothing in it hurries you, and you can see the summit in one sitting.',
+  'Baba Is You': 'Each level is a few minutes of thinking, so you can stop after any one of them.',
+}
+
 function answer(body) {
   const prompt = body.messages?.[1]?.content ?? ''
   const schema = body.response_format?.json_schema?.schema?.properties ?? {}
@@ -28,7 +40,7 @@ function answer(body) {
   if (schema.pick_id) return reply({ pick_id: candidates[0]?.id ?? null, reason: 'Shorter, and you are in the mood for it.' })
   const n = schema.picks?.maxItems ?? 3
   const spares = schema.spares?.maxItems ?? 0
-  const games = candidates.map((c) => ({ ...c, reason: 'Fits the request.' }))
+  const games = candidates.map((c) => ({ ...c, reason: REASONS[c.name] ?? 'Fits the request.' }))
   return reply({ picks: games.slice(0, n), spares: games.slice(n, n + spares) })
 }
 

@@ -10,7 +10,9 @@ test('pick, open a game, mark it beaten', async ({ page, request }) => {
   const lineup = page.getByRole('region', { name: 'Lineup' })
   const opens = lineup.getByRole('button', { name: /^Open / })
   await expect(opens).toHaveCount(3)
-  await expect(lineup.getByText('Fits the request.').first()).toBeVisible()
+  // Each card shows the model's reason for that pick.
+  const [latest] = await (await request.get('/api/v1/picks/history?limit=1')).json()
+  await expect(lineup.getByText(latest.picks[0].reason).first()).toBeVisible()
 
   // The first pick with an ending, so "Beat it" is on its menu.
   let marked: string | null = null
@@ -402,8 +404,8 @@ test('roll the dice, then curate around it; a quick look on a pick', async ({ pa
   await cards.first().getByRole('button', { name: 'Curate around this' }).click()
   await expect(page.getByLabel('What are you in the mood for?')).toHaveValue(`Games like ${second}`)
   await expect(cards).toHaveCount(3)
-  await expect(lineup.getByText('Fits the request.').first()).toBeVisible()
   history = await (await request.get('/api/v1/picks/history?limit=1')).json()
+  await expect(lineup.getByText(history[0].picks[0].reason).first()).toBeVisible()
   expect(history[0].prompt).toBe(`Games like ${second}`)
   expect(history[0].picks.map((p: { name: string }) => p.name)).not.toContain(second)
 

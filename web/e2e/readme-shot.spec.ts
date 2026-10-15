@@ -2,7 +2,7 @@ import { expect, test, type Locator } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
 
 // The README's screenshot, docs/images/pick.png: the Pick page after
-// Curate on the mock library, at 1280 px and 1.25x, so 1600 × 1075. It runs
+// Curate on the mock library, at 1280 px and 1.25x, so 1600 × 1125. It runs
 // only with UPNEXT_README_SHOT=1, on a machine that reaches Steam's image
 // servers: the mock library's games are real ones, so their covers load from
 // there, and CI and development containers often can't reach them. It fails rather than save
@@ -40,7 +40,7 @@ test.describe('big screen', () => {
   })
 })
 
-test.use({ viewport: { width: 1280, height: 860 }, deviceScaleFactor: 1.25 })
+test.use({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1.25 })
 
 test('the README screenshot', async ({ page }) => {
   test.skip(!process.env.UPNEXT_README_SHOT, 'set UPNEXT_README_SHOT=1 to take docs/images/pick.png again')
