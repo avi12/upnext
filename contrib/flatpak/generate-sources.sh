@@ -44,6 +44,11 @@ trap 'rm -rf "$work"' EXIT
 
 git clone -q --filter=blob:none "$TOOLS_REPO" "$work/tools"
 git -C "$work/tools" -c advice.detachedHead=false checkout -q "$TOOLS_COMMIT"
+# Flathub's build image sets PYTHONPATH to its own site-packages. pip would
+# take the packages it finds there as installed and leave them out of the
+# virtualenv, where the generators, run with their own PYTHONPATH, can't
+# see them.
+unset PYTHONPATH
 python3 -m venv "$work/venv"
 "$work/venv/bin/pip" install -q --disable-pip-version-check --only-binary=:all: "${PY_PACKAGES[@]}"
 
