@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { api, ApiError } from '../api'
 import type { PairAsked } from '../types'
-import { PlayMark } from '../components/Shell'
+import { LogoMark } from '../components/Shell'
 import { pairCodeFromAddress } from '../lib/pairing'
 
 /** How often the device asks whether the computer has answered. */
@@ -30,7 +30,7 @@ function Frame({ children }: { children: ReactNode }) {
     <main className="flex min-h-screen items-center justify-center bg-ground px-4 py-10 text-ink">
       <div className="w-full max-w-[440px]">
         <div className="flex items-center gap-2.5">
-          <PlayMark className="h-7 w-7" />
+          <LogoMark className="h-7 w-7" />
           <span className="font-display text-[22px] font-bold">UpNext</span>
         </div>
         {children}

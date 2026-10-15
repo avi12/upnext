@@ -8,7 +8,7 @@ import { useThemeSync } from '../lib/theme'
 import { BACKEND_LABEL } from '../lib/ai'
 import { PLAYER_STEPS, type PlayerStepId } from '../lib/setup'
 import { COLOURS, possessive, usePlayers } from '../lib/players'
-import { PlayMark } from '../components/Shell'
+import { LogoMark } from '../components/Shell'
 import { Skeleton } from '../components/Skeleton'
 import { useToast } from '../components/useToast'
 import { useSignInReturn } from '../lib/useSignInReturn'
@@ -107,7 +107,7 @@ export function PlayerSetupPage() {
   return (
     <div className="min-h-screen bg-ground text-ink">
       <header className="flex items-center gap-2.5 border-b border-line px-4 py-3 sm:px-10">
-        <PlayMark className="h-6 w-6" />
+        <LogoMark className="h-6 w-6" />
         <span className="font-display text-[19px] font-bold">UpNext</span>
         <span className="truncate text-[15px] text-dim">{current ? `${possessive(current.name)} setup` : 'setup'}</span>
         <span className="ml-auto text-sm whitespace-nowrap text-dim lg:hidden" aria-hidden>

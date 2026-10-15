@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { api, ApiError } from '../api'
 import { codeFromHash, keyFromHash, takeSignIn, type GogSignIn } from '../lib/gogLink'
-import { PlayMark } from '../components/Shell'
+import { LogoMark } from '../components/Shell'
 import { keys } from '../lib/queries'
 
 interface Landed {
@@ -67,7 +67,7 @@ export function GogCallbackPage() {
     <main className="flex min-h-screen items-center justify-center bg-ground px-4 py-10 text-ink">
       <div className="w-full max-w-[480px]">
         <div className="flex items-center gap-2.5">
-          <PlayMark className="h-7 w-7" />
+          <LogoMark className="h-7 w-7" />
           <span className="font-display text-[22px] font-bold">UpNext</span>
         </div>
         <h1 className="mt-6 font-display text-[26px] leading-tight font-bold">{error ? 'GOG didn’t connect' : 'Connecting GOG…'}</h1>

@@ -5,7 +5,7 @@ import { api } from '../api'
 import type { SetupBackgroundAsk, SetupChange, SetupInfo } from '../types'
 import { cx } from '../lib/format'
 import { useThemeSync } from '../lib/theme'
-import { PlayMark } from '../components/Shell'
+import { LogoMark } from '../components/Shell'
 import { Skeleton } from '../components/Skeleton'
 import { useToast } from '../components/useToast'
 import { useSignInReturn } from '../lib/useSignInReturn'
@@ -170,7 +170,7 @@ export function SetupPage() {
   return (
     <div className="min-h-screen bg-ground text-ink">
       <header className="flex items-center gap-2.5 border-b border-line px-4 py-3 sm:px-10">
-        <PlayMark className="h-6 w-6" />
+        <LogoMark className="h-6 w-6" />
         <span className="font-display text-[19px] font-bold">UpNext</span>
         <span className="text-[15px] text-dim">setup</span>
         <span className="ml-auto text-sm whitespace-nowrap text-dim lg:hidden" aria-hidden>

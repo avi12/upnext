@@ -10,7 +10,7 @@ import { inApp, windowAction } from '../../lib/frame'
 import { typingInField } from '../../lib/keys'
 import { useThemeSync } from '../../lib/theme'
 import { cx } from '../../lib/format'
-import { PlayMark } from '../Shell'
+import { LogoMark } from '../Shell'
 import { BigSheet } from './BigMenu'
 import { Glyph, Hint } from './Glyph'
 import { PadStyleContext, offerAction } from './pad'
@@ -281,7 +281,7 @@ export function BigShell({ bare = false }: { bare?: boolean }) {
       <div className={cx('flex min-h-full flex-col', options.overscan && 'p-[4vmin]')}>
         <header {...drag} className="sticky top-(--titlebar-h) z-30 flex min-h-[4rem] shrink-0 items-center gap-[1.5rem] border-b-[0.08rem] border-line bg-ground px-[2rem]">
           <span className="flex shrink-0 items-center gap-[0.5rem] text-ink">
-            <PlayMark className="h-[1.6rem] w-[1.6rem]" />
+            <LogoMark className="h-[1.6rem] w-[1.6rem]" />
             <span className="font-display text-[1.4rem] font-[750] tracking-[-0.02em]">UpNext</span>
           </span>
           {!bare && (

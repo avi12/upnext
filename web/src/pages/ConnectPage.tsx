@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useLocation, useNavigate } from 'react-router'
 import { api, ApiError } from '../api'
 import type { NetworkConnection } from '../types'
-import { PlayMark } from '../components/Shell'
+import { LogoMark } from '../components/Shell'
 import { useBigScreen } from '../lib/bigscreen'
 import { canSwitch, missedComputer, openComputer } from '../lib/connect'
 import { cx } from '../lib/format'
@@ -97,7 +97,7 @@ export function ConnectPage() {
     <main className="flex min-h-screen justify-center bg-ground px-4 py-10 text-ink">
       <div className={cx('w-full', big ? 'max-w-[40rem]' : 'max-w-[560px]')}>
         <div className="flex items-center gap-2.5">
-          <PlayMark className="h-7 w-7" />
+          <LogoMark className="h-7 w-7" />
           <span className="font-display text-[22px] font-bold">UpNext</span>
         </div>
         <h1 className={cx('mt-6 font-display font-bold leading-tight', big ? 'text-[2rem]' : 'text-[26px]')}>Use the library on another computer</h1>

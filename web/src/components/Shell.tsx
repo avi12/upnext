@@ -27,7 +27,18 @@ const TABS = [
   { to: '/history', label: 'History', key: '5' },
 ]
 
-/** The play-triangle logo mark. */
+/** UpNext's logo mark: the arc and dot of the app's icon (`web/public/favicon.svg`)
+ *  without its tile, so it sits on the bar's own background. */
+export function LogoMark({ className = 'h-[22px] w-[22px]' }: { className?: string }) {
+  return (
+    <svg viewBox="5 6 22 22" className={className} aria-hidden="true">
+      <path d="M8 20a8 8 0 1 1 16 0" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="16" cy="21" r="2.5" fill="var(--accent)" />
+    </svg>
+  )
+}
+
+/** The play triangle, on Play buttons. */
 export function PlayMark({ className = 'h-[22px] w-[22px]', fill = 'var(--accent)' }: { className?: string; fill?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
@@ -234,7 +245,7 @@ function Layout() {
           and below 1024 px the tabs may scroll. */}
       <header data-tour="topbar" {...drag} className="sticky top-(--titlebar-h) z-30 flex h-16 shrink-0 items-center gap-2 border-b border-line bg-ground px-4 sm:gap-4 sm:px-10 lg:gap-6 xl:gap-8 min-[1920px]:gap-11">
         <Link to="/" className="flex shrink-0 items-center gap-[9px] text-ink" aria-label="UpNext home">
-          <PlayMark />
+          <LogoMark />
           <span className={cx('hidden font-display text-[21px] font-[750] tracking-[-0.02em]', framed ? '2xl:inline' : 'sm:inline')}>UpNext</span>
         </Link>
         <nav
