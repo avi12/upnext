@@ -666,8 +666,8 @@ cookie-es 3.1.1  MIT  [21]
     https://www.npmjs.com/package/cookie-es/v/3.1.1
 csstype 3.2.3  MIT  [22]
     https://www.npmjs.com/package/csstype/v/3.2.3
-lucide-react 1.49.0  ISC  [30]
-    https://www.npmjs.com/package/lucide-react/v/1.49.0
+lucide-react 1.55.0  ISC  [30]
+    https://www.npmjs.com/package/lucide-react/v/1.55.0
 react 19.3.0  MIT  [37]
     https://www.npmjs.com/package/react/v/19.3.0
 react-dom 19.3.0  MIT  [37]
@@ -678,8 +678,8 @@ scheduler 0.28.0  MIT  [37]
     https://www.npmjs.com/package/scheduler/v/0.28.0
 tailwindcss 4.3.3  MIT  [48]  (a build tool; some of its code is in the built UI)
     https://www.npmjs.com/package/tailwindcss/v/4.3.3
-vite 8.3.2  MIT  [174]  (a build tool; some of its code is in the built UI)
-    https://www.npmjs.com/package/vite/v/8.3.2
+vite 8.3.4  MIT  [174]  (a build tool; some of its code is in the built UI)
+    https://www.npmjs.com/package/vite/v/8.3.4
 
 
 3. Kept by hand
@@ -2537,7 +2537,7 @@ SOFTWARE.
 
 ==============================================================================
 [30] LICENSE
-Used by: lucide-react 1.49.0
+Used by: lucide-react 1.55.0
 ==============================================================================
 
 ISC License
@@ -7709,7 +7709,7 @@ SOFTWARE.
 
 ==============================================================================
 [174] LICENSE.md
-Used by: vite 8.3.2
+Used by: vite 8.3.4
 ==============================================================================
 
 # Vite core license
