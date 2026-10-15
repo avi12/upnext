@@ -21,11 +21,11 @@
     "deploy": "wrangler deploy --config wrangler.local.toml"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261009.1",
-    "@types/node": "24.19.1",
+    "@cloudflare/workers-types": "5.20261010.1",
+    "@types/node": "24.19.2",
     "esbuild": "0.28.2",
     "miniflare": "5.20261006.1-alpha",
-    "oxlint": "1.86.0",
+    "oxlint": "1.87.0",
     "typescript": "6.0.3",
     "vitest": "4.1.11",
     "wrangler": "4.149.0"
