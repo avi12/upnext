@@ -4,6 +4,10 @@ All notable changes to UpNext are listed here. The format follows [Keep a Change
 
 ## [Unreleased]
 
+### Security
+
+- rustls 0.23.46, for RUSTSEC-2026-0346 to RUSTSEC-2026-0349. UpNext uses neither ECH nor rustls's Brotli certificate compression and never prints TLS session values, so the one that applies is 0349: someone on the network could push UpNext's later HTTPS connections to a server down to classical-only key exchange.
+
 ## [0.1.0] - 2026-10-13
 
 The first public release.
