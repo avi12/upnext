@@ -25,6 +25,7 @@ const REASONS = {
   'Return to Monkey Island': 'Gentle puzzles and good jokes, with chapters that break an evening into easy pieces.',
   'A Short Hike': 'Nothing in it hurries you, and you can see the summit in one sitting.',
   'Baba Is You': 'Each level is a few minutes of thinking, so you can stop after any one of them.',
+  'Gone Home': 'A short, quiet story you uncover room by room, and an hour takes you well into it.',
 }
 
 function answer(body) {

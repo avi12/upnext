@@ -13,6 +13,9 @@ const out = fileURLToPath(new URL('../../docs/images/pick.png', import.meta.url)
 const bigOut = fileURLToPath(new URL('../../docs/images/big-screen.png', import.meta.url))
 const largeOut = fileURLToPath(new URL('../test-results/pick-3200.png', import.meta.url))
 
+// Every shot asks for reduced motion, which turns the cards' fade-in off: a
+// shot taken as the covers load would otherwise catch the cards half drawn.
+
 /** How many of the lineup's covers loaded: a cover that fails becomes a
  *  name card and drops its image, so three mean the three picks show art. */
 function coversLoaded(lineup: Locator) {
@@ -23,7 +26,7 @@ function coversLoaded(lineup: Locator) {
 }
 
 test.describe('big screen', () => {
-  test.use({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 })
+  test.use({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, reducedMotion: 'reduce' })
 
   test('the store listing’s big screen screenshot', async ({ page }) => {
     test.skip(!process.env.UPNEXT_README_SHOT, 'set UPNEXT_README_SHOT=1 to take docs/images/big-screen.png again')
@@ -62,7 +65,7 @@ async function pickShot(page: Page, path: string) {
 }
 
 test.describe('README', () => {
-  test.use({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1.25 })
+  test.use({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1.25, reducedMotion: 'reduce' })
 
   test('the README screenshot', async ({ page }) => {
     test.skip(!process.env.UPNEXT_README_SHOT, 'set UPNEXT_README_SHOT=1 to take docs/images/pick.png again')
@@ -75,7 +78,7 @@ test.describe('README', () => {
 // hero on wide and high-density screens. It goes under test-results, which
 // git ignores; site/README.md says how the site's WebP copies are made from it.
 test.describe('site', () => {
-  test.use({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2.5 })
+  test.use({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2.5, reducedMotion: 'reduce' })
 
   test('the site’s large hero screenshot', async ({ page }) => {
     test.skip(!process.env.UPNEXT_README_SHOT, 'set UPNEXT_README_SHOT=1 to take web/test-results/pick-3200.png again')
