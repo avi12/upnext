@@ -1,16 +1,16 @@
 # UpNext's Flatpak
 
-`io.github.zytocc.UpNext`, built from this repository's source with no network, on GNOME's runtime 51. The app window is the Flatpak's command; the command line is `flatpak run --command=upnext io.github.zytocc.UpNext`. [Installing the Flatpak](../../docs/install/flatpak.md) is for people installing it; this file is for building it and for the Flathub submission (`docs/dev/RELEASE.md`, "The Flatpak").
+`io.github.zytocc.UpNext`, built from this repository's source with no network, on GNOME's runtime 51. The app window is the Flatpak's command; the command line is `flatpak run --command=upnext io.github.zytocc.UpNext`. [Installing the Flatpak](../../docs/install/flatpak.md) is for people installing it; this file is for building it. Releases carry it as a bundle; UpNext isn't on Flathub (`docs/dev/RELEASE.md`, "The Flatpak").
 
 | File | What it is |
 | --- | --- |
-| `io.github.zytocc.UpNext.yml` | The manifest. Its source is this checkout as it is on disk (`type: dir`), less what builds leave in it. Flathub's copy takes the release tag instead. |
+| `io.github.zytocc.UpNext.yml` | The manifest. Its source is this checkout as it is on disk (`type: dir`), less what builds leave in it. |
 | `io.github.zytocc.UpNext.desktop` | The launcher entry, with the "Big screen" action. |
 | `io.github.zytocc.UpNext.metainfo.xml` | What software centres such as Discover show: the description, screenshots, releases, and the controls UpNext supports. |
 | `generate-sources.sh` | Writes `generated/`: `cargo-sources.json` (every crate in `Cargo.lock`) and `node-sources.json` (every npm package the web build installs, less Playwright), with flatpak-builder-tools' generators at a pinned commit, and `commit`, the checkout's commit. `build.sh` runs it, so it follows the lock files. |
 | `build.sh` | Writes the sources, builds with flatpak-builder into a repository and a bundle under `target/flatpak/`, and with `--lint` runs Flathub's linter. |
 | `smoke-test.sh` | Installs a bundle for the current user, runs `upnext --version` and `upnext serve` on a made-up library inside the sandbox, checks it names the commit in `generated/commit` (when that file is there) and knows it's in a Flatpak, and removes it again. |
-| `lint-exceptions.json` | The linter's expected findings: the read-only access to the Steam and Heroic Flatpaks' folders, which the reviewers have to grant (below), and the screenshots, which Flathub's build copies to its media server. |
+| `lint-exceptions.json` | The linter's expected findings: the read-only access to the Steam and Heroic Flatpaks' folders (below), and the screenshots, which link to the repository rather than a media server. |
 
 ## Building it
 
@@ -25,13 +25,13 @@ flatpak run io.github.zytocc.UpNext
 
 The first build downloads the GNOME 51 runtime and SDK and the Rust and Node SDK extensions (a few GB) and compiles every crate; later builds reuse what they can.
 
-The build copies the source without `.git`, so the manifest hands `generated/commit` to the build as `UPNEXT_COMMIT` (`build.rs`). `flatpak run --command=upnext io.github.zytocc.UpNext --version` then shows it, as in `0.1.0 (abc1234)`, and `/api/health` has it as `build`. `build.sh` rewrites the file on every build and the smoke test checks the bundle against it, so a bundle built from older sources is caught. Flathub's copy, built from a tag, sets `UPNEXT_COMMIT` to the tag's commit in the module's `env` instead.
+The build copies the source without `.git`, so the manifest hands `generated/commit` to the build as `UPNEXT_COMMIT` (`build.rs`). `flatpak run --command=upnext io.github.zytocc.UpNext --version` then shows it, as in `0.1.0 (abc1234)`, and `/api/health` has it as `build`. `build.sh` rewrites the file on every build and the smoke test checks the bundle against it, so a bundle built from older sources is caught.
 
 `contrib/flatpak/smoke-test.sh BUNDLE` tries a bundle without touching a real install: it refuses to run when `io.github.zytocc.UpNext` is already installed for your user.
 
 ## Permissions
 
-What the manifest asks for, and why, for Flathub's reviewers:
+What the manifest asks for, and why:
 
 - `--share=network`: the stores' APIs, the AI, the other devices that use UpNext (phones, the Android app, another computer's window), and the mDNS announcement they find it by.
 - `--socket=wayland`, `--socket=fallback-x11`, `--share=ipc`: the window.

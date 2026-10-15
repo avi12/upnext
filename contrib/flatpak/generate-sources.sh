@@ -20,7 +20,7 @@
 set -euo pipefail
 
 # flatpak-builder-tools at a commit of 2026-09-30, and the generators' own
-# Python packages as the session that pinned it ran them.
+# Python packages at the versions it was pinned with.
 TOOLS_REPO=https://github.com/flatpak/flatpak-builder-tools.git
 TOOLS_COMMIT=74697c75b630d7330e77250fc13cb5ea688d9479
 PY_PACKAGES=(aiohttp==3.14.4 tomlkit==0.15.1 PyYAML==6.0.3)

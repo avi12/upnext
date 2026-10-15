@@ -27,7 +27,7 @@ The rest of the page:
 
 Every image is made from UpNext's own screens on the made-up library from `upnext mock-library`, never a real one. The capsules carry UpNext's name, as Steam's guidelines for them ask; the screenshots are the app's screens with nothing added. Steamworks' Graphical assets page has the current sizes, so check there first.
 
-- **Screenshots:** at least five at 1920×1080: big screen on Curate (at 1280×800, the Deck's size, centred), a lineup with its reasons, a game page, Help me decide, and the Library. The README's and Flathub's shots come from `web/e2e/readme-shot.spec.ts`; the same setup at 1920×1080 makes these.
+- **Screenshots:** at least five at 1920×1080: big screen on Curate (at 1280×800, the Deck's size, centred), a lineup with its reasons, a game page, Help me decide, and the Library. The README's and the Flatpak's shots come from `web/e2e/readme-shot.spec.ts`; the same setup at 1920×1080 makes these.
 - **Store capsules:** header 920×430, small 462×174, main 1232×706, vertical 748×896; a page background (1438×810) is optional.
 - **Library:** capsule 600×900, header 920×430, hero 3840×1240 and a logo with a transparent background (up to 1280 wide or 720 tall). `contrib/steam/library/` has these four from "Add to Steam" to start from.
 - **Icons:** the community icon (184×184) and the client icon Steamworks asks for, from `web/public/` and `contrib/windows/upnext.ico`.

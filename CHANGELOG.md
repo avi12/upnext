@@ -4,6 +4,10 @@ All notable changes to UpNext are listed here. The format follows [Keep a Change
 
 ## [Unreleased]
 
+### Changed
+
+- The Flatpak is offered as a file on each release rather than on Flathub, where UpNext won't be submitted. [Flatpak and Steam Deck](docs/install/flatpak.md) says how to move an installed copy to a new release, since `flatpak update` doesn't.
+
 ### Security
 
 - rustls 0.23.46, for RUSTSEC-2026-0346 to RUSTSEC-2026-0349. UpNext uses neither ECH nor rustls's Brotli certificate compression and never prints TLS session values, so the one that applies is 0349: someone on the network could push UpNext's later HTTPS connections to a server down to classical-only key exchange.

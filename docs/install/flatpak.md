@@ -1,6 +1,6 @@
 # Flatpak and Steam Deck
 
-UpNext's Flatpak, `io.github.zytocc.UpNext`, runs on any Linux with Flatpak and on a Steam Deck, whose system can't take packages. A release can carry it as a single file, `upnext-<version>-x86_64.flatpak`, which installs with the GNOME runtime from Flathub (set up Flathub first, as [flathub.org/setup](https://flathub.org/setup) says). You can also build it from this repository ([contrib/flatpak](../../contrib/flatpak/README.md)).
+UpNext's Flatpak, `io.github.zytocc.UpNext`, runs on any Linux with Flatpak and on a Steam Deck, whose system can't take packages. Each release after 0.1.0 carries it as a single file, `upnext-<version>-x86_64.flatpak`, on the [releases page](https://github.com/zytocc/upnext/releases/latest); it installs with the GNOME runtime from Flathub (set up Flathub first, as [flathub.org/setup](https://flathub.org/setup) says). UpNext itself isn't on Flathub. You can also build it from this repository ([contrib/flatpak](../../contrib/flatpak/README.md)).
 
 ```sh
 flatpak install --user ./upnext-<version>-x86_64.flatpak
@@ -8,7 +8,14 @@ flatpak run io.github.zytocc.UpNext                           # the app window; 
 flatpak run --command=upnext io.github.zytocc.UpNext doctor   # the command line
 ```
 
-`flatpak update` brings new versions.
+`flatpak update` keeps the runtime up to date, but not UpNext, since the file names no place to update it from. For a new release, remove the installed copy and install the new file; your library in `~/.var/app/io.github.zytocc.UpNext` stays:
+
+```sh
+flatpak uninstall --user io.github.zytocc.UpNext
+flatpak install --user ./upnext-<new version>-x86_64.flatpak
+```
+
+With Flatpak 1.16.2 or newer, `flatpak install --user --reinstall ./upnext-<new version>-x86_64.flatpak` does both.
 
 ## What the sandbox changes
 

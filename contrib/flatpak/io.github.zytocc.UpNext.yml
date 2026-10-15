@@ -1,6 +1,5 @@
 # UpNext's Flatpak. contrib/flatpak/README.md says how
-# to build it; Flathub's copy of this manifest, in the app's own repository
-# there, builds a release tag from its git URL instead of this checkout.
+# to build it; the release workflow builds each release's bundle from it.
 #
 # Everything is built from source with no network: the crates and the npm
 # packages come from cargo-sources.json and node-sources.json, which

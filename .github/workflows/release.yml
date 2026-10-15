@@ -633,9 +633,8 @@ jobs:
   # installed and run in its sandbox (contrib/flatpak/smoke-test.sh). It runs
   # only when the repository variable UPNEXT_FLATPAK_BUNDLE is `on`; without
   # it the job is skipped, and the host job notes that the release has no
-  # bundle. Flathub builds its own copy from the tag; this bundle is for
-  # installing by hand and for testing on a Steam Deck before then. No
-  # secrets.
+  # bundle. The bundle is how the Flatpak is offered (UpNext isn't on
+  # Flathub). No secrets.
   # docs/dev/RELEASE.md, "The Flatpak", has the details.
   build-flatpak:
     needs:
