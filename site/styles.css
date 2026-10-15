@@ -46,8 +46,10 @@
   --body: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Martian Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 
-  --gutter: clamp(16px, 4vw, 40px);
-  --wide: 1840px;
+  /* The page scales with the window: 5% of its width on each side, and the
+     content gets the rest up to 150rem, which only very wide screens reach. */
+  --gutter: max(1rem, 5vw);
+  --wide: 150rem;
   --radius: 14px;
 }
 
@@ -361,7 +363,7 @@ p {
   position: absolute;
   left: 50%;
   top: 0;
-  width: min(2100px, 128vw);
+  width: 128vw;
   aspect-ratio: 2 / 1;
   max-width: none;
   transform: translate(-50%, -18%);
@@ -375,9 +377,11 @@ p {
     opacity: 0;
   }
 }
+/* The screenshot fills the content's width. Its largest copy is 1600 pixels
+   wide, so past 125rem it would only get blurrier and stops growing. */
 .shot {
   position: relative;
-  max-width: 1600px;
+  max-width: 125rem;
   margin-inline: auto;
   border-radius: 16px 16px 0 0;
   border: 1px solid var(--line-strong);
@@ -385,6 +389,12 @@ p {
   overflow: hidden;
   background: var(--ground);
   box-shadow: 0 -30px 120px -40px rgb(255 201 60 / 0.35), 0 40px 80px -20px rgb(0 0 0 / 0.6);
+}
+/* An image's width attribute would hold it at its file's width; these grow
+   and shrink with the column instead. */
+.shot img,
+.frame img {
+  width: 100%;
 }
 .shot::after {
   content: "";
