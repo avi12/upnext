@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router'
 import type { Job, TaskId } from '../types'
 import { cx, relativeTime } from '../lib/format'
@@ -27,13 +27,35 @@ const TABS = [
   { to: '/history', label: 'History', key: '5' },
 ]
 
-/** UpNext's logo mark: the arc and dot of the app's icon (`web/public/favicon.svg`)
- *  without its tile, so it sits on the bar's own background. */
-export function LogoMark({ className = 'h-[22px] w-[22px]' }: { className?: string }) {
+/** UpNext's logo mark: the d-pad with Up pressed, as in the app's icon
+ *  (`web/public/favicon.svg`). The gradients' ids are per instance, since a page
+ *  can show the mark more than once. */
+export function LogoMark({ className = 'h-[26px] w-[26px]' }: { className?: string }) {
+  // useId's characters aren't all safe in a url(#…) reference.
+  const id = `logo${useId().replace(/[^\w-]/g, '')}`
   return (
-    <svg viewBox="5 6 22 22" className={className} aria-hidden="true">
-      <path d="M8 20a8 8 0 1 1 16 0" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" />
-      <circle cx="16" cy="21" r="2.5" fill="var(--accent)" />
+    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+      <defs>
+        <radialGradient id={`${id}g`} cx="32" cy="16" r="26" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#ffc93c" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#ffc93c" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={`${id}p`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#454c61" />
+          <stop offset="1" stopColor="#2e3343" />
+        </linearGradient>
+        <linearGradient id={`${id}l`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffe08a" />
+          <stop offset="1" stopColor="#ffb81f" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="15" fill="#1a1d26" />
+      <rect width="64" height="64" rx="15" fill={`url(#${id}g)`} />
+      <rect x="24" y="10" width="16" height="44" rx="4" fill={`url(#${id}p)`} />
+      <rect x="10" y="24" width="44" height="16" rx="4" fill={`url(#${id}p)`} />
+      <path d="M28 10h8a4 4 0 0 1 4 4v11H24V14a4 4 0 0 1 4-4z" fill={`url(#${id}l)`} />
+      <path d="M32 13.5l4 5.5h-8z" fill="#1b1503" />
+      <path d="M32 50.5l4-5.5h-8zM13.5 32l5.5-4v8zM50.5 32l-5.5-4v8z" fill="#20242f" />
     </svg>
   )
 }

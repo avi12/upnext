@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The themed (monochrome) icon: the d-pad of ic_launcher_foreground.xml in one colour,
+     the pad faint and the pressed Up key solid, with the arrows cut out, since a themed
+     icon is drawn from the alpha alone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="1.3"
+        android:scaleY="1.3"
+        android:translateX="12.4"
+        android:translateY="12.4">
+        <path
+            android:fillAlpha="0.45"
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M24,25H40V24H50a4,4 0,0 1,4 4V36a4,4 0,0 1,-4 4H40V50a4,4 0,0 1,-4 4H28a4,4 0,0 1,-4 -4V40H14a4,4 0,0 1,-4 -4V28a4,4 0,0 1,4 -4H24zM32,50.5l4,-5.5h-8zM13.5,32l5.5,-4v8zM50.5,32l-5.5,-4v8z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M28,10h8a4,4 0,0 1,4 4v11H24V14a4,4 0,0 1,4 -4zM32,13.5l4,5.5h-8z" />
+    </group>
+</vector>
