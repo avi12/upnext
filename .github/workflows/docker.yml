@@ -6,7 +6,9 @@ name: docker
 # - `edge` and `sha-<commit>` from main,
 # - the version and `latest` from a release tag such as v0.2.0.
 # For amd64 and arm64: the Dockerfile cross-compiles the server, so the arm64
-# build needs no emulation; only its smoke test runs under QEMU.
+# build needs no emulation; only its smoke test runs under QEMU. The two
+# architectures build and test side by side, each in its own job and its
+# own cache; the push job then puts them together from those caches.
 # A pull request builds and tests without pushing: it never logs in, and a
 # fork's pull request gets a read-only token whatever `permissions` says. A
 # manual run on another branch builds and tests too, with no tags to push.
@@ -58,7 +60,7 @@ on:
       - '.github/workflows/docker.yml'
   workflow_dispatch:
 
-# Nothing by default: the image job asks for what it needs below.
+# Nothing by default: each job asks for what it needs below.
 permissions: {}
 
 # A newer push replaces a build still running, as in ci.yml, to save runner
@@ -69,16 +71,71 @@ concurrency:
 
 jobs:
   image:
+    name: image (${{ matrix.arch }})
     runs-on: ${{ vars.UPNEXT_RUNNER_DOCKER || 'ubuntu-latest' }}
     if: vars.UPNEXT_RUNNER_DOCKER == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 60
     permissions:
       contents: read
-      packages: write
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     steps:
       # persist-credentials: false keeps the job's token out of .git/config,
       # where every later step could read it (and, on a self-hosted runner,
       # the next job until the checkout is cleaned). No step pushes to git.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # Into the runner's Docker first, to test before anything is pushed.
+      # Each architecture keeps its own cache.
+      - name: Build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/${{ matrix.arch }}
+          load: true
+          tags: upnext:ci-${{ matrix.arch }}
+          cache-from: type=gha,scope=upnext-${{ matrix.arch }}
+          cache-to: type=gha,scope=upnext-${{ matrix.arch }},mode=max
+          provenance: false
+
+      # The arm64 image's test runs under QEMU. A self-hosted runner's host
+      # registers QEMU itself at boot: rootless Docker can't, since
+      # registering it takes root on the host.
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+        if: matrix.arch == 'arm64' && runner.environment == 'github-hosted'
+        with:
+          platforms: arm64
+
+      # An empty volume, the health check, pairing with the logged code, a
+      # token, `docker stop` within 10 s, the database's integrity, the size,
+      # and Claude Code installed from a stand-in of Anthropic's release site.
+      - name: Smoke test
+        run: contrib/docker/smoke-test.sh upnext:ci-${{ matrix.arch }}
+
+      # A self-hosted runner's Docker keeps what a run loads, so the test
+      # image goes, with the layers only it used. GitHub's runner is thrown
+      # away after the job anyway.
+      - name: Remove the test image (self-hosted)
+        if: always() && runner.environment == 'self-hosted'
+        run: docker image rm upnext:ci-${{ matrix.arch }} || true
+
+  # Once both images passed: both builds again, all from the two jobs'
+  # caches, as one multi-platform image with the tags and labels. Never for
+  # a pull request.
+  push:
+    needs: image
+    if: github.event_name != 'pull_request'
+    runs-on: ${{ vars.UPNEXT_RUNNER_DOCKER || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+    steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -100,59 +157,16 @@ jobs:
           labels: |
             org.opencontainers.image.licenses=MIT OR Apache-2.0
 
-      # Into the runner's Docker first, to test before anything is pushed.
-      # Each architecture keeps its own cache.
-      - name: Build amd64
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          platforms: linux/amd64
-          load: true
-          tags: upnext:ci
-          cache-from: type=gha,scope=upnext-amd64
-          cache-to: type=gha,scope=upnext-amd64,mode=max
-          provenance: false
-
-      # An empty volume, the health check, pairing with the logged code, a
-      # token, `docker stop` within 10 s, the database's integrity, the size,
-      # and Claude Code installed from a stand-in of Anthropic's release site.
-      - name: Smoke test amd64
-        run: contrib/docker/smoke-test.sh upnext:ci
-
-      - name: Build arm64
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          platforms: linux/arm64
-          load: true
-          tags: upnext:ci-arm64
-          cache-from: type=gha,scope=upnext-arm64
-          cache-to: type=gha,scope=upnext-arm64,mode=max
-          provenance: false
-
-      # The same test of the arm64 image, run under QEMU. A self-hosted
-      # runner's host registers QEMU itself at boot: rootless Docker can't,
-      # since registering it takes root on the host.
-      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
-        if: runner.environment == 'github-hosted'
-        with:
-          platforms: arm64
-
-      - name: Smoke test arm64
-        run: contrib/docker/smoke-test.sh upnext:ci-arm64
-
       - name: Log in to GHCR
-        if: github.event_name != 'pull_request' && steps.meta.outputs.tags != ''
+        if: steps.meta.outputs.tags != ''
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Both builds again, all from the caches, as one multi-platform image
-      # with the tags and labels.
       - name: Push
-        if: github.event_name != 'pull_request' && steps.meta.outputs.tags != ''
+        if: steps.meta.outputs.tags != ''
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
@@ -164,10 +178,3 @@ jobs:
             type=gha,scope=upnext-amd64
             type=gha,scope=upnext-arm64
           provenance: false
-
-      # A self-hosted runner's Docker keeps what a run loads, so the two test
-      # images go, with the layers only they used. GitHub's runner is thrown
-      # away after the job anyway.
-      - name: Remove the test images (self-hosted)
-        if: always() && runner.environment == 'self-hosted'
-        run: docker image rm upnext:ci upnext:ci-arm64 || true

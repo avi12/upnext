@@ -102,7 +102,7 @@ The unit is `actions.runner.zytocc-upnext.upnext-linux-1.service`; `journalctl -
 
 ### 5. Rootless Docker (optional, for the `docker` workflow)
 
-The `docker` job builds the image with buildx, smoke-tests it, builds the arm64 image and smoke-tests it under QEMU, then pushes to GHCR. On this runner Docker runs **rootless**: the daemon belongs to `github-runner` and runs inside its user namespace, so nothing a CI job runs (a crate's build script included) gets root on the machine. A rootful `docker.service` for other containers can stay as it is, but `github-runner` must never reach it: never add it to the `docker` group, and never point it at `/var/run/docker.sock`. The image itself runs as an unprivileged user (`USER 1000:1000` in the `Dockerfile`) either way. Skip this section to leave `docker` on GitHub's runners.
+The `docker` workflow builds the amd64 and the arm64 image with buildx in a job each and smoke-tests them (arm64 under QEMU), then its `push` job pushes both to GHCR. On this runner Docker runs **rootless**: the daemon belongs to `github-runner` and runs inside its user namespace, so nothing a CI job runs (a crate's build script included) gets root on the machine. A rootful `docker.service` for other containers can stay as it is, but `github-runner` must never reach it: never add it to the `docker` group, and never point it at `/var/run/docker.sock`. The image itself runs as an unprivileged user (`USER 1000:1000` in the `Dockerfile`) either way. Skip this section to leave `docker` on GitHub's runners.
 
 **a. The system's part** (your own account, with sudo):
 
