@@ -13,8 +13,9 @@ name: windows
 #
 # GitHub's Windows runners take twice the Linux minutes from a private
 # repository's allowance, and are slower everywhere, so it runs only when
-# Rust code, the fixtures or this file change. workflow_dispatch runs it by
-# hand.
+# Rust code, the fixtures, the files under contrib/ that the code builds in
+# or this file change (tests/workflow_paths.rs checks that list).
+# workflow_dispatch runs it by hand.
 #
 # Windows test builds come from `cargo build --release --bins` on a Windows
 # machine, to save Actions minutes, and the release MSI
@@ -27,7 +28,9 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
-      - 'contrib/**'
+      - 'contrib/windows/**'
+      - 'contrib/linux/**'
+      - 'contrib/steam/**'
       - 'Cargo.toml'
       - 'build.rs'
       - 'Cargo.lock'
@@ -37,7 +40,9 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
-      - 'contrib/**'
+      - 'contrib/windows/**'
+      - 'contrib/linux/**'
+      - 'contrib/steam/**'
       - 'Cargo.toml'
       - 'build.rs'
       - 'Cargo.lock'

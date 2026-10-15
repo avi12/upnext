@@ -133,6 +133,51 @@ fn windows_and_docker_run_for_build_rs() {
     assert!(runs("docker.yml", &["build.rs"]));
 }
 
+/// Every `contrib/` path that the code names outside a comment: the files
+/// it builds in (icons, the desktop entry, Steam's artwork) and reads in its
+/// tests.
+fn contrib_paths_in_code() -> Vec<String> {
+    fn walk(dir: &Path, out: &mut Vec<std::path::PathBuf>) {
+        for entry in std::fs::read_dir(dir).unwrap() {
+            let path = entry.unwrap().path();
+            if path.is_dir() {
+                walk(&path, out);
+            } else if path.extension().is_some_and(|e| e == "rs") {
+                out.push(path);
+            }
+        }
+    }
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let mut files = vec![root.join("build.rs")];
+    walk(&root.join("src"), &mut files);
+    let named = Regex::new(r"contrib/[A-Za-z0-9_./-]*[A-Za-z0-9_]").unwrap();
+    let mut paths: Vec<String> = files
+        .iter()
+        .flat_map(|f| std::fs::read_to_string(f).unwrap().lines().map(str::to_string).collect::<Vec<_>>())
+        .filter(|l| !l.trim_start().starts_with("//"))
+        .flat_map(|l| named.find_iter(&l).map(|m| m.as_str().to_string()).collect::<Vec<_>>())
+        .collect();
+    paths.sort();
+    paths.dedup();
+    paths
+}
+
+#[test]
+fn windows_runs_for_the_contrib_files_the_code_builds_in() {
+    // windows.yml watches only the folders of contrib/ that the code names,
+    // so a change to the Flatpak or the image doesn't start a Windows build.
+    let named = contrib_paths_in_code();
+    assert!(named.iter().any(|p| p == "contrib/windows/upnext.ico"), "{named:?}");
+    for path in &named {
+        assert!(runs("windows.yml", &[path]), "windows.yml doesn't run for {path}, which the code names");
+    }
+    for other in
+        ["contrib/flatpak/build.sh", "contrib/docker/smoke-test.sh", "contrib/arch/build-package.sh", "contrib/notices/generate.mjs"]
+    {
+        assert!(!runs("windows.yml", &[other]), "{other}");
+    }
+}
+
 /// Each job of a workflow with its lines, from the YAML's own layout: two
 /// spaces for a job's name under `jobs:`.
 fn jobs(workflow: &str) -> Vec<(String, Vec<String>)> {
