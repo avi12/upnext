@@ -73,7 +73,7 @@ jobs:
       # persist-credentials: false keeps the job's token out of .git/config,
       # where every later step could read it (and, on a self-hosted runner,
       # the next job until the checkout is cleaned). No step pushes to git.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -117,7 +117,7 @@ jobs:
       # its id to deny.toml's ignore list with a reason. Installed on every
       # run, self-hosted too (a release binary of a few MB), so the newest
       # cargo-deny always reads the advisory database.
-      - uses: taiki-e/install-action@e407f7bafb71fd004bc5c2da3032e5470cbb6ef0 # v2.87.24
+      - uses: taiki-e/install-action@ab6895351a88b908e96a4697860d4ffea5e57dbe # v2.87.27
         with:
           tool: cargo-deny
       - run: cargo deny --locked check
@@ -129,11 +129,11 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           # A self-hosted runner keeps ~/.npm between runs.
@@ -165,11 +165,11 @@ jobs:
     env:
       WRANGLER_SEND_METRICS: 'false'
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           # A self-hosted runner keeps ~/.npm between runs.
@@ -197,7 +197,7 @@ jobs:
     env:
       CARGO_TERM_COLOR: always
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -224,7 +224,7 @@ jobs:
 
       - run: cargo build --locked --no-default-features
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           # A self-hosted runner keeps ~/.npm between runs.
@@ -243,7 +243,7 @@ jobs:
       - run: npm run e2e
         working-directory: web
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: playwright-report

@@ -117,7 +117,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: recursive
@@ -147,7 +147,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: recursive
@@ -161,7 +161,7 @@ jobs:
           echo "c5b53ac2559eb26e3b3dc28755eb5d011ed6ec9ac97fa4fc2a2459872e766b5e  $RUNNER_TEMP/dist-installer.sh" | sha256sum -c -
           sh "$RUNNER_TEMP/dist-installer.sh"
       - name: Cache dist
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cargo-dist-cache
           path: ~/.cargo/bin/dist
@@ -177,7 +177,7 @@ jobs:
           cat plan-dist-manifest.json
           echo "manifest=$(jq -c "." plan-dist-manifest.json)" >> "$GITHUB_OUTPUT"
       - name: "Upload dist-manifest.json"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-plan-dist-manifest
           path: plan-dist-manifest.json
@@ -212,7 +212,7 @@ jobs:
       - name: enable windows longpaths
         run: |
           git config --global core.longpaths true
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: recursive
@@ -224,7 +224,7 @@ jobs:
             echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           fi
       - name: "Set up Node"
-        uses: "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020" # v4.4.0
+        uses: "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1" # v7.1.0
         with:
           "cache": "npm"
           "cache-dependency-path": "web/package-lock.json"
@@ -264,7 +264,7 @@ jobs:
         run: ${{ matrix.install_dist.run }}
       # Get the dist-manifest
       - name: Fetch local artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: artifacts-*
           path: target/distrib/
@@ -291,7 +291,7 @@ jobs:
 
           cp dist-manifest.json "$BUILD_MANIFEST_NAME"
       - name: "Upload artifacts"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-local-${{ join(matrix.targets, '_') }}
           path: |
@@ -309,19 +309,19 @@ jobs:
     env:
       BUILD_MANIFEST_NAME: target/distrib/global-dist-manifest.json
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: recursive
       - name: Install cached dist
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: cargo-dist-cache
           path: ~/.cargo/bin/
       - run: chmod +x ~/.cargo/bin/dist
       # Get all the local artifacts for the global tasks to use (for e.g. checksums)
       - name: Fetch local artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: artifacts-*
           path: target/distrib/
@@ -339,7 +339,7 @@ jobs:
 
           cp dist-manifest.json "$BUILD_MANIFEST_NAME"
       - name: "Upload artifacts"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-global
           path: |
@@ -360,11 +360,11 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Fetch the Windows build
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifacts-build-local-x86_64-pc-windows-msvc
           path: target/distrib/
@@ -376,7 +376,7 @@ jobs:
           $exe = Get-ChildItem -LiteralPath target/msi-bin -Recurse -Filter upnext.exe | Select-Object -First 1
           ./contrib/windows/build-msi.ps1 -BinDir $exe.DirectoryName -OutDir target/msi
       - name: "Upload the MSI"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-msi
           path: |
@@ -400,11 +400,11 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Fetch the Linux builds
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: artifacts-build-local-*-unknown-linux-gnu
           path: target/distrib/
@@ -430,7 +430,7 @@ jobs:
           contrib/linux/smoke-test.sh "target/linux-packages/upnext_$v-1_amd64.deb" ubuntu:24.04 "$v"
           contrib/linux/smoke-test.sh "target/linux-packages/upnext-$v-1.x86_64.rpm" fedora:44 "$v"
       - name: "Upload the packages"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-linux-packages
           path: target/linux-packages/
@@ -456,11 +456,11 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Fetch the Linux builds
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: artifacts-build-local-*-unknown-linux-gnu
           path: target/distrib/
@@ -479,7 +479,7 @@ jobs:
         run: |
           contrib/linux/smoke-test.sh target/arch-package/upnext-bin-*-x86_64.pkg.tar.zst "$ARCH_IMAGE" "${TAG#v}"
       - name: "Upload the package"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-arch-package
           path: |
@@ -532,13 +532,13 @@ jobs:
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.key.outputs.enabled == 'true'
         with:
           persist-credentials: false
       - name: Fetch the Arch package
         if: steps.key.outputs.enabled == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifacts-build-arch-package
           path: target/arch-package/
@@ -555,7 +555,7 @@ jobs:
           contrib/arch/sign-repo.sh --package "${packages[0]}" --fingerprint "$PACMAN_KEY_FINGERPRINT" --out-dir target/pacman-repo
       - name: "Upload the repository"
         if: steps.key.outputs.enabled == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-pacman-repo
           path: target/pacman-repo/
@@ -587,7 +587,7 @@ jobs:
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.key.outputs.enabled == 'true'
         with:
           persist-credentials: false
@@ -621,7 +621,7 @@ jobs:
           (cd ../target/apk && sha256sum -b "$apk" > "$apk.sha256")
       - name: "Upload the APK"
         if: steps.key.outputs.enabled == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-apk
           path: target/apk/
@@ -650,10 +650,10 @@ jobs:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-51@sha256:78d969b18225ae107ca29497bf09c4a3f791e5f1838a9a912a529d0024fb6210
       options: --privileged
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
       - name: Build the bundle
@@ -665,7 +665,7 @@ jobs:
           TAG: ${{ needs.plan.outputs.tag }}
         run: contrib/flatpak/smoke-test.sh "target/flatpak/upnext-${TAG#v}-x86_64.flatpak"
       - name: "Upload the bundle"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-build-flatpak
           path: |
@@ -710,19 +710,19 @@ jobs:
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.on.outputs.enabled == 'true'
         with:
           persist-credentials: false
       - name: Fetch the Linux build
         if: steps.on.outputs.enabled == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifacts-build-local-x86_64-unknown-linux-gnu
           path: target/distrib/
       - name: Fetch the Windows build
         if: steps.on.outputs.enabled == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifacts-build-local-x86_64-pc-windows-msvc
           path: target/distrib/
@@ -743,7 +743,7 @@ jobs:
         run: tar -C target/steam -cf target/steam-depots.tar linux windows
       - name: "Upload the depots"
         if: steps.on.outputs.enabled == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: steam-depots
           path: target/steam-depots.tar
@@ -753,7 +753,7 @@ jobs:
         run: contrib/steam/fetch-sources.py --depot target/steam/linux --out target/steam-sources/upnext-steam-linux-sources.tar
       - name: "Upload the library sources"
         if: steps.on.outputs.enabled == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: steam-sources
           path: |
@@ -774,7 +774,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
@@ -782,10 +782,10 @@ jobs:
           toolchain: stable
       # Checked against the SHA-256 in install-action's own manifest; the
       # same version as .github/workflows/notices.yml.
-      - uses: taiki-e/install-action@e407f7bafb71fd004bc5c2da3032e5470cbb6ef0 # v2.87.24
+      - uses: taiki-e/install-action@ab6895351a88b908e96a4697860d4ffea5e57dbe # v2.87.27
         with:
           tool: cargo-about@0.9.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
       - name: Check the notices
@@ -821,19 +821,19 @@ jobs:
       - name: Note a release without the Flatpak bundle
         if: ${{ vars.UPNEXT_FLATPAK_BUNDLE != 'on' }}
         run: echo "::notice::The UPNEXT_FLATPAK_BUNDLE variable isn't on, so the release has no Flatpak bundle (docs/dev/RELEASE.md, \"The Flatpak\")."
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: recursive
       - name: Install cached dist
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: cargo-dist-cache
           path: ~/.cargo/bin/
       - run: chmod +x ~/.cargo/bin/dist
       # Fetch artifacts from scratch-storage
       - name: Fetch artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: artifacts-*
           path: target/distrib/
@@ -846,14 +846,14 @@ jobs:
           cat dist-manifest.json
           echo "manifest=$(jq -c "." dist-manifest.json)" >> "$GITHUB_OUTPUT"
       - name: "Upload dist-manifest.json"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           # Overwrite the previous copy
           name: artifacts-dist-manifest
           path: dist-manifest.json
       # Create a GitHub Release while uploading all files to it
       - name: "Download GitHub Artifacts"
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: artifacts-*
           path: artifacts
@@ -910,7 +910,7 @@ jobs:
           fi
       - name: Fetch the packages
         if: steps.key.outputs.present == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifacts-build-linux-packages
           path: packages/
@@ -956,7 +956,7 @@ jobs:
       contents: write
     steps:
       - name: Fetch the library sources
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: steam-sources
           path: steam-sources/
@@ -1018,13 +1018,13 @@ jobs:
           else
             echo "present=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.key.outputs.present == 'true'
         with:
           persist-credentials: false
       - name: Fetch the depots
         if: steps.key.outputs.present == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: steam-depots
           path: target/
@@ -1071,7 +1071,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: recursive
