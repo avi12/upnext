@@ -64,13 +64,6 @@
             <uap5:ExecutionAlias Alias="upnext.exe" />
           </uap5:AppExecutionAlias>
         </uap5:Extension>
-        <!-- What Steam's shortcut starts (src/msix.rs): a path that stays
-             the same when an update moves the programs. -->
-        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
-          <uap5:AppExecutionAlias desktop4:Subsystem="windows">
-            <uap5:ExecutionAlias Alias="upnext-app.exe" />
-          </uap5:AppExecutionAlias>
-        </uap5:Extension>
         <!-- Start with Windows: the package's writes to the Run key would
              stay in its own registry, so Windows starts it from this task
              instead, which the user turns on in Settings, Apps, Startup
@@ -78,6 +71,27 @@
         <desktop:Extension Category="windows.startupTask" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication" uap10:Parameters="--background">
           <desktop:StartupTask TaskId="UpNext" Enabled="false" DisplayName="UpNext" />
         </desktop:Extension>
+      </Extensions>
+    </Application>
+    <!-- What Steam's shortcut starts (src/msix.rs): `upnext-app.exe`, a
+         path that stays the same when an update moves the programs. An
+         application may declare only one alias extension, and the first
+         has `upnext`, so this one is an application of its own with no
+         Start menu entry. -->
+    <Application Id="App" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="UpNext"
+        Description="Picks what to play next from your game library."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        AppListEntry="none" />
+      <Extensions>
+        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:AppExecutionAlias desktop4:Subsystem="windows">
+            <uap5:ExecutionAlias Alias="upnext-app.exe" />
+          </uap5:AppExecutionAlias>
+        </uap5:Extension>
       </Extensions>
     </Application>
     <!-- The MSI's second Start menu entry. -->
