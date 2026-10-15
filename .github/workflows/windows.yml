@@ -100,16 +100,28 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         if: runner.environment == 'github-hosted'
 
+      # The tests make hundreds of databases in temporary folders. On
+      # GitHub's runner TEMP is on the system disk (C:), which is far slower
+      # than the runner's own D: disk that holds the checkout and
+      # RUNNER_TEMP.
+      - name: Temporary files on the fast disk (GitHub's runner)
+        if: runner.environment == 'github-hosted'
+        shell: pwsh
+        run: |
+          "TMP=$env:RUNNER_TEMP" >> $env:GITHUB_ENV
+          "TEMP=$env:RUNNER_TEMP" >> $env:GITHUB_ENV
+
       - run: cargo clippy --all-targets --locked -- -D warnings
       # Debug test builds read web/dist from disk and serve a placeholder
       # without it, so the UI isn't built here.
       - run: cargo test --locked
 
-      # The two programs: `upnext.exe` is built for the console,
-      # `upnext-app.exe` for the desktop, so the Start menu opens it without
-      # a terminal. The PE header's Subsystem field says which: 3 is the
-      # console, 2 the desktop (Windows GUI).
-      - run: cargo build --locked --bins
+      # The two programs, which `cargo test` has built for the integration
+      # tests (a separate `cargo build` would compile UpNext again, against
+      # dependencies without the tests' features): `upnext.exe` is built for
+      # the console, `upnext-app.exe` for the desktop, so the Start menu
+      # opens it without a terminal. The PE header's Subsystem field says
+      # which: 3 is the console, 2 the desktop (Windows GUI).
       - name: Check each program's subsystem
         shell: pwsh
         run: |
