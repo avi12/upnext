@@ -31,6 +31,6 @@ The libraries built into the APK are in `android/gradle/libs.versions.toml`. All
 | Library | Version | What for |
 |---|---|---|
 | AndroidX Activity, AndroidX Core | 1.9.3, 1.15.0 | The screens, the Back button, edge-to-edge layout |
-| Kotlin standard library, kotlinx.serialization | 2.3.21, 1.10.0 | The app's language, and the JSON of saved computers and pairing calls |
+| Kotlin standard library, kotlinx.serialization | 2.4.21, 1.11.0 | The app's language, and the JSON of saved computers and pairing calls |
 | ZXing core, zxing-android-embedded (JourneyApps) | 3.4.1, 4.3.0 | Scanning the pairing QR code |
 | What AndroidX and Kotlin bring with them: AndroidX Annotation, Arch Core, Collection, Concurrent, Interpolator, Lifecycle, SavedState, Startup, Profile Installer, Tracing, VersionedParcelable, kotlinx.coroutines, JetBrains' Java annotations and Guava's ListenableFuture | As Gradle resolves them (`./gradlew :app:dependencies`) | What Activity and Core are built on; also Apache-2.0 |

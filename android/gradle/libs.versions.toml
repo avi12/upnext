@@ -3,8 +3,8 @@
 # F-Droid can build the app from source.
 [versions]
 androidGradlePlugin = "9.3.2"
-kotlin = "2.3.21"
-kotlinxSerialization = "1.10.0"
+kotlin = "2.4.21"
+kotlinxSerialization = "1.11.0"
 androidxActivity = "1.9.3"
 androidxCore = "1.15.0"
 zxingAndroidEmbedded = "4.3.0"

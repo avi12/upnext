@@ -8,9 +8,9 @@ AndroidX Activity 1.9.3
     © The Android Open Source Project
 AndroidX Core 1.15.0
     © The Android Open Source Project
-kotlinx.serialization 1.10.0
+kotlinx.serialization 1.11.0
     © JetBrains s.r.o. and contributors
-Kotlin standard library 2.3.21
+Kotlin standard library 2.4.21
     © JetBrains s.r.o. and Kotlin Programming Language contributors
 zxing-android-embedded 4.3.0
     © JourneyApps
