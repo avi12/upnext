@@ -19,10 +19,27 @@ bundle="$1"
 port="${2:-8796}"
 
 # `flatpak run` needs the system bus and a session bus, which a desktop has
-# and a build container doesn't, so start them there.
+# and a build container doesn't, so start them there. The system bus gets a
+# configuration of its own: the build image's dbus is installed under /app,
+# so its system.conf listens in /app/var/run, which doesn't exist, and runs
+# as a messagebus user the image doesn't have.
 if [ ! -S /run/dbus/system_bus_socket ] && [ "$(id -u)" = 0 ]; then
   mkdir -p /run/dbus
-  dbus-daemon --system --fork
+  cat > /run/dbus/upnext-smoke-test.conf <<'CONF'
+<busconfig>
+  <type>system</type>
+  <listen>unix:path=/run/dbus/system_bus_socket</listen>
+  <auth>EXTERNAL</auth>
+  <policy context="default">
+    <allow user="*"/>
+    <allow own="*"/>
+    <allow send_destination="*"/>
+    <allow receive_sender="*"/>
+  </policy>
+</busconfig>
+CONF
+  dbus-daemon --config-file=/run/dbus/upnext-smoke-test.conf --fork
+  export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
 fi
 if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
   exec dbus-run-session -- "$0" "$@"
