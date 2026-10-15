@@ -47,7 +47,7 @@
   --mono: "Martian Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   --gutter: clamp(16px, 4vw, 40px);
-  --wide: 1360px;
+  --wide: 1840px;
   --radius: 14px;
 }
 
@@ -361,7 +361,7 @@ p {
   position: absolute;
   left: 50%;
   top: 0;
-  width: min(1500px, 128vw);
+  width: min(2100px, 128vw);
   aspect-ratio: 2 / 1;
   max-width: none;
   transform: translate(-50%, -18%);
@@ -377,7 +377,7 @@ p {
 }
 .shot {
   position: relative;
-  max-width: 1280px;
+  max-width: 1600px;
   margin-inline: auto;
   border-radius: 16px 16px 0 0;
   border: 1px solid var(--line-strong);
