@@ -69,6 +69,10 @@ jobs:
     if: vars.UPNEXT_RUNNER_LINUX == '' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       CARGO_TERM_COLOR: always
+      # Line numbers but no full debug information in the test builds, which
+      # are compiled and linked faster and make a smaller cache. Only the dev
+      # profile: a release keeps its own settings (Cargo.toml).
+      CARGO_PROFILE_DEV_DEBUG: line-tables-only
     steps:
       # persist-credentials: false keeps the job's token out of .git/config,
       # where every later step could read it (and, on a self-hosted runner,
@@ -196,6 +200,8 @@ jobs:
     timeout-minutes: 30
     env:
       CARGO_TERM_COLOR: always
+      # As in the rust job.
+      CARGO_PROFILE_DEV_DEBUG: line-tables-only
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

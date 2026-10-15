@@ -65,6 +65,10 @@ jobs:
     timeout-minutes: 60
     env:
       CARGO_TERM_COLOR: always
+      # Line numbers but no full debug information in the test builds, which
+      # are compiled and linked faster. Only the dev profile: a release keeps
+      # its own settings (Cargo.toml).
+      CARGO_PROFILE_DEV_DEBUG: line-tables-only
     steps:
       # persist-credentials: false keeps the job's token out of .git/config,
       # where every later step could read it (and, on a self-hosted runner,
