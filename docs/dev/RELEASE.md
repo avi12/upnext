@@ -368,7 +368,7 @@ The release workflow's `build-msix` job builds `upnext-x86_64-pc-windows-msvc.ms
 
 ### Partner Center (once)
 
-1. Register as an individual developer at [Partner Center](https://partner.microsoft.com/dashboard) with a Microsoft account; it's free, and asks for a government ID and a selfie.
+1. Register as an individual developer at [storedeveloper.microsoft.com](https://storedeveloper.microsoft.com), "Get started for free", with a Microsoft account; it's free, and asks for a government ID and a selfie. Signing up at Partner Center itself gives a dashboard without the Apps and games program; once registered, [aka.ms/submitwindowsapp](https://aka.ms/submitwindowsapp) opens it.
 2. Apps and games, New product, "MSIX or PWA app", and reserve the app's name.
 3. In the new app, Product management, Product identity lists `Package/Identity/Name`, `Package/Identity/Publisher` and `Package/Properties/PublisherDisplayName`. They go in repository variables, never in the tree. The first two turn the `build-msix` job on; the third is optional for the job, which otherwise uses "UpNext contributors", but the Store takes the package only when it matches Partner Center's, so set it too. `UPNEXT_MSIX_DISPLAY_NAME` is needed only when the reserved name isn't "UpNext":
 
