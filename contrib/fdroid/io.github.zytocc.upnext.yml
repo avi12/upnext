@@ -1,6 +1,6 @@
 # F-Droid's recipe for the Android app, to submit as a
 # merge request to fdroiddata (gitlab.com/fdroid/fdroiddata) as
-# metadata/io.github.zytocc.upnext.yml once v0.1.0 is tagged. The store
+# metadata/io.github.zytocc.upnext.yml once a release carries the APK. The store
 # text, icon and changelogs come from android/fastlane/, which F-Droid reads
 # from the tag. contrib/fdroid/README.md has the steps.
 Categories:
@@ -22,18 +22,18 @@ Repo: https://github.com/zytocc/upnext.git
 Binaries: https://github.com/zytocc/upnext/releases/download/v%v/upnext-android-%v.apk
 
 Builds:
-  - versionName: 0.1.0
-    versionCode: 1000
-    commit: v0.1.0
+  - versionName: 0.1.1
+    versionCode: 1001
+    commit: v0.1.1
     subdir: android/app
     gradle:
       - yes
 
 # The SHA-256 of the release key's certificate, in lowercase hex without
-# colons (`apksigner verify --print-certs upnext-android-0.1.0.apk`).
-AllowedAPKSigningKeys: REPLACE_WITH_THE_RELEASE_CERTIFICATE_SHA256
+# colons (`apksigner verify --print-certs upnext-android-0.1.1.apk`).
+AllowedAPKSigningKeys: 7d3b65bb028981aa4e045e999d37420b5bcba6796d17e819341e26c47fe8e95e
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+$
-CurrentVersion: 0.1.0
-CurrentVersionCode: 1000
+CurrentVersion: 0.1.1
+CurrentVersionCode: 1001

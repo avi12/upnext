@@ -4,7 +4,7 @@
 
 To submit it, once a `v*` tag has an `upnext-android-<version>.apk` on its GitHub release:
 
-1. Put the release certificate's SHA-256 in `AllowedAPKSigningKeys` (`apksigner verify --print-certs` on the release's APK prints it; lowercase, no colons).
+1. Check that `AllowedAPKSigningKeys` is the release certificate's SHA-256 (`apksigner verify --print-certs` on the release's APK prints it; lowercase, no colons), and that the build entry and `CurrentVersion` name that release.
 2. Fork `gitlab.com/fdroid/fdroiddata`, copy the file to `metadata/io.github.zytocc.upnext.yml`, and check it there with `fdroid lint io.github.zytocc.upnext` and `fdroid build -v -l io.github.zytocc.upnext` (fdroidserver, in F-Droid's build container).
 3. Open the merge request. F-Droid's reviewers may ask for changes; their scanner looks at the whole repository, so a file it flags outside `android/` goes under `scandelete` in the build entry.
 
