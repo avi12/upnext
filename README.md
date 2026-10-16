@@ -2,6 +2,8 @@
 
 **Pick what to play next from the games you already own.**
 
+Launchers like Playnite and Heroic gather your games in one place. UpNext tells you which one to play tonight, with or without an AI.
+
 Website: [upnext.games](https://upnext.games)
 
 UpNext gathers your game libraries from Steam, Epic, GOG, Amazon, the EA app and Ubisoft Connect into one list and looks up what each game is like. Tell it what you're in the mood for ("about an hour, something calm with a bit of story") and it suggests a few games from your backlog that fit, with the reasons. The suggestions come from an AI you choose: your own Claude or ChatGPT subscription, an API key, or a model on your own machine. Without an AI, UpNext ranks your games itself.
@@ -22,13 +24,13 @@ UpNext runs on your own computer and keeps everything in a local database. It ha
 
 | Platform | Get it | Guide |
 |---|---|---|
-| Windows 10 and 11 | The `.msi` installer from a [release](https://github.com/zytocc/upnext/releases) | [Windows](docs/install/windows.md) |
+| Windows 10 and 11 | [The installer](https://github.com/zytocc/upnext/releases/latest/download/upnext-x86_64-pc-windows-msvc.msi) (`.msi`) from the latest release | [Windows](docs/install/windows.md) |
 | Debian, Ubuntu, Fedora | The `.deb` or `.rpm` from a release | [Linux](docs/install/linux.md) |
 | Arch Linux | The release's `PKGBUILD` | [Linux](docs/install/linux.md#arch-linux) |
 | Any Linux, Steam Deck | The Flatpak | [Flatpak and Steam Deck](docs/install/flatpak.md) |
 | Other Linux | The release archive | [Linux](docs/install/linux.md#release-archive) |
 | Home server, NAS | The container image | [Docker](docs/install/docker.md) |
-| Android | The APK, to use UpNext on your computer from a phone or TV | [Android](docs/install/android.md) |
+| Android | The APK, to use UpNext on your computer from a phone or TV; it isn't in a release yet | [Android](docs/install/android.md) |
 | From source | Rust and Node | [Building from source](docs/install/source.md) |
 
 With Docker it's three lines:
