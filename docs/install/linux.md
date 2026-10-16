@@ -5,7 +5,7 @@
 Each [release](https://github.com/zytocc/upnext/releases) has packages for x86_64 and arm64: a `.deb` for Debian 12 and 13 and Ubuntu 22.04, 24.04 and 26.04, and an `.rpm` for Fedora 43 to 45. They put `upnext` and `upnext-app` in `/usr/bin`, UpNext in your launcher under Games, and the user service in place, and your package manager brings WebKitGTK and GTK with them. Set `V` to the release's version; on arm64 the files end in `_arm64.deb` and `.aarch64.rpm`.
 
 ```sh
-V=0.1.0
+V=0.1.1
 # Debian and Ubuntu
 curl -LO "https://github.com/zytocc/upnext/releases/download/v$V/upnext_$V-1_amd64.deb"
 curl -LO "https://github.com/zytocc/upnext/releases/download/v$V/upnext_$V-1_amd64.deb.sha256"

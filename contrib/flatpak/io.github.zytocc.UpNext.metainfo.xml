@@ -75,6 +75,11 @@
     <content_attribute id="social-info">mild</content_attribute>
   </content_rating>
   <releases>
+    <release version="0.1.1" date="2026-10-16">
+      <description>
+        <p>The first release with a Flatpak, and a new icon.</p>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-10-13">
       <description>
         <p>The first release.</p>

@@ -21,8 +21,8 @@ android {
         // fails when they differ), and versionCode is worked out from it:
         // major × 1,000,000 + minor × 1,000 + patch, so 0.1.0 is 1000.
         // Both stay literal here, where F-Droid's update check reads them.
-        versionCode = 1000
-        versionName = "0.1.0"
+        versionCode = 1001
+        versionName = "0.1.1"
     }
 
     signingConfigs {

@@ -64,7 +64,7 @@ UpNext is developed with AI coding assistants, mostly Claude Code. Every change 
 
 Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
-Signing starts with the first release after SignPath Foundation accepts UpNext; until then, 0.1.0 included, the Windows programs and installer aren't signed. Only files the `release` workflow (`.github/workflows/release.yml`) builds are signed: it builds every file on a release page from this repository, from the commit the release's tag names, on GitHub's own runners, and publishes each with its SHA-256 checksum.
+Signing starts with the first release after SignPath Foundation accepts UpNext; until then, 0.1.1 included, the Windows programs and installer aren't signed. Only files the `release` workflow (`.github/workflows/release.yml`) builds are signed: it builds every file on a release page from this repository, from the commit the release's tag names, on GitHub's own runners, and publishes each with its SHA-256 checksum.
 
 - **Committers and reviewers:** [zytoc](https://github.com/zytoc). Every change from anyone else, such as a pull request, is reviewed by a committer before it's merged.
 - **Approvers:** [zytoc](https://github.com/zytoc), who approves each release's signing by hand.
