@@ -381,8 +381,8 @@ test('rate a pick, then the game', async ({ page, request }) => {
 
 // Roll the dice: one game off your radar, by chance and with no AI,
 // with Another and Curate around this on its card; and a pick's art says
-// it opens the game and gives a quick look on hover.
-test('roll the dice, then curate around it; a quick look on a pick', async ({ page, request }) => {
+// it opens the game and previews its screenshots on hover.
+test('roll the dice, then curate around it; a pick previews its screenshots', async ({ page, request }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Roll the dice' }).click()
   const lineup = page.getByRole('region', { name: 'Lineup' })
@@ -409,15 +409,53 @@ test('roll the dice, then curate around it; a quick look on a pick', async ({ pa
   expect(history[0].prompt).toBe(`Games like ${second}`)
   expect(history[0].picks.map((p: { name: string }) => p.name)).not.toContain(second)
 
-  // The art points, and resting on it opens a quick look with Open.
+  // The art points, and resting the mouse on it fades through the game's
+  // screenshots inside the art's own frame. The mock library has no art,
+  // so the game gets three made-up screenshots here.
   const art = cards.first().getByRole('button', { name: /^Open / })
   const name = (await art.getAttribute('aria-label'))!.replace(/^Open /, '')
   await expect(art).toHaveCSS('cursor', 'pointer')
+  const tints = ['#2a6f97', '#b5651d', '#4f772d']
+  await page.route('**/e2e-shots/*.svg', (route) => {
+    const n = Number(route.request().url().match(/(\d)\.svg$/)![1])
+    return route.fulfill({
+      contentType: 'image/svg+xml',
+      body: `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="338"><rect width="600" height="338" fill="${tints[n]}"/></svg>`,
+    })
+  })
+  await page.route(/\/api\/v1\/games\/\d+$/, async (route) => {
+    const response = await route.fetch()
+    const shots = tints.map((_, n) => ({ thumb: `/e2e-shots/${n}.svg`, full: `/e2e-shots/${n}.svg` }))
+    await route.fulfill({ response, json: { ...(await response.json()), screenshots: shots } })
+  })
+  const save = cards.first().getByRole('button', { name: /^(Save for later|Saved)$/ })
+  const title = cards.first().getByRole('heading', { name })
+  const shot = (n: number) => art.locator(`img[data-shot="${n}"]`)
   await art.hover()
-  const look = page.getByRole('dialog', { name: `Quick look: ${name}` })
-  await expect(look).toBeVisible()
-  await expect(look).toContainText('Liked it')
-  await look.getByRole('button', { name: 'Open' }).click()
+  const dots = cards.first().getByRole('group', { name: 'Screenshots' })
+  await expect(dots).toBeVisible()
+  await expect(dots.getByRole('button')).toHaveCount(3)
+  await expect(shot(0)).toHaveCSS('opacity', '1')
+  await expect(shot(1)).toHaveCSS('opacity', '1', { timeout: 6000 })
+  await expect(shot(0)).toHaveCSS('opacity', '0')
+  // Nothing grew out of the frame: the title still starts below the art,
+  // and a click on the button under it lands on that button.
+  const frame = (await art.boundingBox())!
+  expect((await title.boundingBox())!.y).toBeGreaterThanOrEqual(frame.y + frame.height)
+  const box = (await save.boundingBox())!
+  expect(
+    await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('button')?.textContent, [box.x + box.width / 2, box.y + box.height / 2]),
+  ).toMatch(/Save for later|Saved/)
+  // A dot shows its screenshot and keeps it there.
+  await dots.getByRole('button', { name: 'Screenshot 3 of 3' }).hover()
+  await expect(shot(2)).toHaveCSS('opacity', '1')
+  await page.waitForTimeout(3000)
+  await expect(shot(2)).toHaveCSS('opacity', '1')
+  // Moving away ends it, with nothing to close.
+  await page.mouse.move(0, 0)
+  await expect(dots).toBeHidden()
+  await expect(shot(2)).toHaveCSS('opacity', '0')
+  await art.click()
   await expect(page.getByRole('dialog', { name })).toBeVisible()
-  await expect(look).toBeHidden()
+  await page.unroute(/\/api\/v1\/games\/\d+$/)
 })

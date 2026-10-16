@@ -1,75 +1,113 @@
-import { useEffect, useId, useRef, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api'
 import type { GameView } from '../../types'
-import { compactNumber, cx, hoursToText, linuxClass } from '../../lib/format'
+import { cx } from '../../lib/format'
 import { Cover } from '../Cover'
-import { linuxShown } from './text'
 
-/** How long the pointer rests on the art before the quick look opens, so
- *  passing over a card on the way somewhere else doesn't open it. */
-const OPEN_DELAY_MS = 450
-/** How long the quick look waits after the pointer leaves, so it can cross
- *  the gap from the art to the quick look. */
-const CLOSE_DELAY_MS = 180
-/** Tags the quick look shows at most. */
-const TAGS = 5
+/** How long the pointer rests on the art before the preview starts, so
+ *  passing over a card on the way somewhere else changes nothing. */
+const PEEK_DELAY_MS = 1000
+/** How long each screenshot stays before the next one fades in. */
+const STEP_MS = 2600
+/** Screenshots the preview goes through at most; the game page has the rest. */
+const SHOTS = 6
+/** Tags the preview names at most, on one line. */
+const TAGS = 3
 
-/** A pick's art. It opens the game page, and says so: a pointer, a
- *  slight zoom and "Details" on hover. Resting the mouse on it opens a quick
- *  look (screenshots, story length, reviews, Linux and the top tags) to look
- *  before choosing; keyboard users reach the same through a "Quick look"
- *  button that shows when it has focus. Phones have no hover, so a tap
- *  still just opens the page. The title stays the keyboard's way to the
- *  page, so the art itself isn't a tab stop. */
+const reducedMotion = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+/** A pick's art. It opens the game page, and says so: a pointer, a slight
+ *  zoom and "Details" on hover. Resting the mouse on it for a second starts
+ *  a preview inside the same frame: the game's screenshots fade in one
+ *  after another, with its top tags along the bottom and a row of dots to
+ *  pick one. Moving the mouse away ends it, so it never covers the buttons
+ *  below and there is nothing to close. With reduced motion the pictures
+ *  don't change on their own; the dots show them one at a time. Keyboard
+ *  users get the same through a "Preview" button that shows when it has
+ *  focus, with the arrow keys to step. Phones and the big screen have no
+ *  hover, so a tap still just opens the page. The title stays the
+ *  keyboard's way to the page, so the art itself isn't a tab stop. */
 export function PickArt({
   game,
   onOpen,
-  showLinux,
   className,
 }: {
   game: GameView
   onOpen: () => void
-  showLinux: boolean
   className?: string
 }) {
-  const qc = useQueryClient()
-  const id = useId()
-  const [open, setOpen] = useState(false)
+  // Armed on the first visit of the mouse or the keyboard: from then on the
+  // full game (a pick carries it without screenshots) is fetched and its
+  // screenshots stay in the frame, hidden, so they can fade out as well as in.
+  const [armed, setArmed] = useState(false)
+  const [peek, setPeek] = useState(false)
+  // Set once the user picks a screenshot, which stops the slideshow there.
+  const [manual, setManual] = useState(false)
+  const [shot, setShot] = useState(0)
+  // Screenshots that have loaded, by address, so a card that moves on to
+  // another game doesn't take the last one's for loaded.
+  const [loaded, setLoaded] = useState<ReadonlySet<string>>(new Set())
   const timer = useRef<number | undefined>(undefined)
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
-  const wait = (fn: () => void, ms: number) => {
-    window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(fn, ms)
-  }
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
-  // Focus goes back to "Quick look" only when it was in the quick look, so
-  // Esc after a mouse hover doesn't put a focus ring on the card.
-  const close = (refocus = false) => {
+  const full = useQuery({ queryKey: ['game', game.id], queryFn: () => api.game(game.id), staleTime: 60_000, enabled: armed })
+  const shots = useMemo(() => (full.data?.screenshots ?? []).slice(0, SHOTS), [full.data])
+  const tags = (full.data ?? game).tags.slice(0, TAGS)
+  const auto = peek && !manual && shots.length > 1 && !reducedMotion()
+
+  // The slideshow moves on to the next screenshot that has loaded, and
+  // waits on the current one while the next is still coming.
+  useEffect(() => {
+    if (!auto) return
+    const tick = window.setInterval(() => {
+      setShot((at) => {
+        for (let by = 1; by < shots.length; by++) {
+          const next = (at + by) % shots.length
+          if (loaded.has(shots[next].thumb)) return next
+        }
+        return at
+      })
+    }, STEP_MS)
+    return () => window.clearInterval(tick)
+  }, [auto, shots, loaded])
+
+  const start = () => {
     window.clearTimeout(timer.current)
-    setOpen(false)
-    if (refocus && wrapRef.current?.contains(document.activeElement)) triggerRef.current?.focus()
+    setShot(0)
+    setManual(false)
+    setPeek(true)
+  }
+  const stop = () => {
+    window.clearTimeout(timer.current)
+    setPeek(false)
+    setManual(false)
+  }
+  const choose = (at: number) => {
+    setManual(true)
+    setShot(at)
   }
   const openPage = () => {
-    close()
+    stop()
     onOpen()
   }
 
+  // With reduced motion the preview opens on the art itself, and a
+  // screenshot shows only once a dot or an arrow key asks for it.
+  const showing = peek && !(reducedMotion() && !manual) ? shot : -1
+
   return (
     <div
-      ref={wrapRef}
       className={cx('relative', className)}
       onPointerEnter={(e) => {
-        if (e.pointerType !== 'mouse') return
-        // The whole game, with its screenshots, is fetched once the pointer
-        // arrives, so the quick look usually has them when it opens.
-        void qc.prefetchQuery({ queryKey: ['game', game.id], queryFn: () => api.game(game.id), staleTime: 60_000 })
-        wait(() => setOpen(true), open ? 0 : OPEN_DELAY_MS)
+        if (e.pointerType !== 'mouse' || peek) return
+        setArmed(true)
+        window.clearTimeout(timer.current)
+        timer.current = window.setTimeout(start, PEEK_DELAY_MS)
       }}
       onPointerLeave={(e) => {
-        if (e.pointerType === 'mouse') wait(() => setOpen(false), CLOSE_DELAY_MS)
+        // Moving onto the dots is still on the art.
+        if (e.pointerType === 'mouse' && !(e.relatedTarget instanceof Node && e.currentTarget.contains(e.relatedTarget))) stop()
       }}
     >
       <button
@@ -79,139 +117,93 @@ export function PickArt({
         aria-label={`Open ${game.name}`}
         tabIndex={-1}
       >
-        <Cover game={game} shape="wide" titleSize="text-[18px]" className="w-full transition-transform duration-200 group-hover:scale-[1.03]" />
+        <div className="relative transition-transform duration-200 group-hover:scale-[1.03]">
+          <Cover game={game} shape="wide" titleSize="text-[18px]" className="w-full" />
+          {armed &&
+            shots.map((s, i) => (
+              <img
+                key={s.thumb}
+                src={s.thumb}
+                alt=""
+                data-shot={i}
+                onLoad={() => setLoaded((l) => new Set(l).add(s.thumb))}
+                className={cx(
+                  'absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out motion-reduce:transition-none',
+                  showing === i && loaded.has(s.thumb) ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+            ))}
+        </div>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-end bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2 text-[13px] font-semibold text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          className={cx(
+            'pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/75 to-transparent px-3 pt-8 pb-2 text-[13px] text-white transition-opacity duration-200',
+            peek ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
+          )}
         >
-          Details ›
+          <span className={cx('truncate transition-opacity duration-500', peek && tags.length > 0 ? 'opacity-90' : 'opacity-0')}>
+            {tags.join(' · ')}
+          </span>
+          <span className="shrink-0 font-semibold">Details ›</span>
         </span>
       </button>
-      {/* Out of sight until it has focus, so the keyboard has the quick look
+      {peek && shots.length > 1 && (
+        <div
+          role="group"
+          aria-label="Screenshots"
+          className="absolute top-2 right-2 flex items-center rounded-full bg-black/45 px-1 py-0.5 backdrop-blur-sm"
+        >
+          {shots.map((s, i) => (
+            <button
+              key={s.thumb}
+              type="button"
+              tabIndex={-1}
+              aria-label={`Screenshot ${i + 1} of ${shots.length}`}
+              aria-current={showing === i ? 'true' : undefined}
+              onPointerEnter={() => choose(i)}
+              onClick={() => choose(i)}
+              className="flex h-5 w-4 cursor-pointer items-center justify-center"
+            >
+              <span
+                className={cx(
+                  'block h-1.5 w-1.5 rounded-full transition-colors',
+                  showing === i ? 'bg-white' : 'bg-white/45',
+                )}
+              />
+            </button>
+          ))}
+        </div>
+      )}
+      {/* Out of sight until it has focus, so the keyboard has the preview
           too without a second button on every card for the mouse. */}
       <button
-        ref={triggerRef}
         type="button"
-        onClick={() => (open ? close() : setOpen(true))}
-        aria-expanded={open}
-        aria-controls={open ? id : undefined}
+        aria-pressed={peek}
+        aria-keyshortcuts={shots.length > 1 ? 'ArrowLeft ArrowRight' : undefined}
+        onClick={() => {
+          setArmed(true)
+          if (peek) stop()
+          else start()
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && peek) {
+            e.preventDefault()
+            stop()
+          } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && peek && shots.length > 1) {
+            e.preventDefault()
+            const by = e.key === 'ArrowRight' ? 1 : -1
+            choose(((showing < 0 ? (by > 0 ? -1 : 0) : showing) + by + shots.length) % shots.length)
+          }
+        }}
+        onBlur={() => stop()}
         className="sr-only rounded-md bg-ground/85 px-2.5 py-1.5 text-[13px] font-semibold text-ink focus-visible:not-sr-only focus-visible:absolute focus-visible:top-2 focus-visible:left-2"
       >
-        Quick look
+        Preview
       </button>
-      {open && <QuickLook id={id} game={game} showLinux={showLinux} onOpen={openPage} onClose={() => close(true)} />}
-    </div>
-  )
-}
-
-/** The quick look itself: a screenshot to step through, the numbers that
- *  decide most picks, the top tags, and Open for the full page. */
-function QuickLook({
-  id,
-  game: slim,
-  showLinux,
-  onOpen,
-  onClose,
-}: {
-  id: string
-  game: GameView
-  showLinux: boolean
-  onOpen: () => void
-  onClose: () => void
-}) {
-  // A pick carries the game without its screenshots; the full one has them.
-  const full = useQuery({ queryKey: ['game', slim.id], queryFn: () => api.game(slim.id), staleTime: 60_000 })
-  const g = full.data ?? slim
-  const shots = full.data?.screenshots ?? []
-  const [shot, setShot] = useState(0)
-  const at = Math.min(shot, Math.max(0, shots.length - 1))
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        onClose()
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [onClose])
-
-  const story = hoursToText(g.hltb_main)
-  const linux = showLinux ? linuxShown(g) : null
-  const tags = g.tags.slice(0, TAGS)
-  const step = (by: number) => setShot((at + by + shots.length) % shots.length)
-
-  return (
-    <div
-      id={id}
-      role="dialog"
-      aria-label={`Quick look: ${g.name}`}
-      // As wide as the art, so it never reaches into the next pick's column.
-      className="fade-up absolute inset-x-0 top-full z-30 mt-2 flex flex-col gap-3 rounded-xl border border-line-strong bg-sheet p-3 shadow-[0_12px_32px_rgb(0_0_0/0.35)]"
-    >
-      {full.isPending ? (
-        <div className="shimmer aspect-video w-full rounded-lg" aria-hidden="true" />
-      ) : shots.length > 0 ? (
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-raised">
-          <img src={shots[at].thumb} alt={`${g.name}, screenshot ${at + 1} of ${shots.length}`} className="h-full w-full object-cover" />
-          {shots.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={() => step(-1)}
-                aria-label="Previous screenshot"
-                className="absolute top-1/2 left-1.5 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ground/70 text-ink hover:bg-ground/90"
-              >
-                ‹
-              </button>
-              <button
-                type="button"
-                onClick={() => step(1)}
-                aria-label="Next screenshot"
-                className="absolute top-1/2 right-1.5 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ground/70 text-ink hover:bg-ground/90"
-              >
-                ›
-              </button>
-              <span className="absolute right-2 bottom-1.5 rounded bg-ground/70 px-1.5 font-mono text-[10.5px] text-ink">
-                {at + 1} / {shots.length}
-              </span>
-            </>
-          )}
-        </div>
-      ) : null}
-
-      <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-[13.5px]">
-        <dt className="text-dim">Story</dt>
-        <dd className="m-0 text-ink">{story ? `${story} to beat` : 'Not known yet'}</dd>
-        <dt className="text-dim">Liked it</dt>
-        <dd className="m-0 text-ink">
-          {g.review_pct != null ? `${g.review_pct}%${g.review_total ? ` · ${compactNumber(g.review_total)} ${g.review_total === 1 ? 'review' : 'reviews'}` : ''}` : 'No reviews yet'}
-        </dd>
-        {linux && (
-          <>
-            <dt className="text-dim">Linux</dt>
-            <dd className={cx('m-0', linuxClass(g.linux))}>● {linux}</dd>
-          </>
-        )}
-      </dl>
-
-      {tags.length > 0 && (
-        <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0" aria-label="Top tags">
-          {tags.map((t) => (
-            <li key={t} className="rounded-full bg-raised px-2.5 py-0.5 text-[12.5px] text-muted">
-              {t}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="flex items-center justify-between gap-3">
-        <button type="button" className="btn-accent h-9 px-4 text-[14px]" onClick={onOpen}>
-          Open
-        </button>
-        <span className="text-[12.5px] text-dim">Esc to close</span>
-      </div>
+      {/* Says which screenshot a step showed; the slideshow stays quiet. */}
+      <span className="sr-only" aria-live="polite">
+        {peek && manual && showing >= 0 ? `Screenshot ${showing + 1} of ${shots.length}` : ''}
+      </span>
     </div>
   )
 }

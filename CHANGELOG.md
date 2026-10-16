@@ -4,6 +4,10 @@ All notable changes to UpNext are listed here. The format follows [Keep a Change
 
 ## [Unreleased]
 
+### Changed
+
+- Resting the mouse on a pick's art for a second now fades through the game's screenshots inside the art itself, with its top tags along the bottom and dots to pick one, and ends when the mouse moves away. The quick look it replaces opened a panel under the art that covered the card's buttons until it was closed. With reduced motion the pictures change only when a dot is chosen; keyboard users get the same from a "Preview" button that shows on focus, with the arrow keys to step, and a tap on a phone still opens the page.
+
 ## [0.1.1] - 2026-10-16
 
 ### Added

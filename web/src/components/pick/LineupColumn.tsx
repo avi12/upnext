@@ -156,7 +156,6 @@ export function LineupColumn({
       <PickArt
         game={g}
         onOpen={() => onOpen(g)}
-        showLinux={showLinux}
         className={cx(
           "w-4/5 transition-opacity",
           sifting != null && "sifting rounded-[10px] opacity-70",
