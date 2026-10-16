@@ -48,7 +48,13 @@
   </Resources>
 
   <Applications>
-    <Application Id="UpNext" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
+    <!-- The Store takes no application without a Start menu entry, and
+         MakeAppx allows one alias per application, so each entry carries
+         one. Each `upnext` in a terminal is a process of its own, which a
+         console alias needs its application to allow
+         (SupportsMultipleInstances); a desktop program is never limited to
+         one instance anyway. -->
+    <Application Id="UpNext" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication" desktop4:SupportsMultipleInstances="true">
       <uap:VisualElements
         DisplayName="UpNext"
         Description="Picks what to play next from your game library."
@@ -58,11 +64,10 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
       </uap:VisualElements>
       <Extensions>
-        <!-- What Steam's shortcut starts (src/msix.rs): `upnext-app.exe`, a
-             path that stays the same when an update moves the programs. -->
-        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
-          <uap5:AppExecutionAlias desktop4:Subsystem="windows">
-            <uap5:ExecutionAlias Alias="upnext-app.exe" />
+        <!-- `upnext` in a terminal, as the MSI's PATH entry gives it. -->
+        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:AppExecutionAlias desktop4:Subsystem="console">
+            <uap5:ExecutionAlias Alias="upnext.exe" />
           </uap5:AppExecutionAlias>
         </uap5:Extension>
         <!-- Start with Windows: the package's writes to the Run key would
@@ -72,27 +77,6 @@
         <desktop:Extension Category="windows.startupTask" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication" uap10:Parameters="--background">
           <desktop:StartupTask TaskId="UpNext" Enabled="false" DisplayName="UpNext" />
         </desktop:Extension>
-      </Extensions>
-    </Application>
-    <!-- `upnext` in a terminal, as the MSI's PATH entry gives it. Each
-         command is a process of its own, which a console alias needs the
-         application to allow (SupportsMultipleInstances), and an
-         application may declare only one alias, so the command line is an
-         application of its own with no Start menu entry. -->
-    <Application Id="Cli" Executable="upnext.exe" EntryPoint="Windows.FullTrustApplication" desktop4:SupportsMultipleInstances="true">
-      <uap:VisualElements
-        DisplayName="UpNext (command line)"
-        Description="UpNext's command line, upnext in a terminal."
-        BackgroundColor="transparent"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png"
-        AppListEntry="none" />
-      <Extensions>
-        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext.exe" EntryPoint="Windows.FullTrustApplication">
-          <uap5:AppExecutionAlias desktop4:Subsystem="console">
-            <uap5:ExecutionAlias Alias="upnext.exe" />
-          </uap5:AppExecutionAlias>
-        </uap5:Extension>
       </Extensions>
     </Application>
     <!-- The MSI's second Start menu entry. -->
@@ -105,6 +89,16 @@
         Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
       </uap:VisualElements>
+      <Extensions>
+        <!-- What Steam's big screen shortcut starts (src/msix.rs):
+             `upnext-app.exe`, a path that stays the same when an update
+             moves the programs. -->
+        <uap5:Extension Category="windows.appExecutionAlias" Executable="upnext-app.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:AppExecutionAlias desktop4:Subsystem="windows">
+            <uap5:ExecutionAlias Alias="upnext-app.exe" />
+          </uap5:AppExecutionAlias>
+        </uap5:Extension>
+      </Extensions>
     </Application>
   </Applications>
 
