@@ -30,7 +30,7 @@ UpNext runs on your own computer and keeps everything in a local database. It ha
 | Any Linux, Steam Deck | The Flatpak | [Flatpak and Steam Deck](docs/install/flatpak.md) |
 | Other Linux | The release archive | [Linux](docs/install/linux.md#release-archive) |
 | Home server, NAS | The container image | [Docker](docs/install/docker.md) |
-| Android | The APK, to use UpNext on your computer from a phone or TV; it isn't in a release yet | [Android](docs/install/android.md) |
+| Android | The APK from a [release](https://github.com/zytocc/upnext/releases/latest), to use UpNext on your computer from a phone or TV | [Android](docs/install/android.md) |
 | From source | Rust and Node | [Building from source](docs/install/source.md) |
 
 With Docker it's three lines:
