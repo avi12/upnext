@@ -174,7 +174,7 @@ Invoke-Checked $MakePri @(
 )
 $split = @(Get-ChildItem -LiteralPath $Layout -Filter 'resources.*.pri')
 if ($split.Count -gt 0) {
-    throw "MakePri split pictures into $($split.Name -join ', '), which a single package never loads; its configuration's packaging section needs removing"
+    throw "MakePri split pictures into $($split.Name -join ', '), which a single package never loads, although the packaging section was removed from its configuration above; MakePri's configuration format may have changed"
 }
 Remove-Item -Recurse -Force -LiteralPath $Obj
 
