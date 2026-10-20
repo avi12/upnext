@@ -25,7 +25,7 @@ RUN npm run build
 # 2. The server, with the UI built in (a release build needs web/dist),
 # its symbols stripped to keep the image small (contrib/docker/smoke-test.sh
 # has the size budget).
-FROM --platform=$BUILDPLATFORM rust:1-trixie@sha256:6ff07edce8775d0f64be7aba9197229407301bddf2054d62c27b541a6238a181 AS server
+FROM --platform=$BUILDPLATFORM rust:1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a AS server
 ARG TARGETARCH
 ARG BUILDARCH
 WORKDIR /src
