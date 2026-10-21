@@ -7,6 +7,7 @@ export const BACKEND_LABEL: Record<string, string> = {
   'api-key': 'Anthropic API key',
   'openai-key': 'OpenAI API key',
   openai: 'Another provider',
+  copilot: 'Microsoft Copilot',
 }
 
 /** The backend that writes review summaries, second chances and hidden
