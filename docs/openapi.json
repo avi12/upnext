@@ -13975,7 +13975,7 @@
               "string",
               "null"
             ],
-            "description": "An `llm_backend`: `claude-cli`, `codex-cli`, `api-key`, `openai-key` or `openai`; null for the built-in one."
+            "description": "An `llm_backend`: `claude-cli`, `codex-cli`, `api-key`, `openai-key`, `openai` or, on Windows, `copilot`; null for the built-in one."
           },
           "settings": {
             "type": "object",
@@ -19827,7 +19827,7 @@
         "properties": {
           "backend": {
             "type": "string",
-            "description": "`claude-cli`, `codex-cli`, `api-key`, `openai-key` or `openai`."
+            "description": "`claude-cli`, `codex-cli`, `api-key`, `openai-key`, `openai` or, on Windows, `copilot`."
           },
           "available": {
             "type": "boolean",

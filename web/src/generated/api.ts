@@ -2524,7 +2524,7 @@ export interface components {
             this_computer: boolean;
         };
         AiBody: {
-            /** @description An `llm_backend`: `claude-cli`, `codex-cli`, `api-key`, `openai-key` or `openai`; null for the built-in one. */
+            /** @description An `llm_backend`: `claude-cli`, `codex-cli`, `api-key`, `openai-key`, `openai` or, on Windows, `copilot`; null for the built-in one. */
             backend?: string | null;
             /**
              * @description AI settings and keys by name, as `PUT /settings` takes them (`model`, `anthropic_api_key`,
@@ -4652,7 +4652,7 @@ export interface components {
             background: components["schemas"]["SetupBackground"];
         };
         SetupAi: {
-            /** @description `claude-cli`, `codex-cli`, `api-key`, `openai-key` or `openai`. */
+            /** @description `claude-cli`, `codex-cli`, `api-key`, `openai-key`, `openai` or, on Windows, `copilot`. */
             backend: string;
             /**
              * @description The backend can run (the CLI starts, a key is set); no call is made.

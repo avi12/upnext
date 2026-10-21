@@ -2,14 +2,18 @@
 //! (a Claude subscription); `codex-cli` to the Codex CLI (a ChatGPT
 //! subscription); `api-key` calls the Anthropic API directly; `openai-key`
 //! calls the OpenAI API with the user's key; `openai` talks to any
-//! OpenAI-compatible server (Ollama, LM Studio, ...). Selected by the
-//! `llm_backend` setting or `UPNEXT_LLM`; review summaries and the other
-//! bulk work can go to another one, chosen by `digest_backend`.
+//! OpenAI-compatible server (Ollama, LM Studio, ...); `copilot`, on Windows,
+//! chats with Microsoft Copilot on the Microsoft account Windows is signed
+//! in to. Selected by the `llm_backend` setting or `UPNEXT_LLM`; review
+//! summaries and the other bulk work can go to another one, chosen by
+//! `digest_backend`.
 
 pub mod api_key;
 pub mod claude_cli;
 pub mod claude_install;
 pub mod codex_cli;
+#[cfg(windows)]
+pub mod copilot;
 pub mod families;
 pub mod openai_compat;
 pub mod openai_key;
@@ -331,6 +335,8 @@ fn backend_of(cfg: &crate::config::Config, name: &str) -> Box<dyn LlmBackend> {
         "codex-cli" => {
             Box::new(codex_cli::CodexCliBackend::new(cfg.codex_program(), cfg.codex_effort.clone()).with_home(cfg.codex_home.clone()))
         }
+        #[cfg(windows)]
+        "copilot" => Box::new(copilot::CopilotBackend::new()),
         // The cache dir is a neutral working directory: no project's CLAUDE.md.
         _ => Box::new(
             claude_cli::ClaudeCliBackend::new(cfg.claude_program(), Some(cfg.cache_dir.clone()))

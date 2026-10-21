@@ -275,7 +275,7 @@ async fn ai_get(State(state): State<AppState>, Me(me): Me) -> ApiResult<Vec<AiAc
 
 #[derive(Debug, Deserialize, utoipa::ToSchema)]
 struct AiBody {
-    /// An `llm_backend`: `claude-cli`, `codex-cli`, `api-key`, `openai-key` or `openai`; null for the built-in one.
+    /// An `llm_backend`: `claude-cli`, `codex-cli`, `api-key`, `openai-key`, `openai` or, on Windows, `copilot`; null for the built-in one.
     backend: Option<String>,
     /// AI settings and keys by name, as `PUT /settings` takes them (`model`, `anthropic_api_key`,
     /// `claude_oauth_token` and the rest); null or "" clears one.

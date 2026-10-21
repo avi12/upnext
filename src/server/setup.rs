@@ -327,7 +327,7 @@ pub struct KeysSet {
 
 #[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct SetupAi {
-    /// `claude-cli`, `codex-cli`, `api-key`, `openai-key` or `openai`.
+    /// `claude-cli`, `codex-cli`, `api-key`, `openai-key`, `openai` or, on Windows, `copilot`.
     pub backend: String,
     /// The backend can run (the CLI starts, a key is set); no call is made.
     /// `POST /llm/test` makes one.

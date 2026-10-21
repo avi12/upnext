@@ -105,7 +105,7 @@ pub struct Config {
     /// Scratch space: the working directory of `claude -p` (`UPNEXT_CACHE_DIR`).
     pub cache_dir: PathBuf,
     /// Which LLM backend to use: `claude-cli` (default), `codex-cli`,
-    /// `api-key`, `openai-key` or `openai`.
+    /// `api-key`, `openai-key`, `openai` or, on Windows, `copilot`.
     pub llm_backend: String,
     /// Which backend writes review summaries and the other bulk work
     /// (second chances, hidden gems): "same" (as `llm_backend`, the
@@ -345,10 +345,16 @@ pub const LINUX_MODES: [&str; 3] = ["auto", "on", "off"];
 pub const THINKING_MODES: [&str; 3] = ["auto", "off", "on"];
 
 /// Values accepted for `llm_backend`.
+#[cfg(not(windows))]
 pub const LLM_BACKENDS: [&str; 5] = ["claude-cli", "codex-cli", "api-key", "openai-key", "openai"];
+#[cfg(windows)]
+pub const LLM_BACKENDS: [&str; 6] = ["claude-cli", "codex-cli", "api-key", "openai-key", "openai", "copilot"];
 
 /// Values accepted for `digest_backend`: "same" as picks, or a backend of its own.
+#[cfg(not(windows))]
 pub const DIGEST_BACKENDS: [&str; 6] = ["same", "claude-cli", "codex-cli", "api-key", "openai-key", "openai"];
+#[cfg(windows)]
+pub const DIGEST_BACKENDS: [&str; 7] = ["same", "claude-cli", "codex-cli", "api-key", "openai-key", "openai", "copilot"];
 
 /// Values accepted for `codex_effort`, least to most. A model takes some of
 /// them (`codex debug models` lists which).

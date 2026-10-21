@@ -11,6 +11,7 @@
 | `api-key` | an Anthropic API key, billed per call | below |
 | `openai-key` | an OpenAI API key, billed per call | [OpenAI API key](ai-openai-key.md) |
 | `openai` | any OpenAI-compatible server: a model at home or another provider | [Another provider](ai-openai-compatible.md) |
+| `copilot` (Windows only) | Microsoft Copilot's chat, on the Microsoft account Windows is signed in to: no key, no tokens reported, no model setting | below |
 
 The backend is built from the settings on every request, so a change applies without a restart. Clearing a setting (`null` or `""`) falls back to `.env`. `GET /api/config` gives `llm_backend`, `claude_available` (whether it can run) and `llm_error` (why not, such as "Codex isn't signed in: …"). Each player can have AI accounts of their own ([AI accounts](ai-accounts.md)).
 
@@ -19,6 +20,10 @@ The backend is built from the settings on every request, so a change applies wit
 `model` is for picks, series guides and Help me decide, and `digest_model` for review summaries and review tags. On the Claude CLI both are `sonnet` unless set; `opus` and `default` (the CLI's own default) are the other choices, as `models` and `digest_models` list them.
 
 With the API key (`anthropic_api_key`, write-only, starting `sk-ant-`; `GET` gives `anthropic_api_key_set` and `anthropic_api_key_source`), `sonnet`, `opus` and `haiku` mean `claude-sonnet-5-5`, `claude-opus-5-5` and `claude-haiku-5-5`, and each feature has its own default: picks, series guides and Help me decide use Sonnet 5.5, and review summaries and tags use Haiku 5.5. Those apply while the setting was never chosen or is `default`, and `GET /api/settings` then shows `default`; `models` offers `haiku` too. Review summaries go to Haiku at `output_config.effort: "low"`, since at its default effort a batch of 8 could spend all 16,000 output tokens thinking. Haiku takes no non-default temperature, thinking budget, prefill or `fallbacks`, so none is sent to it; Sonnet and Opus get refusal fallbacks (`fallbacks: "default"`).
+
+## Copilot
+
+`copilot` is listed in `llm_backends` and `digest_backends` only when the server runs on Windows. Each call gets a token for the Microsoft account Windows is signed in to, through `msalruntime.dll` (Git for Windows ships it; `UPNEXT_MSALRUNTIME` names another), and chats on copilot.com's own socket with a new conversation. Copilot takes no schema, so JSON is asked for in the prompt; `model` and `digest_model` don't apply. `GET /api/config`'s `llm_error` says when the DLL is missing, `POST /api/llm/test` says when Windows has no personal Microsoft account to give a token, and a spent daily allowance (50 messages on the free plan) is a usage limit with the time it resets.
 
 ## A separate AI for summaries
 
