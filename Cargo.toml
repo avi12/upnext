@@ -91,6 +91,8 @@ winreg = "0.56"
 rfd = { version = "0.17.2", default-features = false, optional = true }
 crossterm_winapi = { version = "0.9.1", optional = true }
 tray-icon = { version = "0.26.1", default-features = false, optional = true }
+# Copilot's chat socket (`llm::copilot`), the AI backend Windows has.
+tokio-tungstenite = { version = "0.30", default-features = false, features = ["connect", "rustls-tls-native-roots"] }
 
 # The app window with no console on Windows; `upnext` is the CLI.
 # Its code is `cli::app::desktop_main`, which the lib's tests cover.
