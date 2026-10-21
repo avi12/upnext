@@ -30,7 +30,7 @@ UpNext sends the AI only what the task needs, and never your keys, SteamID, acco
 - **Second chances**: an abandoned game, what you said about why you stopped, and player reviews written since.
 - **Hidden gems**: unplayed games with their details, tags, publishers and review summaries.
 
-With the Claude Code or Codex CLI, the CLI adds its own instructions to each call, as it does for any use. With an API key, the call goes to Anthropic or OpenAI under your key. With a local server, nothing leaves your machine. `upnext prompt "…"` prints a pick's exact prompt without sending it.
+With the Claude Code or Codex CLI, the CLI adds its own instructions to each call, as it does for any use. With an API key, the call goes to Anthropic or OpenAI under your key. With Microsoft Copilot (Windows only), the prompt goes to Microsoft's Copilot as the Microsoft account Windows is signed in to, under Microsoft's terms, and stays in that account's Copilot chat history. With a local server, nothing leaves your machine. `upnext prompt "…"` prints a pick's exact prompt without sending it.
 
 ## On your network
 

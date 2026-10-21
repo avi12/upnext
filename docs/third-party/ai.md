@@ -12,8 +12,13 @@ None of these is a data source, so none has a credit in Settings › About.
 | ChatGPT, through your Codex CLI | `codex exec` as a subprocess, on your ChatGPT sign-in. UpNext never reads its credentials | [OpenAI Terms of Use](https://openai.com/policies/terms-of-use/), [Codex authentication](https://learn.chatgpt.com/docs/auth) |
 | OpenAI API | Chat Completions, with your key | [Services Agreement](https://openai.com/policies/services-agreement/), [Usage policies](https://openai.com/policies/usage-policies/) |
 | OpenAI-compatible servers | Whatever you point UpNext at: Ollama, LM Studio, llama.cpp, vLLM, OpenRouter, and Settings' presets for Google Gemini, Groq, Mistral, DeepSeek and xAI | The server's and the model's own licences |
+| Microsoft Copilot (Windows only) | copilot.com's chat socket on `substrate.office.com`, with a token for the Microsoft account Windows is signed in to, from `msalruntime.dll` (the Microsoft sign-in library Git for Windows ships). It sends the one chat call the Copilot page sends | [Microsoft Services Agreement](https://www.microsoft.com/en-us/servicesagreement), [Copilot Terms of Use](https://www.microsoft.com/en-us/microsoft-copilot/for-individuals/termsofuse) |
 
 With an API key, the key owner's terms and usage policy apply. With the Codex CLI, your credentials stay your own. OpenAI recommends API keys for automated workflows and has opened its plans to third-party tools with "Sign in with ChatGPT"; nothing was found against running your own signed-in CLI.
+
+## Microsoft Copilot
+
+Copilot's Terms of Use say "Don't use tools or computer programs (like bots or scrapers) to access Copilot" and "Don't use bots or scrapers, and don't engage in technical attacks, excess usage, prompt-based manipulation, “jailbreaking”, and other abuses". UpNext's call is a program using the chat service the Copilot page uses, which those lines don't allow, though it signs in as you and sends nothing the page wouldn't. The backend is off unless you choose it, it makes one chat per AI call, and the free plan stops at 50 messages a day. Copilot "may include both automated and manual (human) processing of data", and each call leaves a chat in your Copilot history. Take that into account before choosing it; the API keys and the CLIs above are the supported ways in.
 
 ## Claude Code
 
