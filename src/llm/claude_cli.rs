@@ -169,7 +169,21 @@ pub async fn usage_envelope(bin: &str, workdir: Option<&std::path::Path>, token:
     let mut args = vec!["-p", "/usage"];
     args.extend(&BASE_ARGS[1..]);
     let out = run(bin, workdir, token, &args).await?;
-    serde_json::from_str(&out).map_err(|e| format!("`claude -p /usage` didn't print JSON ({e}): {}", truncate(&out, 300)))
+    serde_json::from_str(&out)
+        .map(result_envelope)
+        .map_err(|e| format!("`claude -p /usage` didn't print JSON ({e}): {}", truncate(&out, 300)))
+}
+
+/// The envelope of a `--output-format json` call. Newer CLIs print the whole
+/// message stream as an array and put the envelope last, as its `result`
+/// entry; older ones print the envelope alone.
+fn result_envelope(printed: Value) -> Value {
+    match printed {
+        Value::Array(items) => {
+            items.into_iter().rev().find(|m| m.get("type").and_then(Value::as_str) == Some("result")).unwrap_or(Value::Null)
+        }
+        other => other,
+    }
 }
 
 /// The kind of plan the CLI is signed in with ("max", "pro"), from `claude
@@ -259,7 +273,7 @@ impl LlmBackend for ClaudeCliBackend {
         let stderr = String::from_utf8_lossy(&output.stderr);
         if !output.status.success() {
             // A failed call still prints its envelope, with the reason in it.
-            if let Ok(envelope) = serde_json::from_str::<Value>(stdout.trim())
+            if let Ok(envelope) = serde_json::from_str::<Value>(stdout.trim()).map(result_envelope)
                 && envelope.is_object()
             {
                 return Err(envelope_error(&envelope));
@@ -269,6 +283,7 @@ impl LlmBackend for ClaudeCliBackend {
         }
 
         let envelope: Value = serde_json::from_str(stdout.trim())
+            .map(result_envelope)
             .map_err(|e| LlmError::BadOutput(format!("claude output is not JSON ({e}): {}", truncate(&stdout, 400)), None))?;
         if envelope.get("is_error").and_then(Value::as_bool) == Some(true)
             || envelope.get("subtype").and_then(Value::as_str).is_some_and(|s| s != "success")
@@ -371,6 +386,18 @@ mod tests {
         assert_eq!(home(&command_in(&launch, None, None)), None, "outside one, the user's own home");
         let sandbox = crate::flatpak::Flatpak::example();
         assert_eq!(home(&command_in(&launch, None, Some(&sandbox))), Some(sandbox.home.clone()));
+    }
+
+    /// Claude Code 2.1.302 prints the message stream as an array, where
+    /// earlier versions printed the envelope alone.
+    #[test]
+    fn the_envelope_is_the_last_result_of_a_message_stream() {
+        let result = serde_json::json!({"type": "result", "subtype": "success", "structured_output": {"ok": true}});
+        let stream = serde_json::json!([{"type": "system", "subtype": "init"}, {"type": "assistant"}, result.clone()]);
+        assert_eq!(result_envelope(stream), result);
+        assert_eq!(result_envelope(result.clone()), result, "older CLIs print the envelope alone");
+        let resp = success(&result_envelope(serde_json::json!([result])), None).unwrap();
+        assert_eq!(resp.json, serde_json::json!({"ok": true}));
     }
 
     /// A real envelope from a call that failed (`--model` set to a model
